@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edward — 個人網站</title>
+<meta name="description" content="Edward 的個人網站：關於我、專案作品與聯絡方式。">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👋</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="site-header">
+  <nav class="nav" aria-label="主選單">
+    <a class="nav__brand" href="#top">Edward</a>
+    <ul class="nav__links">
+      <li><a href="#about">關於</a></li>
+      <li><a href="#projects">專案</a></li>
+      <li><a href="#contact">聯絡</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式">
+      <span aria-hidden="true">◐</span>
+    </button>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ===== Hero ===== -->
+  <section class="hero" id="top">
+    <div class="wrap">
+      <p class="hero__eyebrow">Hello, world.</p>
+      <h1 class="hero__title">我是 <span class="accent">Edward</span></h1>
+      <p class="hero__lead">
+        <!-- 改這裡：一兩句話介紹你自己 -->
+        對語音辨識、機器學習與最佳化演算法有興趣。
+        平常在寫一些讓工作變輕鬆的工具，偶爾把想法丟上 GitHub。
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#projects">看看我的專案</a>
+        <a class="btn" href="https://github.com/edward15241" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== About ===== -->
+  <section class="section" id="about">
+    <div class="wrap">
+      <h2 class="section__title">關於我</h2>
+      <div class="about">
+        <div class="about__text">
+          <p>
+            <!-- 改這裡：你的背景、現在在做什麼 -->
+            我的興趣集中在<strong>語音處理</strong>與<strong>機器學習</strong>，
+            從 ASR 模型的微調與評測，到把研究成果整理成能重複使用的工具箱。
+          </p>
+          <p>
+            更早之前我也玩過組合最佳化，用模擬退火（Simulated Annealing）
+            處理排程問題。喜歡把複雜的問題拆成能一步步驗證的小塊。
+          </p>
+        </div>
+        <div class="about__side">
+          <h3 class="about__side-title">常用技能</h3>
+          <ul class="tags">
+            <li>Python</li>
+            <li>PyTorch</li>
+            <li>Speech / ASR</li>
+            <li>Whisper</li>
+            <li>Hugging Face</li>
+            <li>Algorithms</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Projects ===== -->
+  <section class="section section--alt" id="projects">
+    <div class="wrap">
+      <h2 class="section__title">專案</h2>
+      <p class="section__lead">一些公開在 GitHub 上的作品。</p>
+
+      <ul class="cards">
+        <li class="card">
+          <h3 class="card__title">whisper_mod</h3>
+          <p class="card__desc">針對 Whisper 語音辨識模型所做的修改與實驗。</p>
+          <p class="card__meta">Python</p>
+          <a class="card__link" href="https://github.com/edward15241/whisper_mod" target="_blank" rel="noopener">
+            查看原始碼 <span aria-hidden="true">→</span>
+          </a>
+        </li>
+
+        <li class="card">
+          <h3 class="card__title">SimulatedAnnealing</h3>
+          <p class="card__desc">以模擬退火演算法求解排列型流線式排程問題（PFSP）。</p>
+          <p class="card__meta">Optimization</p>
+          <a class="card__link" href="https://github.com/edward15241/SimulatedAnnealing" target="_blank" rel="noopener">
+            查看原始碼 <span aria-hidden="true">→</span>
+          </a>
+        </li>
+
+        <li class="card">
+          <h3 class="card__title">NoUseToolBox</h3>
+          <p class="card__desc">個人方便使用、順便複習演算法的小工具箱。</p>
+          <p class="card__meta">Utilities</p>
+          <a class="card__link" href="https://github.com/edward15241/NoUseToolBox" target="_blank" rel="noopener">
+            查看原始碼 <span aria-hidden="true">→</span>
+          </a>
+        </li>
+
+        <!-- 要新增專案？複製上面一整個 <li class="card"> ... </li> 區塊，改掉文字即可 -->
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Contact ===== -->
+  <section class="section" id="contact">
+    <div class="wrap wrap--narrow">
+      <h2 class="section__title">聯絡我</h2>
+      <p class="section__lead">有想聊的專案或合作，歡迎透過以下方式找我。</p>
+      <ul class="contact">
+        <li>
+          <a href="https://github.com/edward15241" target="_blank" rel="noopener">
+            <span class="contact__label">GitHub</span>
+            <span class="contact__value">@edward15241</span>
+          </a>
+        </li>
+        <!-- 想公開 Email 的話，把下面這段的註解拿掉並填上信箱 -->
+        <!--
+        <li>
+          <a href="mailto:your@email.com">
+            <span class="contact__label">Email</span>
+            <span class="contact__value">your@email.com</span>
+          </a>
+        </li>
+        -->
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; <span id="year">2026</span> Edward. Built with plain HTML &amp; CSS.</p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
