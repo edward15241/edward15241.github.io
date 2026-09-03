@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W35 2026-08-17–2026-08-24</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📓</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav" aria-label="主選單">
+    <a class="nav__brand" href="../index.html">筆記與照片</a>
+    <ul class="nav__links">
+      <li><a href="../index.html#notes">筆記</a></li>
+      <li><a href="../index.html#photos">相簿</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式">
+      <span aria-hidden="true">◐</span>
+    </button>
+  </nav>
+</header>
+
+<main>
+  <article class="section">
+    <div class="wrap wrap--narrow">
+
+      <time class="note__date" datetime="2026-08-24">2026-08-17 – 08-24</time>
+      <h1 class="note__title">語音技術週報 W35</h1>
+
+      <div class="wr">
+      <div class="wr-summary">
+      <h2>⚡ 本週重點摘要</h2>
+      <ol>
+      <li><strong>SLT 2026 SmartGlasses Challenge</strong> 發布 106 小時四通道自我中心語音資料集，結合多說話人 ASR 與語言理解評測，涵蓋三種互動場景</li>
+      <li><strong>多方言 ASR 自蒸餾</strong> — On-Policy Self-Distillation 方法在提升中文方言辨識準確率的同時，有效保留普通話性能</li>
+      <li><strong>VoiceDesigner</strong>（Adobe 研究）提出統一擴散框架，支援文字到語音生成與情感、語調等多維度語音屬性編輯</li>
+      <li><strong>FunASR v1.4.3</strong> 新增可選 Silero VAD 適配器，支援毫秒級分段、可配置閾值與 ONNX 推論模式</li>
+      <li><strong>Microsoft MAI-Realtime</strong> 全雙工語音模型持續測試中，為微軟首款原生雙向 S2S 系統，支援 17 種語言</li>
+      </ol>
+      </div>
+      <section class="wr-topic">
+      <div class="wr-topic-header">
+      <span class="wr-num">1</span>
+      <span class="wr-topic-title">語音辨識 <span class="wr-topic-title-en">ASR / Speech Recognition</span></span>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label news">新聞 News</div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://pypi.org/project/funasr/">FunASR v1.4.3 發布 — 新增 Silero VAD 適配器</a></div>
+      <div class="wr-meta"><span>來源：ModelScope / PyPI</span><span class="wr-date">08/21</span></div>
+      <div class="wr-desc">開源語音辨識工具包 FunASR 發布 v1.4.3，新增可選 Silero VAD 適配器，支援毫秒級分段、可配置閾值、8/16 kHz 輸入與 ONNX 推論模式。此前 v1.4.2（8/14）已改進標點感知句子對齊。</div>
+      </div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://www.techtimes.com/articles/322592/20260801/gpt-live-voice-gets-synthid-watermarks-one-day-before-eu-ai-act-enforcement.htm">OpenAI 為 GPT-Live 語音嵌入 SynthID 浮水印</a></div>
+      <div class="wr-meta"><span>來源：OpenAI / TechTimes</span><span class="wr-date">07/31</span></div>
+      <div class="wr-desc">因應 8/2 生效的 EU AI Act 第 50 條，OpenAI 將 Google SynthID 音訊浮水印嵌入所有 ChatGPT Voice 與 API 的語音輸出。浮水印直接嵌入音訊信號，即使經裁剪、濾波或有損壓縮仍可偵測。</div>
+      </div>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label model">模型 Models</div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://huggingface.co/ARTPARK-IISc/SraVaani-1.0">SraVaani 1.0 — 65 種印度語言開源 ASR 模型</a></div>
+      <div class="wr-meta"><span>IISc SPIRE Lab / ARTPARK / Google</span><span class="wr-date">08/13</span></div>
+      <div class="wr-desc">首款覆蓋 65 種印度語言的多語言 ASR 模型，MIT 授權。基於 31,000+ 小時 VAANI 語料集，三階段訓練。平均 WER 28.4%，優於 IndicConformer 的 30.2%。</div>
+      </div>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label paper">論文 Papers</div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2608.11898">On-Policy Self-Distillation for Multi-Dialect ASR: Mastering Dialects, Retaining Mandarin</a></div>
+      <div class="wr-meta"><span>Shuiyuan Wang 等</span><span>arXiv:2608.11898</span><span class="wr-date">~08/20</span></div>
+      <div class="wr-desc">針對中文方言 ASR 的適應遺忘問題，提出 OPSD 方法，在 CPT + 方言 SFT 基礎上，讓學生模型基於自身解碼前綴訓練，凍結教師提供軟目標。</div>
+      </div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2608.12034">The SLT 2026 SmartGlasses Challenge</a></div>
+      <div class="wr-meta"><span>Dehui Gao 等</span><span>arXiv:2608.12034</span><span class="wr-date">~08/21</span></div>
+      <div class="wr-desc">106 小時四通道自我中心語音資料集，聯合評測 TSA-ASR 與 SLU。</div>
+      </div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2608.03610">Language-Specialized Multi-Teacher Distillation for Multilingual LLM-Based ASR</a></div>
+      <div class="wr-meta"><span>arXiv:2608.03610</span><span class="wr-date">08/04</span></div>
+      <div class="wr-desc">LS-MOPD 框架，解決聯合訓練異質語言時的跨語言優化衝突。</div>
+      </div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2608.01281">Latent Softmax for Phoneme-Based Multilingual ASR Across Tonal and Non-Tonal Languages</a></div>
+      <div class="wr-meta"><span>清華/中科大/新疆大學</span><span>arXiv:2608.01281</span><span class="wr-date">08/02</span></div>
+      <div class="wr-desc">CTC 相容的輸出層，統一處理聲調與非聲調語言的監督粒度差異。</div>
+      </div>
+      </div>
+      </section>
+      <section class="wr-topic">
+      <div class="wr-topic-header">
+      <span class="wr-num">2</span>
+      <span class="wr-topic-title">Audio LLM</span>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label news">新聞 News</div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://experiment.pika.art/blog/pika-audio-models">Pika 發布四款音訊基礎模型</a></div>
+      <div class="wr-meta"><span>來源：Pika</span><span class="wr-date">08/13</span></div>
+      <div class="wr-desc">Speech 模型 RTF 0.02，48 kHz，最長 5 分鐘。宣稱定價比競品低 20 倍。</div>
+      </div>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label model">模型 Models</div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://www.marktechpost.com/2026/07/07/nvidia-releases-audex-nemotron-labs-audex-30b-a3b/">NVIDIA Audex 30B-A3B</a></div>
+      <div class="wr-meta"><span>NVIDIA</span><span class="wr-date">07 月</span></div>
+      <div class="wr-desc">30B MoE Transformer，統一音訊理解+生成+ASR+TTS+S2S，1M tokens context。非商業授權。</div>
+      </div>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label paper">論文 Papers</div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2608.02023">SwanTale: Unified Multi-Speaker Speech and Audio Generation</a></div>
+      <div class="wr-meta"><span>ByteDance</span><span>arXiv:2608.02023</span><span class="wr-date">08/04</span></div>
+      <div class="wr-desc">Unified MoE 架構，單次推論生成語音+環境音+背景音樂場景。</div>
+      </div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2606.22473">Interleaved Speech LMs Latently Work In Text</a></div>
+      <div class="wr-meta"><span>希伯來大學</span><span>arXiv:2606.22473</span><span class="wr-date">06 月</span></div>
+      <div class="wr-desc">語音 LLM 在中間層經歷隱式轉錄，先在文字空間預測再轉回語音域。</div>
+      </div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2608.00722">ECCD for Mitigating Hallucinations in LM-Based TTS</a></div>
+      <div class="wr-meta"><span>arXiv:2608.00722</span><span class="wr-date">08/01</span></div>
+      <div class="wr-desc">無需訓練的解碼方法，強化對齊以防止 TTS 語音幻覺。</div>
+      </div>
+      </div>
+      </section>
+      <section class="wr-topic">
+      <div class="wr-topic-header">
+      <span class="wr-num">3</span>
+      <span class="wr-topic-title">Speech-to-Speech <span class="wr-topic-title-en">S2S</span></span>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label news">新聞 News</div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://www.testingcatalog.com/exclusive-microsoft-tests-new-mai-realtime-voice-model/">Microsoft MAI-Realtime 全雙工語音模型曝光</a></div>
+      <div class="wr-meta"><span>來源：TestingCatalog</span><span class="wr-date">08/02</span></div>
+      <div class="wr-desc">微軟首款原生全雙工語音模型，支援 17 種語言與自動偵測，尚未正式發布。</div>
+      </div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://www.marktechpost.com/2026/07/30/polyai-releases-dialog-rsn-1-an-audio-native-dialog-model-that-fuses-turn-taking-speech-recognition-function-calling-and-response/">PolyAI Dialog-RSN-1</a></div>
+      <div class="wr-meta"><span>來源：PolyAI</span><span class="wr-date">07/30</span></div>
+      <div class="wr-desc">音訊原生對話模型，sub-300ms 延遲，整合 turn-taking/ASR/function calling/回應生成。</div>
+      </div>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label model">模型 Models</div>
+      <p class="wr-none">本週無重大新 S2S 模型發布。</p>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label paper">論文 Papers</div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2608.13613">VoiceDesigner: Text-to-Voice Generation and Editing via Unified Diffusion</a></div>
+      <div class="wr-meta"><span>Adobe</span><span>arXiv:2608.13613</span><span class="wr-date">~08/22</span></div>
+      <div class="wr-desc">統一擴散框架，支援語音生成與多維度屬性編輯。</div>
+      </div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2608.08362">CtrlSpeech: Coarse-to-Fine Control for Expressive Speech Synthesis</a></div>
+      <div class="wr-meta"><span>arXiv:2608.08362</span><span class="wr-date">~08/14</span></div>
+      <div class="wr-desc">DiTAR 架構，音素級韻律控制。程式碼已公開。</div>
+      </div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2608.03215">GROW: Group-Relative RL for AR-Diffusion TTS</a></div>
+      <div class="wr-meta"><span>arXiv:2608.03215</span><span class="wr-date">08/04</span></div>
+      <div class="wr-desc">直接作用於 flow-matching 目標的 RL 方法。</div>
+      </div>
+      </div>
+      </section>
+      <section class="wr-topic">
+      <div class="wr-topic-header">
+      <span class="wr-num">4</span>
+      <span class="wr-topic-title">Turn Detection & Semantic VAD</span>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label news">新聞 News</div>
+      <div class="wr-item">
+      <div class="wr-item-title">PolyAI Dialog-RSN-1 將 turn-taking 融入端到端模型</div>
+      <div class="wr-meta"><span>詳見 S2S 部分</span><span class="wr-date">07/30</span></div>
+      <div class="wr-desc">不再依賴獨立 turn-taking 模組，直接從原始音訊推斷對話輪替。</div>
+      </div>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label model">模型 Models</div>
+      <p class="wr-none">本週無重大新模型發布。</p>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label paper">論文 Papers</div>
+      <p class="wr-none">本週無直接相關新論文。近期值得關注：</p>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2607.07294">MM-VAP: Multimodal Voice Activity Projection for Social Robots</a></div>
+      <div class="wr-meta"><span>arXiv:2607.07294</span><span class="wr-date">07/08</span></div>
+      <div class="wr-desc">視聽融合 VAP 框架，LoRA 適應預訓練編碼器。</div>
+      </div>
+      <div class="wr-item">
+      <div class="wr-item-title"><a href="https://arxiv.org/abs/2606.16731">MuVAP: Multimodal Multiparty VAP</a></div>
+      <div class="wr-meta"><span>arXiv:2606.16731</span><span class="wr-date">06 月</span></div>
+      <div class="wr-desc">多人多模態語音活動投影，同時預測各說話人未來語音活動。</div>
+      </div>
+      </div>
+      </section>
+      <section class="wr-topic">
+      <div class="wr-topic-header">
+      <span class="wr-num">5</span>
+      <span class="wr-topic-title">語音相關公開資料集</span>
+      </div>
+      <div class="wr-sub">
+      <div class="wr-label dataset">資料集 Datasets</div>
+      <div class="wr-scroll">
+      <table class="wr-table">
+      <thead><tr><th>名稱</th><th>規模</th><th>語言</th><th>類型</th><th>授權</th><th>連結</th></tr></thead>
+      <tbody>
+      <tr><td>SLT 2026 SmartGlasses</td><td>106 小時 / 714 會話 / 4ch</td><td>英/中</td><td>多說話人 ASR+SLU</td><td>待確認</td><td><a href="https://github.com/ASLP-lab/Smart-Glass-Challenge">GitHub</a></td></tr>
+      <tr><td>VAANI + SraVaani 1.0</td><td>31,000+ 小時 / 156K 人</td><td>65 印度語言</td><td>自發語音 ASR</td><td>MIT</td><td><a href="https://huggingface.co/ARTPARK-IISc/SraVaani-1.0">HF</a></td></tr>
+      <tr><td>VoxENES 2026</td><td>53,628 樣本 / 10 方法</td><td>雙語</td><td>語音偽造偵測</td><td>—</td><td><a href="https://arxiv.org/abs/2607.11706">論文</a></td></tr>
+      </tbody>
+      </table>
+      </div>
+      <p class="wr-none">本週無其他重大新資料集發布。</p>
+      </div>
+      </section>
+      <footer class="wr-foot">語音技術週報 · 自動產生於 2026-08-24 · 資料來源：arXiv, 產業新聞, 官方公告</footer>
+      </div>
+
+      <p class="note__back"><a href="../index.html#notes">← 回筆記列表</a></p>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

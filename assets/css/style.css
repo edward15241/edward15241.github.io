@@ -392,3 +392,201 @@ article :not(pre) > code {
 }
 
 .site-footer p { margin: 0; }
+
+/* ==========================================================================
+   週報版型（.wr）
+   結構較複雜的筆記使用：重點摘要框、主題分區、條目卡片、標籤、資料集表格。
+   顏色沿用上面的主題變數，只有標籤與強調色是這裡專用的。
+   ========================================================================== */
+
+:root {
+  --wr-amber:      #b07d1e;
+  --wr-amber-bg:   #fbf4e4;
+  --wr-news:       #2d6a4f;
+  --wr-news-bg:    #e8f5ee;
+  --wr-model:      #5c4b9e;
+  --wr-model-bg:   #efecf8;
+  --wr-paper:      #8b5a2b;
+  --wr-paper-bg:   #f9f0e6;
+  --wr-dataset:    #1a6b8a;
+  --wr-dataset-bg: #e3f1f7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --wr-amber:      #e0ad3e;
+    --wr-amber-bg:   #2a2415;
+    --wr-news:       #5ec489;
+    --wr-news-bg:    #172a1f;
+    --wr-model:      #a99be6;
+    --wr-model-bg:   #211e33;
+    --wr-paper:      #d4a46b;
+    --wr-paper-bg:   #2b2118;
+    --wr-dataset:    #54b8d9;
+    --wr-dataset-bg: #142530;
+  }
+}
+
+:root[data-theme="dark"] {
+  --wr-amber:      #e0ad3e;
+  --wr-amber-bg:   #2a2415;
+  --wr-news:       #5ec489;
+  --wr-news-bg:    #172a1f;
+  --wr-model:      #a99be6;
+  --wr-model-bg:   #211e33;
+  --wr-paper:      #d4a46b;
+  --wr-paper-bg:   #2b2118;
+  --wr-dataset:    #54b8d9;
+  --wr-dataset-bg: #142530;
+}
+
+/* ---- 重點摘要框 ---- */
+
+.wr-summary {
+  background: var(--wr-amber-bg);
+  border-left: 3px solid var(--wr-amber);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1.1rem 1.4rem;
+  margin-bottom: 2.5rem;
+}
+
+.wr-summary h2 {
+  font-family: var(--font-sans);
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--wr-amber);
+  margin: 0 0 .6rem;
+}
+
+.wr-summary ol { margin: 0; padding-left: 1.25rem; }
+.wr-summary li { font-size: .92rem; color: var(--text-muted); margin-bottom: .4rem; }
+.wr-summary li strong { color: var(--text); }
+
+/* ---- 主題分區 ---- */
+
+.wr-topic { margin-bottom: 2.5rem; }
+
+.wr-topic-header {
+  display: flex;
+  align-items: baseline;
+  gap: .75rem;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: .5rem;
+  margin-bottom: 1.25rem;
+}
+
+.wr-num {
+  flex-shrink: 0;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: .8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: 2px;
+}
+
+.wr-topic-title { font-size: 1.2rem; font-weight: 700; }
+.wr-topic-title-en {
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: .25rem;
+}
+
+/* ---- 子分類標籤 ---- */
+
+.wr-sub { margin-bottom: 1.25rem; }
+
+.wr-label {
+  display: inline-block;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  padding: .1rem .6rem;
+  border-radius: 4px;
+  margin-bottom: .6rem;
+}
+.wr-label.news    { background: var(--wr-news-bg);    color: var(--wr-news); }
+.wr-label.model   { background: var(--wr-model-bg);   color: var(--wr-model); }
+.wr-label.paper   { background: var(--wr-paper-bg);   color: var(--wr-paper); }
+.wr-label.dataset { background: var(--wr-dataset-bg); color: var(--wr-dataset); }
+
+/* ---- 條目卡片 ---- */
+
+.wr-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .9rem 1.15rem;
+  margin-bottom: .6rem;
+}
+
+.wr-item-title { font-size: .92rem; font-weight: 700; line-height: 1.55; margin-bottom: .2rem; }
+.wr-item-title a { color: var(--text); text-decoration: none; border-bottom: 1px solid transparent; }
+.wr-item-title a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+.wr-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .2rem .75rem;
+  font-size: .75rem;
+  color: var(--text-muted);
+  margin-bottom: .35rem;
+}
+
+.wr-date {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  background: var(--bg-alt);
+  padding: .05rem .4rem;
+  border-radius: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+.wr-desc { font-size: .875rem; color: var(--text-muted); line-height: 1.7; }
+
+.wr-none { font-size: .875rem; color: var(--text-muted); font-style: italic; padding: .4rem 0; }
+
+/* ---- 資料集表格（窄螢幕可橫向捲動） ---- */
+
+.wr-scroll { overflow-x: auto; }
+
+.wr-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+
+.wr-table th {
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: left;
+  padding: .5rem .75rem;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+.wr-table td {
+  padding: .6rem .75rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  color: var(--text-muted);
+}
+
+.wr-table td:first-child { font-weight: 600; color: var(--text); white-space: nowrap; }
+
+/* ---- 週報頁尾註記 ---- */
+
+.wr-foot {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: .75rem;
+  color: var(--text-muted);
+  text-align: center;
+}

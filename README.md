@@ -20,8 +20,31 @@ assets/
 
 1. 複製 `notes/_template.html`，另存成 `notes/YYYY-MM-DD-標題.html`
 2. 改掉檔案裡的標題、日期，寫內容（模板註解裡有常用寫法的範例）
-3. 打開 `index.html`，在筆記列表複製一整個 `<li class="entry">` 區塊，
-   改掉日期、標題、連結，新的放最上面
+3. 跑 `python3 tools/build_index.py` 更新首頁列表
+
+首頁列表是掃描 `notes/` 自動產生的，不要手動編輯——
+下次跑 build_index.py 會被蓋掉。
+
+## 工具
+
+```
+tools/build_index.py      掃描 notes/ 重建首頁列表，新增或刪除筆記後跑
+tools/import_weekly.py    把外部來源的週報 HTML 轉成站內格式
+```
+
+`import_weekly.py` 支援兩種來源格式，會自動判斷：
+
+- **純標籤版**：只有 `<h1>`/`<h2>`/`<ul>`，沒有自帶樣式
+- **卡片版**：自帶 `<style>`，含 `.summary-box` / `.topic` / `.item` / `.ds-table`
+
+兩種都會輸出成接上 `assets/css/style.css` 的站內頁面，
+卡片版的結構包在 `<div class="wr">` 底下，樣式由 style.css 的「週報版型」段落提供。
+來源檔開頭若有 Claude artifact 連結會自動移除（外部讀者打不開）。
+
+```bash
+python3 tools/import_weekly.py 週報.html
+python3 tools/build_index.py
+```
 
 ## 新增照片
 

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 2026-08-10–2026-08-17</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📓</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav" aria-label="主選單">
+    <a class="nav__brand" href="../index.html">筆記與照片</a>
+    <ul class="nav__links">
+      <li><a href="../index.html#notes">筆記</a></li>
+      <li><a href="../index.html#photos">相簿</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式">
+      <span aria-hidden="true">◐</span>
+    </button>
+  </nav>
+</header>
+
+<main>
+  <article class="section">
+    <div class="wrap wrap--narrow">
+
+      <time class="note__date" datetime="2026-08-17">2026-08-10 – 08-17</time>
+      <h1 class="note__title">語音技術週報</h1>
+
+      <h2>本週重點摘要</h2>
+      <ol>
+      <li><strong>X2-Turn</strong> — 首個在串流 ASR 架構上同步進行 turn state 預測的雙頭模型，支援中英雙語。</li>
+      <li><strong>Soniox TTS v2</strong> — 8/11 發布，支援 60+ 語言、20 秒聲音複製、情緒/風格標籤控制，$0.70/hr。</li>
+      <li><strong>SraVaani 1.0</strong> — 涵蓋 65 種印度語言的 ASR 模型與 31K+ 小時標註資料集，CC BY 4.0。</li>
+      <li><strong>On-Policy Self-Distillation (OPSD)</strong> — 基於 Qwen3-ASR-1.7B，提升方言辨識同時保持普通話準確率。</li>
+      <li><strong>SLT 2026 SmartGlasses Challenge</strong> — 106 小時四通道自我中心視角語音資料集。</li>
+      </ol>
+      <h2>1. 語音辨識 (ASR)</h2>
+      <h3>模型</h3>
+      <ul>
+      <li><a href="https://arxiv.org/abs/2608.08235">SraVaani 1.0</a> — 65 種印度語言 ASR，31K 小時資料集，CC BY 4.0。</li>
+      </ul>
+      <h3>論文</h3>
+      <ul>
+      <li><a href="https://arxiv.org/abs/2608.11898">On-Policy Self-Distillation for Multi-Dialect ASR</a> (8/12) — 基於 Qwen3-ASR-1.7B 的方言辨識提升方法。</li>
+      <li><a href="https://arxiv.org/abs/2608.12034">SLT 2026 SmartGlasses Challenge</a> (8/12) — 多說話者 TSA-ASR + SLU，106 小時資料集。</li>
+      <li><a href="https://arxiv.org/abs/2608.12536">Evaluating Pre-trained Speech Encoders for Indic Languages</a> (8/14)。</li>
+      </ul>
+      <h2>2. Audio LLM</h2>
+      <h3>新聞</h3>
+      <ul><li>Interspeech 2026 Audio Encoder Capability Challenge 結果出爐 — 22 團隊，前三名均採 LLM 對齊編碼器。</li></ul>
+      <h3>論文</h3>
+      <ul>
+      <li><a href="https://arxiv.org/abs/2608.13101">CASA: Content-Acoustic Speaking Assessment</a> (8/14)。</li>
+      <li><a href="https://arxiv.org/abs/2608.08772">Multilingual Emotion Neurons in Large Audio-Language Models</a> (8/11) — 跨 12 語言情緒神經元可解釋性分析。</li>
+      </ul>
+      <h2>3. Speech-to-Speech (S2S)</h2>
+      <h3>新聞</h3>
+      <ul>
+      <li><a href="https://soniox.com/blog/soniox-tts-v2">Soniox TTS v2</a> (8/11) — 60+ 語言、聲音複製、情緒控制，$0.70/hr。</li>
+      <li>Hugging Face Speech-to-Speech Pipeline 完整指南發布 — 開源級聯式語音代理管線。</li>
+      </ul>
+      <h3>論文</h3>
+      <ul>
+      <li><a href="https://arxiv.org/abs/2608.07462">SemBridge: Semantic Token Anchoring</a> (8/10)。</li>
+      <li><a href="https://arxiv.org/abs/2608.08362">CtrlSpeech: Coarse-to-Fine Control</a> (8/11, Interspeech 2026 接收)。</li>
+      </ul>
+      <h2>4. Turn Detection & Semantic VAD</h2>
+      <ul>
+      <li><a href="https://arxiv.org/abs/2608.10878">X2-Turn: Frame-Synchronous Dual-Head Modeling</a> (8/11) — 中英雙語 turn state 預測。</li>
+      </ul>
+      <h2>5. 語音相關公開資料集</h2>
+      <ul>
+      <li>SraVaani 1.0 — 65 印度語言，62K 小時，CC BY 4.0。</li>
+      <li>SLT SmartGlasses Dataset — 106 小時四通道穿戴場景語音。</li>
+      </ul>
+
+      <p class="note__back"><a href="../index.html#notes">← 回筆記列表</a></p>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
