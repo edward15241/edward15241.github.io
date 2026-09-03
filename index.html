@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>個人網站</title>
-<meta name="description" content="個人網站：關於我、專案作品與聯絡方式。">
+<title>筆記與照片</title>
+<meta name="description" content="放一些筆記和照片的地方。">
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👋</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📓</text></svg>">
 </head>
 <body>
 
@@ -14,12 +14,11 @@
 
 <header class="site-header">
   <nav class="nav" aria-label="主選單">
-    <!-- 改這裡：想放站名或暱稱的話換掉 -->
-    <a class="nav__brand" href="#top">首頁</a>
+    <!-- 改這裡：想放站名的話換掉 -->
+    <a class="nav__brand" href="#main">筆記與照片</a>
     <ul class="nav__links">
-      <li><a href="#about">關於</a></li>
-      <li><a href="#projects">專案</a></li>
-      <li><a href="#contact">聯絡</a></li>
+      <li><a href="#notes">筆記</a></li>
+      <li><a href="#photos">相簿</a></li>
     </ul>
     <button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式">
       <span aria-hidden="true">◐</span>
@@ -29,94 +28,71 @@
 
 <main id="main">
 
-  <!-- ===== Hero ===== -->
-  <section class="hero" id="top">
+  <!-- ==================== 筆記 ==================== -->
+  <section class="section" id="notes">
     <div class="wrap">
-      <p class="hero__eyebrow">Hello, world.</p>
-      <!-- 改這裡：想好標題之後換掉這行 -->
-      <h1 class="hero__title">還沒想到<span class="accent">標題</span>用什麼</h1>
-      <!-- 改這裡：想好之後放一兩句自我介紹（在做什麼、對什麼有興趣） -->
-      <p class="hero__lead">
-        網站剛建好，內容還在慢慢補。
-      </p>
-      <div class="hero__actions">
-        <a class="btn btn--primary" href="#projects">看看我的專案</a>
-        <a class="btn" href="https://github.com/edward15241" target="_blank" rel="noopener">GitHub</a>
-      </div>
-    </div>
-  </section>
+      <h2 class="section__title">筆記</h2>
 
-  <!-- ===== About ===== -->
-  <section class="section" id="about">
-    <div class="wrap">
-      <h2 class="section__title">關於我</h2>
-      <div class="about">
-        <div class="about__text">
-          <!-- 改這裡：你的背景、現在在做什麼、對什麼有興趣。
-               想強調的字可以用 <strong>包起來，會顯示成主色。 -->
-          <p>還沒想好要怎麼介紹自己。</p>
-          <p>等想到了再補上。</p>
-        </div>
-        <div class="about__side">
-          <h3 class="about__side-title">常用技能</h3>
-          <ul class="tags">
-            <li>Python</li>
-            <li>PyTorch</li>
-            <li>Speech / ASR</li>
-            <li>Whisper</li>
-            <li>Hugging Face</li>
-            <li>Algorithms</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== Projects ===== -->
-  <section class="section section--alt" id="projects">
-    <div class="wrap">
-      <h2 class="section__title">專案</h2>
-      <p class="section__lead">一些公開在 GitHub 上的作品。</p>
-
-      <ul class="cards">
-        <li class="card">
-          <h3 class="card__title">whisper_mod</h3>
-          <p class="card__desc">針對 Whisper 語音辨識模型所做的修改與實驗。</p>
-          <p class="card__meta">Python</p>
-          <a class="card__link" href="https://github.com/edward15241/whisper_mod" target="_blank" rel="noopener">
-            查看原始碼 <span aria-hidden="true">→</span>
-          </a>
+      <!--
+        要新增一篇筆記：
+        1. 複製 notes/_template.html，改成新檔名（建議 YYYY-MM-DD-標題.html）
+        2. 在裡面寫內容
+        3. 回到這裡，複製下面一整個 <li class="entry"> 區塊，改掉日期、標題、連結
+        新的放最上面，舊的往下排。
+      -->
+      <ul class="entries">
+        <li class="entry">
+          <time class="entry__date" datetime="2026-09-03">2026-09-03</time>
+          <a class="entry__title" href="notes/2026-09-03-第一篇.html">第一篇</a>
         </li>
-
-        <li class="card">
-          <h3 class="card__title">SimulatedAnnealing</h3>
-          <p class="card__desc">以模擬退火演算法求解排列型流線式排程問題（PFSP）。</p>
-          <p class="card__meta">Optimization</p>
-          <a class="card__link" href="https://github.com/edward15241/SimulatedAnnealing" target="_blank" rel="noopener">
-            查看原始碼 <span aria-hidden="true">→</span>
-          </a>
-        </li>
-
-        <li class="card">
-          <h3 class="card__title">NoUseToolBox</h3>
-          <p class="card__desc">個人方便使用、順便複習演算法的小工具箱。</p>
-          <p class="card__meta">Utilities</p>
-          <a class="card__link" href="https://github.com/edward15241/NoUseToolBox" target="_blank" rel="noopener">
-            查看原始碼 <span aria-hidden="true">→</span>
-          </a>
-        </li>
-
-        <!-- 要新增專案？複製上面一整個 <li class="card"> ... </li> 區塊，改掉文字即可 -->
       </ul>
     </div>
   </section>
 
-  <!-- ===== Contact ===== -->
-  <section class="section" id="contact">
-    <div class="wrap wrap--narrow">
-      <h2 class="section__title">聯絡</h2>
-      <!-- 之後想放聯絡方式的話，把下面這行換成連結即可 -->
-      <p class="section__lead">暫無資料。</p>
+  <!-- ==================== 相簿 ==================== -->
+  <section class="section section--alt" id="photos">
+    <div class="wrap">
+      <h2 class="section__title">相簿</h2>
+
+      <!--
+        要新增照片：
+        1. 把圖片檔放進 assets/photos/
+        2. 複製下面一個 <li> 區塊，改掉 src 檔名和 alt 說明文字
+        alt 是給看不到圖的人（和搜尋引擎）看的，簡短描述照片內容就好。
+        目前這六張是示範用的佔位圖，換成真照片後把 assets/photos/sample-*.svg 刪掉。
+      -->
+      <ul class="gallery">
+        <li>
+          <button type="button" class="shot" data-full="assets/photos/sample-1.svg">
+            <img src="assets/photos/sample-1.svg" alt="示範照片 1" loading="lazy" width="800" height="600">
+          </button>
+        </li>
+        <li>
+          <button type="button" class="shot" data-full="assets/photos/sample-2.svg">
+            <img src="assets/photos/sample-2.svg" alt="示範照片 2" loading="lazy" width="800" height="600">
+          </button>
+        </li>
+        <li>
+          <button type="button" class="shot" data-full="assets/photos/sample-3.svg">
+            <img src="assets/photos/sample-3.svg" alt="示範照片 3" loading="lazy" width="800" height="600">
+          </button>
+        </li>
+        <li>
+          <button type="button" class="shot" data-full="assets/photos/sample-4.svg">
+            <img src="assets/photos/sample-4.svg" alt="示範照片 4" loading="lazy" width="800" height="600">
+          </button>
+        </li>
+        <li>
+          <button type="button" class="shot" data-full="assets/photos/sample-5.svg">
+            <img src="assets/photos/sample-5.svg" alt="示範照片 5" loading="lazy" width="800" height="600">
+          </button>
+        </li>
+        <li>
+          <button type="button" class="shot" data-full="assets/photos/sample-6.svg">
+            <img src="assets/photos/sample-6.svg" alt="示範照片 6" loading="lazy" width="800" height="600">
+          </button>
+        </li>
+      </ul>
     </div>
   </section>
 
@@ -124,9 +100,15 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <p>&copy; <span id="year">2026</span> · Built with plain HTML &amp; CSS.</p>
+    <p>&copy; <span id="year">2026</span></p>
   </div>
 </footer>
+
+<!-- 點縮圖後放大顯示用的圖層 -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox__close" type="button" aria-label="關閉">&times;</button>
+  <img class="lightbox__img" id="lightboxImg" src="" alt="">
+</div>
 
 <script src="assets/js/main.js"></script>
 </body>

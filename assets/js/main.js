@@ -31,3 +31,46 @@
   var year = document.getElementById('year');
   if (year) { year.textContent = new Date().getFullYear(); }
 })();
+
+
+/* 相簿：點縮圖放大檢視 */
+(function () {
+  var box = document.getElementById('lightbox');
+  var img = document.getElementById('lightboxImg');
+  if (!box || !img) { return; }
+
+  var closeBtn = box.querySelector('.lightbox__close');
+  var lastFocused = null;
+
+  function open(src, alt) {
+    lastFocused = document.activeElement;
+    img.src = src;
+    img.alt = alt || '';
+    box.hidden = false;
+    document.body.style.overflow = 'hidden';   /* 放大時鎖住背景捲動 */
+    if (closeBtn) { closeBtn.focus(); }
+  }
+
+  function close() {
+    box.hidden = true;
+    img.src = '';
+    document.body.style.overflow = '';
+    if (lastFocused) { lastFocused.focus(); }   /* 焦點還給剛剛點的那張縮圖 */
+  }
+
+  document.querySelectorAll('.shot').forEach(function (shot) {
+    shot.addEventListener('click', function () {
+      var thumb = shot.querySelector('img');
+      open(shot.dataset.full || (thumb && thumb.src), thumb && thumb.alt);
+    });
+  });
+
+  /* 點背景任一處關閉；點圖片本身不關，方便看細節 */
+  box.addEventListener('click', function (e) {
+    if (e.target !== img) { close(); }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !box.hidden) { close(); }
+  });
+})();
