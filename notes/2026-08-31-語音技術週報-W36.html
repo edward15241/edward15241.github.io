@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W36 2026-08-24–2026-08-31</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📓</text></svg>">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav" aria-label="主選單">
+    <a class="nav__brand" href="../index.html">筆記與照片</a>
+    <ul class="nav__links">
+      <li><a href="../index.html#notes">筆記</a></li>
+      <li><a href="../index.html#photos">相簿</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式">
+      <span aria-hidden="true">◐</span>
+    </button>
+  </nav>
+</header>
+
+<main>
+  <article class="section">
+    <div class="wrap wrap--narrow">
+
+      <time class="note__date" datetime="2026-08-31">2026-08-24 – 08-31</time>
+      <h1 class="note__title">語音技術週報 W36</h1>
+
+      <title>語音技術週報 W36</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+      <style>
+      /* ── Token system ── */
+      :root {
+      --ground: #f0ede8;
+      --surface: #ffffff;
+      --text-primary: #2a3444;
+      --text-secondary: #5c6878;
+      --text-tertiary: #8a93a8;
+      --accent: #d4922a;
+      --accent-soft: #f5e6cc;
+      --secondary: #4a8e96;
+      --secondary-soft: #daf0f2;
+      --border: #ddd8d0;
+      --border-light: #eae6df;
+      --tag-bg: #e8e4dc;
+      --tag-text: #5c6878;
+      --highlight-bg: #fdf8f0;
+      --code-bg: #f7f4ef;
+      --shadow: rgba(42, 52, 68, 0.06);
+      --domain-asr: #d4922a;
+      --domain-llm: #7b68c4;
+      --domain-s2s: #c45d68;
+      --domain-vad: #4a8e96;
+      --domain-data: #6a9a5b;
+      }
+      @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+      --ground: #141a24;
+      --surface: #1c2533;
+      --text-primary: #dfe4ea;
+      --text-secondary: #96a3b4;
+      --text-tertiary: #6b7a8e;
+      --accent: #e8a838;
+      --accent-soft: #2e2518;
+      --secondary: #5aafb8;
+      --secondary-soft: #1a2e30;
+      --border: #2a3546;
+      --border-light: #232e3e;
+      --tag-bg: #232e3e;
+      --tag-text: #96a3b4;
+      --highlight-bg: #1e2636;
+      --code-bg: #1a2230;
+      --shadow: rgba(0, 0, 0, 0.25);
+      --domain-asr: #e8a838;
+      --domain-llm: #9b88e4;
+      --domain-s2s: #e47d88;
+      --domain-vad: #6abec8;
+      --domain-data: #8aba7b;
+      }
+      }
+      :root[data-theme="dark"] {
+      --ground: #141a24;
+      --surface: #1c2533;
+      --text-primary: #dfe4ea;
+      --text-secondary: #96a3b4;
+      --text-tertiary: #6b7a8e;
+      --accent: #e8a838;
+      --accent-soft: #2e2518;
+      --secondary: #5aafb8;
+      --secondary-soft: #1a2e30;
+      --border: #2a3546;
+      --border-light: #232e3e;
+      --tag-bg: #232e3e;
+      --tag-text: #96a3b4;
+      --highlight-bg: #1e2636;
+      --code-bg: #1a2230;
+      --shadow: rgba(0, 0, 0, 0.25);
+      --domain-asr: #e8a838;
+      --domain-llm: #9b88e4;
+      --domain-s2s: #e47d88;
+      --domain-vad: #6abec8;
+      --domain-data: #8aba7b;
+      }
+      /* ── Reset & base ── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+      background: var(--ground);
+      color: var(--text-primary);
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      }
+      a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
+      }
+      a:hover { border-bottom-color: var(--accent); }
+      a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+      @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+      }
+      /* ── Layout ── */
+      .page-wrapper {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      }
+      /* ── Header ── */
+      .report-header {
+      margin-bottom: 40px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--border);
+      }
+      .report-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+      }
+      .report-title {
+      font-family: 'DM Serif Text', 'Georgia', serif;
+      font-size: clamp(28px, 5vw, 38px);
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--text-primary);
+      text-wrap: balance;
+      margin-bottom: 10px;
+      }
+      .report-subtitle {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      }
+      .report-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-tertiary);
+      }
+      .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      }
+      .meta-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      }
+      /* ── Summary strip ── */
+      .summary-strip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+      box-shadow: 0 1px 3px var(--shadow);
+      }
+      .summary-strip-title {
+      font-family: 'DM Serif Text', 'Georgia', serif;
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      }
+      .summary-strip ol {
+      padding-left: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      }
+      .summary-strip li {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      }
+      .summary-strip li strong {
+      color: var(--text-primary);
+      font-weight: 600;
+      }
+      /* ── Domain sections ── */
+      .domain-section {
+      margin-bottom: 48px;
+      }
+      .domain-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+      }
+      .domain-bar {
+      width: 4px;
+      height: 28px;
+      border-radius: 2px;
+      flex-shrink: 0;
+      }
+      .domain-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+      }
+      .domain-title {
+      font-family: 'DM Serif Text', 'Georgia', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text-primary);
+      flex: 1;
+      }
+      /* ── Category groups ── */
+      .category-group {
+      margin-bottom: 28px;
+      }
+      .category-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 14px;
+      padding-left: 2px;
+      }
+      /* ── Items ── */
+      .item {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 18px 22px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 2px var(--shadow);
+      transition: box-shadow 0.15s;
+      }
+      .item:hover {
+      box-shadow: 0 2px 8px var(--shadow);
+      }
+      .item-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      line-height: 1.45;
+      }
+      .item-source {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      }
+      .item-desc {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      }
+      .item-desc strong {
+      color: var(--text-primary);
+      font-weight: 600;
+      }
+      .tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 2px 8px;
+      border-radius: 3px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      vertical-align: middle;
+      }
+      .tag--accent {
+      background: var(--accent-soft);
+      color: var(--accent);
+      }
+      .tag--secondary {
+      background: var(--secondary-soft);
+      color: var(--secondary);
+      }
+      .no-update {
+      font-size: 14px;
+      color: var(--text-tertiary);
+      font-style: italic;
+      padding: 12px 0;
+      }
+      /* ── Footer ── */
+      .report-footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      }
+      /* ── Responsive ── */
+      @media (max-width: 600px) {
+      .page-wrapper { padding: 24px 16px 60px; }
+      .item { padding: 14px 16px; }
+      .summary-strip { padding: 18px 20px; }
+      .domain-title { font-size: 19px; }
+      .report-meta { flex-direction: column; gap: 8px; }
+      }
+      </style>
+      <div class="page-wrapper">
+      <!-- Header -->
+      <header class="report-header">
+      <div class="report-eyebrow">Weekly Report · Speech Technology</div>
+      <h1 class="report-title">語音技術週報 W36</h1>
+      <p class="report-subtitle">語音辨識、Audio LLM、Speech-to-Speech、Turn Detection、語音資料集</p>
+      <div class="report-meta">
+      <span class="meta-item"><span class="meta-dot"></span>2026/08/24 – 08/31</span>
+      <span class="meta-item"><span class="meta-dot"></span>自動彙整</span>
+      </div>
+      </header>
+      <!-- Summary -->
+      <section class="summary-strip">
+      <h2 class="summary-strip-title">📌 本週重點摘要</h2>
+      <ol>
+      <li><strong>IBM 發布 Granite Speech 5.0 TurboCTC</strong> — 8/25 發布，470M 參數純 CTC encoder 架構，吞吐量突破 12,600 RTFx（3 小時音訊 1 秒轉錄），Apache 2.0 授權，專攻邊緣部署。</li>
+      <li><strong>AudioSpan 長音訊理解基準測試</strong> — 8/26 發布於 arXiv，涵蓋 10 分鐘至 2 小時以上音訊、3,240 道題目，首個系統性評測 Audio LLM 長音訊理解能力的 benchmark。</li>
+      <li><strong>DialectS2S 中國方言端到端語音對話</strong> — 8 月發布於 arXiv，提出低資源中文方言 S2S 模型，含完整開源程式碼與資料。</li>
+      <li><strong>EU AI Act 情緒辨識透明度規範 8/2 生效</strong> — 所有部署語音情緒辨識系統的組織須主動告知受影響者，對 SER 產業化有直接影響。</li>
+      <li><strong>HyPASE 獲 ACM MM 2026 接受</strong> — 基於雙曲幾何的參數高效微調框架，用於 Audio LLM 語音情緒辨識，零樣本跨資料集泛化表現突出。</li>
+      </ol>
+      </section>
+      <!-- ════════════════════════════════════════ -->
+      <!-- 1. ASR -->
+      <!-- ════════════════════════════════════════ -->
+      <section class="domain-section">
+      <div class="domain-header">
+      <div class="domain-bar" style="background: var(--domain-asr);"></div>
+      <h2 class="domain-title">語音辨識 ASR</h2>
+      </div>
+      <!-- 模型 -->
+      <div class="category-group">
+      <div class="category-label">模型發布</div>
+      <div class="item">
+      <div class="item-title">IBM Granite Speech 5.0 TurboCTC</div>
+      <div class="item-source">
+      IBM · 2026/08/25
+      <span class="tag tag--accent">本週發布</span>
+      <span class="tag">Apache 2.0</span>
+      </div>
+      <div class="item-desc">
+      470M 參數的純 Conformer encoder + CTC 解碼模型，<strong>捨棄語言模型 decoder</strong>，改用非自迴歸 greedy decoding。在約 60,000 小時英語音訊上訓練。聚合 WER 5.00%（Apache 版）/ 4.85%（NC 版），吞吐量超過 <strong>12,600 RTFx</strong>——可在 1 秒內轉錄 3 小時音訊。針對聯絡中心、邊緣裝置等高吞吐場景設計。
+      <br><a href="https://huggingface.co/ibm-granite/granite-speech-5.0-470m-turboctc" target="_blank">HuggingFace ↗</a>
+      </div>
+      </div>
+      </div>
+      <!-- 論文 -->
+      <div class="category-group">
+      <div class="category-label">論文</div>
+      <div class="item">
+      <div class="item-title">On-Policy Self-Distillation for Multi-Dialect ASR: Mastering Dialects, Retaining Mandarin</div>
+      <div class="item-source">
+      Shuiyuan Wang et al. · arXiv 2608.11898
+      <span class="tag tag--accent">本週</span>
+      </div>
+      <div class="item-desc">
+      提出 OPSD（On-Policy Self-Distillation）方法，解決自迴歸 ASR 模型在多方言適配時的 train-test mismatch 問題。以凍結的 teacher（使用參考轉錄做 privileged context）引導 student 在自身解碼前綴上學習，<strong>同時提升方言辨識而不犧牲普通話效能</strong>。
+      <br><a href="https://arxiv.org/abs/2608.11898" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      <div class="item">
+      <div class="item-title">Language-Specialized Multi-Teacher On-Policy Distillation for Multilingual LLM-Based ASR</div>
+      <div class="item-source">
+      arXiv 2608.03610
+      <span class="tag tag--accent">本週</span>
+      </div>
+      <div class="item-desc">
+      針對基於 LLM 的多語言 ASR，提出多教師蒸餾策略，以語言專用教師模型指導多語言學生模型，提升低資源語言的辨識品質。
+      <br><a href="https://arxiv.org/abs/2608.03610" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      </div>
+      <!-- 新聞 -->
+      <div class="category-group">
+      <div class="category-label">產業動態</div>
+      <div class="item">
+      <div class="item-title">NVIDIA Canary-Qwen-2.5B 持續領跑 Open ASR Leaderboard</div>
+      <div class="item-source">
+      NVIDIA · HuggingFace Leaderboard
+      </div>
+      <div class="item-desc">
+      NVIDIA 的 FastConformer encoder + Qwen3-1.7B decoder 混合架構以 <strong>5.63% 聚合 WER</strong> 穩居 HuggingFace Open ASR Leaderboard 榜首（LibriSpeech Clean 1.6%、Other 3.1%）。2.5B 參數，418 RTFx。
+      <br><a href="https://huggingface.co/nvidia/canary-qwen-2.5b" target="_blank">HuggingFace ↗</a>
+      </div>
+      </div>
+      </div>
+      </section>
+      <!-- ════════════════════════════════════════ -->
+      <!-- 2. Audio LLM -->
+      <!-- ════════════════════════════════════════ -->
+      <section class="domain-section">
+      <div class="domain-header">
+      <div class="domain-bar" style="background: var(--domain-llm);"></div>
+      <h2 class="domain-title">Audio LLM</h2>
+      </div>
+      <!-- 論文 -->
+      <div class="category-group">
+      <div class="category-label">論文</div>
+      <div class="item">
+      <div class="item-title">AudioSpan: Spanning the Duration and Depth of Audio Comprehension</div>
+      <div class="item-source">
+      Wen Huang, Yunfei Chu et al. · arXiv 2608.26431 · 2026/08/26
+      <span class="tag tag--accent">本週發布</span>
+      </div>
+      <div class="item-desc">
+      首個系統評測 <strong>Audio LLM 長音訊理解</strong>能力的 benchmark：涵蓋 10 分鐘至超過 2 小時的音訊，3,240 道題目橫跨感知、理解、推理三個認知層級。使用 Native QA 與 Anchor QA 兩條路徑構建測試題，揭示當前模型在長音訊場景下的顯著瓶頸。
+      <br><a href="https://arxiv.org/abs/2608.26431" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      <div class="item">
+      <div class="item-title">HyPASE: Hyperbolic Geometry for Parameter-Efficient Speech Emotion Fine-Tuning for LALMs</div>
+      <div class="item-source">
+      arXiv 2608.04351 · 已接受 ACM Multimedia 2026
+      <span class="tag tag--accent">本週</span>
+      </div>
+      <div class="item-desc">
+      利用 Poincaré 球模型做參數高效微調的 SER 框架。核心元件包含 Hyperbolic Geometric Adapter (HGA) 與 Emotion-aware Multi-capacity Cross-modal Aggregator (EMCA)。在 MELD 上全面超越 Euclidean PEFT 基線，<strong>零樣本跨資料集泛化</strong>表現突出，尤其改善類別不平衡場景的 UA。
+      <br><a href="https://arxiv.org/abs/2608.04351" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      <div class="item">
+      <div class="item-title">Attention-Guided Reliability Scaling for Contrastive Decoding in Robust AV-ASR</div>
+      <div class="item-source">
+      YoungChae Kim et al. · arXiv 2608.26213
+      <span class="tag tag--accent">本週</span>
+      </div>
+      <div class="item-desc">
+      提出注意力引導的可靠性縮放方法，用於音視訊語音辨識中的對比解碼，提升噪音環境下多模態 ASR 的穩健性。
+      <br><a href="https://arxiv.org/abs/2608.26213" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      <div class="item">
+      <div class="item-title">A Survey of Large Audio Language Models: Generalization, Trustworthiness, and Outlook</div>
+      <div class="item-source">
+      Kaiwen Luo et al. · arXiv 2605.20266 · 更新於 2026/08/03
+      </div>
+      <div class="item-desc">
+      涵蓋 34 位作者的大型綜述，系統性梳理 LALM 的泛化能力與可信度框架。指出模型能力的快速擴展已顯著超過可信度保障體系的建設速度，提出系統性評估框架建議。
+      <br><a href="https://arxiv.org/abs/2605.20266" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      </div>
+      <!-- 新聞 -->
+      <div class="category-group">
+      <div class="category-label">產業動態</div>
+      <div class="item">
+      <div class="item-title">Interspeech 2026 Audio Encoder Capability Challenge 結果公布</div>
+      <div class="item-source">
+      Interspeech 2026
+      </div>
+      <div class="item-desc">
+      全球 22 支隊伍參與，使用 XARES-LLM 統一評測框架，將 encoder 開發與 LLM 微調解耦。結果顯示經過 LALM 對齊的 audio encoder 具有可量化的效能優勢。挑戰賽為通用音訊表徵建立標準化評估協議。
+      <br><a href="https://arxiv.org/abs/2603.22728" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      </div>
+      </section>
+      <!-- ════════════════════════════════════════ -->
+      <!-- 3. S2S -->
+      <!-- ════════════════════════════════════════ -->
+      <section class="domain-section">
+      <div class="domain-header">
+      <div class="domain-bar" style="background: var(--domain-s2s);"></div>
+      <h2 class="domain-title">Speech-to-Speech</h2>
+      </div>
+      <!-- 模型 -->
+      <div class="category-group">
+      <div class="category-label">模型 / 框架</div>
+      <div class="item">
+      <div class="item-title">Marco-Voice 技術報告更新</div>
+      <div class="item-source">
+      Alibaba AIDC · arXiv 2508.02038 · 修訂於 2026/08/18
+      </div>
+      <div class="item-desc">
+      Alibaba 開源的表達性語音合成框架，整合<strong>語音克隆與可控情緒生成</strong>。技術報告於 8/18 更新。架構使用獨立 encoder 處理文本與參考語音，語言模型生成 token 表徵後，透過 cross-attention 將情緒嵌入注入 flow matching 模組。支援中英文。
+      <br><a href="https://arxiv.org/abs/2508.02038" target="_blank">arXiv ↗</a> · <a href="https://github.com/ATH-MaaS/Marco-Voice" target="_blank">GitHub ↗</a>
+      </div>
+      </div>
+      </div>
+      <!-- 論文 -->
+      <div class="category-group">
+      <div class="category-label">論文</div>
+      <div class="item">
+      <div class="item-title">DialectS2S: End-to-End Speech Dialogue Modeling for Low-Resource Chinese Dialects</div>
+      <div class="item-source">
+      Yi Shu et al. · arXiv 2608.08067
+      <span class="tag tag--accent">本週</span>
+      </div>
+      <div class="item-desc">
+      針對低資源中文方言的端到端語音對話模型。提出可擴展的方言語音對話合成管線，以及兩階段後訓練策略（self-aligned speech supervision）。在多個中文方言上顯著超越基線模型。<strong>完整開源</strong>含模型權重、訓練資料與微調程式碼。
+      <br><a href="https://arxiv.org/abs/2608.08067" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      <div class="item">
+      <div class="item-title">Seed LiveInterpret 2.0: End-to-end Simultaneous S2S Translation with Your Voice</div>
+      <div class="item-source">
+      ByteDance Seed · arXiv 2507.17527
+      </div>
+      <div class="item-desc">
+      端到端同步口譯模型，中英翻譯延遲降至約 <strong>3 秒</strong>（對比商用方案 ~10 秒），正確率超過 70% 人工驗證通過。支援多說話者輸入與即時語音克隆。目前僅提供火山引擎 API 存取，未開源。
+      <br><a href="https://arxiv.org/abs/2507.17527" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      </div>
+      <!-- 新聞 -->
+      <div class="category-group">
+      <div class="category-label">產業動態</div>
+      <div class="item">
+      <div class="item-title">Microsoft Azure Voice Live API + MAI 模型進展</div>
+      <div class="item-source">
+      Microsoft · Build 2026 後續
+      </div>
+      <div class="item-desc">
+      Azure Voice Live 整合 ASR、TTS、turn detection 與打斷處理於單一 API。Azure-Realtime 模型（公開預覽）支援 en-US、zh-CN 等多語言。<strong>MAI Realtime</strong>（全雙工語音模型）仍在測試中，尚未公開發布日期與定價。
+      <br><a href="https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/azure-speech-at-build-2026-powering-voice-agents-with-real-time-and-life-like-ex/4524638" target="_blank">Microsoft ↗</a>
+      </div>
+      </div>
+      </div>
+      </section>
+      <!-- ════════════════════════════════════════ -->
+      <!-- 4. Turn Detection -->
+      <!-- ════════════════════════════════════════ -->
+      <section class="domain-section">
+      <div class="domain-header">
+      <div class="domain-bar" style="background: var(--domain-vad);"></div>
+      <h2 class="domain-title">Turn Detection &amp; Semantic VAD</h2>
+      </div>
+      <!-- 論文 -->
+      <div class="category-group">
+      <div class="category-label">論文</div>
+      <div class="item">
+      <div class="item-title">Adaptive Turn-Taking for Real-time Multi-Party Voice Agents</div>
+      <div class="item-source">
+      Soumyajit Mitra et al. (Amazon) · arXiv 2606.13544
+      </div>
+      <div class="item-desc">
+      提出 <strong>ModeratorLM</strong>——依據明確指定角色來調節 turn-taking 行為的語音代理。建構 RolePlayConv 大規模合成多方對話資料集。在真實會議資料上，turn-taking precision 提升 40%+、recall 提升 70%+，同時大幅降低 false-positive 打斷。
+      <br><a href="https://arxiv.org/abs/2606.13544" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      </div>
+      <!-- 產業動態 -->
+      <div class="category-group">
+      <div class="category-label">產業動態</div>
+      <div class="item">
+      <div class="item-title">語音代理 Turn Detection 產業格局更新</div>
+      <div class="item-source">
+      LiveKit · Gradium · 2026
+      </div>
+      <div class="item-desc">
+      2026 年產業堆疊正從純靜音時長閾值遷移至<strong>專用 turn-taking 模型</strong>：Pipecat SmartTurnAnalyzer、LiveKit TurnDetector、Vapi endpointing controls 等。Semantic VAD 模式利用語義分類器判斷語意完整性（詞彙內容、句法結構、語調、填充詞），而非僅依賴靜音偵測。
+      <br><a href="https://livekit.com/blog/turn-detection-voice-agents-vad-endpointing-model-based-detection" target="_blank">LiveKit ↗</a> · <a href="https://gradium.ai/content/semantic-vad-voice-agents-turn-detection-2026" target="_blank">Gradium ↗</a>
+      </div>
+      </div>
+      <div class="item">
+      <div class="item-title">EU AI Act 情緒辨識透明度義務 8/2 生效</div>
+      <div class="item-source">
+      European Commission · 2026/08/02
+      <span class="tag tag--secondary">法規</span>
+      </div>
+      <div class="item-desc">
+      自 2026 年 8 月 2 日起，所有部署情緒辨識系統（含語音情緒分析）的組織必須<strong>主動告知受影響者</strong>其正在被情緒辨識系統分析。此前職場與教育場景的情緒辨識已於 2025/2/2 被禁止。對語音 SER 產品的商業化部署有直接合規影響。
+      <br><a href="https://commission.europa.eu/news-and-media/news/safer-and-more-transparent-ai-2026-08-02_en" target="_blank">European Commission ↗</a>
+      </div>
+      </div>
+      </div>
+      </section>
+      <!-- ════════════════════════════════════════ -->
+      <!-- 5. 資料集 -->
+      <!-- ════════════════════════════════════════ -->
+      <section class="domain-section">
+      <div class="domain-header">
+      <div class="domain-bar" style="background: var(--domain-data);"></div>
+      <h2 class="domain-title">語音相關公開資料集</h2>
+      </div>
+      <div class="category-group">
+      <div class="category-label">本週動態</div>
+      <p class="no-update">本週無重大新資料集發布。以下為近期值得關注的資料集動態：</p>
+      <div class="item" style="margin-top: 14px;">
+      <div class="item-title">ISCSLP 2026 CoT-TTS Challenge 資料集</div>
+      <div class="item-source">
+      ISCSLP 2026 · CC BY-NC 4.0
+      </div>
+      <div class="item-desc">
+      Chain-of-Thought Reasoning for Context-Aware TTS 挑戰賽資料集，將以非商業研究授權釋出。適用於上下文感知語音合成研究。
+      <br><a href="https://arxiv.org/pdf/2606.21933" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      <div class="item">
+      <div class="item-title">RolePlayConv 多方語音對話資料集</div>
+      <div class="item-source">
+      Amazon · 隨 ModeratorLM 論文發布
+      </div>
+      <div class="item-desc">
+      大規模合成多方口語對話資料集，涵蓋多種助理角色設定。用於 turn-taking 模型訓練與評估，附帶真實會議場景測試集。
+      <br><a href="https://arxiv.org/abs/2606.13544" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      <div class="item">
+      <div class="item-title">DialectS2S 中文方言語音對話資料集</div>
+      <div class="item-source">
+      arXiv 2608.08067 · 開源
+      <span class="tag tag--accent">本週</span>
+      </div>
+      <div class="item-desc">
+      隨 DialectS2S 論文完整開源的中文方言語音對話訓練資料集，含合成管線程式碼，可擴展至更多方言。
+      <br><a href="https://arxiv.org/abs/2608.08067" target="_blank">arXiv ↗</a>
+      </div>
+      </div>
+      </div>
+      </section>
+      <!-- Footer -->
+      <footer class="report-footer">
+      語音技術週報 W36 · 2026/08/24 – 08/31 · 自動生成
+      </footer>
+      </div>
+
+      <p class="note__back"><a href="../index.html#notes">← 回筆記列表</a></p>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
