@@ -317,7 +317,25 @@ article h2 {
   margin: 2.25rem 0 .75rem;
 }
 
+article h3 {
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--text-muted);
+  letter-spacing: .02em;
+  margin: 1.75rem 0 .5rem;
+}
+
 article p { margin: 0 0 1.25rem; }
+
+article ul,
+article ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.4rem;
+}
+
+article li { margin-bottom: .5rem; }
+
+article li:last-child { margin-bottom: 0; }
 
 article img {
   border-radius: var(--radius);
