@@ -3,124 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>筆記與照片</title>
-<meta name="description" content="放一些筆記和照片的地方。">
-<link rel="stylesheet" href="assets/css/style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📓</text></svg>">
+<title>Personal Archive</title>
+<meta name="description" content="個人技術研究、科技週報、日文學習、旅行與創作的長期保存。">
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
 </head>
 <body>
 
 <a class="skip-link" href="#main">跳至主要內容</a>
 
-<header class="site-header">
-  <nav class="nav" aria-label="主選單">
-    <!-- 改這裡：想放站名的話換掉 -->
-    <a class="nav__brand" href="#main">筆記與照片</a>
-    <ul class="nav__links">
-      <li><a href="#notes">筆記</a></li>
-      <li><a href="#photos">相簿</a></li>
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="index.html" aria-current="page">Home</a></li>
+      <li><a href="research/index.html">Research</a></li>
+      <li><a href="weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="travel/index.html">Travel</a></li>
+      <li><a href="journal/index.html">Journal</a></li>
+      <li><a href="writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
     </ul>
-    <button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式">
-      <span aria-hidden="true">◐</span>
-    </button>
-  </nav>
+    <!-- /BUILD -->
+  </div>
 </header>
 
 <main id="main">
-
-  <!-- ==================== 筆記 ==================== -->
-  <section class="section" id="notes">
+  <section class="now">
     <div class="wrap">
-      <h2 class="section__title">筆記</h2>
+      <!-- 改這裡：日期與現在的重心，手動維護即可 -->
+      <p class="now__date">2026.09.03</p>
+      <h1 class="now__label">最近在做什麼</h1>
+      <p class="now__what">Voice Agent / Router / 日文 / 個人網站</p>
+    </div>
+  </section>
 
-      <!--
-        要新增一篇筆記：
-        1. 複製 notes/_template.html，改成新檔名（建議 YYYY-MM-DD-標題.html）
-        2. 在裡面寫內容
-        3. 回到這裡，複製下面一整個 <li class="entry"> 區塊，改掉日期、標題、連結
-        新的放最上面，舊的往下排。
-      -->
+  <div class="wrap">
+    <div class="panels">
+
+      <section class="panel">
+        <div class="panel__head">
+          <h2 class="panel__title">Recent Updates</h2>
+          <a class="panel__more" href="archive/index.html">Archive →</a>
+        </div>
+      <!-- BUILD:recent=all -->
       <ul class="entries">
         <li class="entry">
           <time class="entry__date" datetime="2026-08-31">2026-08-31</time>
-          <a class="entry__title" href="notes/2026-08-31-語音技術週報-W36.html">語音技術週報 W36</a>
+          <span><a class="entry__title" href="weekly/tech/2026/2026-08-31-語音技術週報-W36.html">語音技術週報 W36</a></span>
         </li>
         <li class="entry">
           <time class="entry__date" datetime="2026-08-24">2026-08-24</time>
-          <a class="entry__title" href="notes/2026-08-24-語音技術週報-W35.html">語音技術週報 W35</a>
+          <span><a class="entry__title" href="weekly/tech/2026/2026-08-24-語音技術週報-W35.html">語音技術週報 W35</a></span>
         </li>
         <li class="entry">
           <time class="entry__date" datetime="2026-08-17">2026-08-17</time>
-          <a class="entry__title" href="notes/2026-08-17-語音技術週報.html">語音技術週報</a>
+          <span><a class="entry__title" href="weekly/tech/2026/2026-08-17-語音技術週報.html">語音技術週報</a></span>
         </li>
         <li class="entry">
           <time class="entry__date" datetime="2026-07-13">2026-07-13</time>
-          <a class="entry__title" href="notes/2026-07-13-語音技術週報.html">語音技術週報</a>
+          <span><a class="entry__title" href="weekly/tech/2026/2026-07-13-語音技術週報.html">語音技術週報</a></span>
         </li>
       </ul>
-    </div>
-  </section>
+      <!-- /BUILD -->
+      </section>
 
-  <!-- ==================== 相簿 ==================== -->
-  <section class="section section--alt" id="photos">
-    <div class="wrap">
-      <h2 class="section__title">相簿</h2>
-
-      <!--
-        要新增照片：
-        1. 把圖片檔放進 assets/photos/
-        2. 複製下面一個 <li> 區塊，改掉 src 檔名和 alt 說明文字
-        alt 是給看不到圖的人（和搜尋引擎）看的，簡短描述照片內容就好。
-        目前這六張是示範用的佔位圖，換成真照片後把 assets/photos/sample-*.svg 刪掉。
-      -->
-      <ul class="gallery">
-        <li>
-          <button type="button" class="shot" data-full="assets/photos/sample-1.svg">
-            <img src="assets/photos/sample-1.svg" alt="示範照片 1" loading="lazy" width="800" height="600">
-          </button>
-        </li>
-        <li>
-          <button type="button" class="shot" data-full="assets/photos/sample-2.svg">
-            <img src="assets/photos/sample-2.svg" alt="示範照片 2" loading="lazy" width="800" height="600">
-          </button>
-        </li>
-        <li>
-          <button type="button" class="shot" data-full="assets/photos/sample-3.svg">
-            <img src="assets/photos/sample-3.svg" alt="示範照片 3" loading="lazy" width="800" height="600">
-          </button>
-        </li>
-        <li>
-          <button type="button" class="shot" data-full="assets/photos/sample-4.svg">
-            <img src="assets/photos/sample-4.svg" alt="示範照片 4" loading="lazy" width="800" height="600">
-          </button>
-        </li>
-        <li>
-          <button type="button" class="shot" data-full="assets/photos/sample-5.svg">
-            <img src="assets/photos/sample-5.svg" alt="示範照片 5" loading="lazy" width="800" height="600">
-          </button>
-        </li>
-        <li>
-          <button type="button" class="shot" data-full="assets/photos/sample-6.svg">
-            <img src="assets/photos/sample-6.svg" alt="示範照片 6" loading="lazy" width="800" height="600">
-          </button>
+      <section class="panel">
+        <div class="panel__head">
+          <h2 class="panel__title">This Week</h2>
+        </div>
+      <!-- BUILD:latest=weekly -->
+      <ul class="entries">
+        <li class="entry">
+          <time class="entry__date" datetime="2026-08-31">2026-08-31</time>
+          <span><a class="entry__title" href="weekly/tech/2026/2026-08-31-語音技術週報-W36.html">語音技術週報 W36</a></span>
         </li>
       </ul>
-    </div>
-  </section>
+      <!-- /BUILD -->
+      </section>
 
+      <section class="panel">
+        <div class="panel__head">
+          <h2 class="panel__title">Research</h2>
+          <a class="panel__more" href="research/index.html">全部 →</a>
+        </div>
+        <ul class="tiles">
+          <li>
+            <a class="tile__name" href="research/voice-agent/index.html">Voice Agent</a>
+            <p class="tile__desc">Router / Turn Detection / Duplex / Latency</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <div class="panel__head">
+          <h2 class="panel__title">Archive</h2>
+        </div>
+        <ul class="tiles">
+          <li>
+            <a class="tile__name" href="archive/index.html">依年份</a>
+            <p class="tile__desc">全部內容的時間索引</p>
+          </li>
+        </ul>
+      </section>
+
+    </div>
+
+    <section class="panel">
+      <div class="panel__head">
+        <h2 class="panel__title">Travel / Photo</h2>
+        <a class="panel__more" href="travel/index.html">全部 →</a>
+      </div>
+      <!-- BUILD:recent=travel -->
+      <p class="empty">暫無內容。</p>
+      <!-- /BUILD -->
+    </section>
+  </div>
 </main>
 
-<footer class="site-footer">
+<footer class="site-foot">
   <div class="wrap">
-    <p>&copy; <span id="year">2026</span></p>
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
   </div>
 </footer>
-
-<!-- 點縮圖後放大顯示用的圖層 -->
-<div class="lightbox" id="lightbox" hidden>
-  <button class="lightbox__close" type="button" aria-label="關閉">&times;</button>
-  <img class="lightbox__img" id="lightboxImg" src="" alt="">
-</div>
 
 <script src="assets/js/main.js"></script>
 </body>

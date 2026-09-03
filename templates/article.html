@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文章標題 · Personal Archive</title>
+<link rel="stylesheet" href="../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  改這裡：這段 metadata 給 scripts/build.py 掃描用，決定文章出現在哪些列表。
+  category 用資料夾路徑（research / weekly/tech / travel / journal / writing）。
+  visibility 目前只支援 public；private 是為將來預留的。
+  -->
+  <!--
+  title: 文章標題
+  date: 2026-01-01
+  category: research
+  visibility: public
+  tags:
+  summary:
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-01-01">2026-01-01</time>
+      <h1 class="article__title">文章標題</h1>
+
+      <p>第一段。</p>
+
+      <h2>小標題</h2>
+      <p>內文。</p>
+
+      <!--
+        常用寫法：
+          粗體    <strong>重點</strong>
+          連結    <a href="https://example.com">文字</a>
+          清單    <ul><li>項目</li></ul>
+          程式碼  <pre><code>print("hello")</code></pre>
+          引用    <blockquote><p>引用的話</p></blockquote>
+          圖片    <figure><img src="../assets/images/x.jpg" alt="說明">
+                  <figcaption>說明</figcaption></figure>
+      -->
+
+      <nav class="article-nav">
+        <a href="../index.html">← 回列表</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
