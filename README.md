@@ -46,6 +46,9 @@ python3 tools/import_weekly.py 週報.html
 python3 tools/build_index.py
 ```
 
+週報若由定期工作自動發布，作業說明與注意事項見
+[`docs/自動更新.md`](docs/自動更新.md)。
+
 ## 新增照片
 
 1. 圖片放進 `assets/photos/`
