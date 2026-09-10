@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sortformer 調查筆記 · Personal Archive</title>
+<link rel="stylesheet" href="../../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="../../index.html">Home</a></li>
+      <li><a href="../../research/index.html">Research</a></li>
+      <li><a href="../../weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="../../weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="../../travel/index.html">Travel</a></li>
+      <li><a href="../../journal/index.html">Journal</a></li>
+      <li><a href="../../writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
+    </ul>
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  title: Sortformer 調查筆記
+  date: 2026-09-10
+  category: research/voice-agent
+  visibility: public
+  tags: diarization, sortformer, nemo, streaming, multi-speaker-asr
+  summary: NVIDIA Sortformer 的整理：用到達時間排序取代排列不變損失，架構、串流版 AOSC、公開數字與四人上限的限制。
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-09-10">2026-09-10</time>
+      <h1 class="article__title">Sortformer 調查筆記</h1>
+
+      <p>Sortformer 是 NVIDIA 在 2024 年 9 月放出的端到端語者分段（speaker diarization）模型，
+         現在收在 NeMo 裡。會想整理它，不是因為它的 DER 數字最漂亮——它不是——
+         而是因為它處理「排列問題」的方式，直接決定了語者資訊能不能乾淨地接進 ASR 與後面的 LLM。
+         對 voice agent 來說，這件事比小數點後一位重要。</p>
+
+      <p>這篇整理三件事：它到底改了什麼、串流版怎麼運作、以及實際能用到什麼程度。
+         所有數字都標了量測條件，因為 diarization 的數字換個 collar 設定就完全不能比。</p>
+
+      <h2>問題：排列不變損失擋在中間</h2>
+
+      <p>端到端 diarization 的老問題是輸出通道沒有固定意義。模型吐出「speaker 0 / 1 / 2 / 3」四條時間軸，
+         但哪一條對應標註裡的哪個人，訓練時是沒有定義的。
+         傳統做法是 permutation invariant loss（PIL）：把所有排列都算一次 loss，取最小的那個。
+         EEND 系列都是這樣訓練的。</p>
+
+      <p>PIL 能解 diarization，但接不上 ASR。多人 ASR 想做的是在文字裡直接吐出語者標記，
+         用一般的 token-level cross-entropy 訓練；
+         而 PIL 是 frame-level、要在 loss 裡面搜尋排列的東西，兩者的計算圖兜不起來。
+         結果就是 diarization 與 ASR 各訓各的，中間再拿時間戳去對齊——
+         這層膠水正是實務上最容易壞掉的地方。</p>
+
+      <h2>解法：到達時間排序（ATS）與 Sort Loss</h2>
+
+      <p>Sortformer 的做法是把排列直接消掉：規定輸出通道必須依「該語者第一次開口的時間」排序。
+         誰先講話誰就是 speaker 0，第二個開口的是 speaker 1，以此類推。
+         這叫 arrival time sorting（ATS），順序從此有唯一定義，不需要在 loss 裡搜尋。</p>
+
+      <p>為了讓 Transformer 學會這個順序，論文提出 <strong>Sort Loss</strong>：
+         把預測與標註都依到達時間排序後直接比對。注意同一份標註，
+         在 Sort Loss 與 PIL 底下會產生不同的目標矩陣——這正是兩者的差別所在。</p>
+
+      <p>實際訓練用的是兩者混合。NeMo 的 config 裡兩個權重各半：</p>
+
+      <pre><code>pil_weight: 0.5   # Permutation Invariant Loss
+ats_weight: 0.5   # Arrival Time Sort loss</code></pre>
+
+      <p>論文的說法是 Sort Loss 單獨就能讓模型自己解排列，
+         而與 PIL 合用時，效果可以跟純 PIL 訓練的 SOTA 端到端模型競爭。
+         我的讀法是：PIL 負責把 diarization 本身學好，Sort Loss 負責把輸出順序釘住，
+         兩者不衝突，所以各半就夠了。</p>
+
+      <h2>架構</h2>
+
+      <p>模型本身沒有太多花招，是兩段式的 encoder：</p>
+
+      <ul>
+        <li><strong>前段</strong>：18 層 Fast-Conformer（NEST 預訓練 encoder），
+            d_model 512，dw_striding 降採樣 8 倍。
+            輸入 16 kHz 單聲道、80 維 mel，10 ms 一格特徵經降採樣後
+            <strong>一個輸出格子是 80 ms</strong>——後面講串流延遲時會一直用到這個數字。</li>
+        <li><strong>後段</strong>：18 層 Transformer encoder，hidden 192、inner 768、8 heads。</li>
+        <li><strong>輸出</strong>：兩層 feedforward 接 4 個 sigmoid，每格每個語者一個活躍度。
+            sigmoid 而非 softmax，所以天生支援重疊語音。</li>
+      </ul>
+
+      <p>兩個硬性限制寫死在 config 裡：<code>max_num_of_spks: 4</code>、
+         訓練用的 <code>session_len_sec: 90</code>。四人上限是架構層級的（輸出頭就是四個），
+         不是可以調的參數。</p>
+
+      <p>訓練資料是 2,030 小時真實對話（Fisher、AMI IHM、DIHARD3-dev、VoxConverse v0.3、
+         ICSI、AISHELL-4、NIST SRE 2000 CALLHOME Part1）
+         加上 5,150 小時用 NeMo speech data simulator 從 LibriSpeech 與 NIST SRE04-10 合成的混音。
+         模擬資料佔七成以上，這在 diarization 是常態——有精確時間戳的真實多人語料太難拿。</p>
+
+      <h2>真正的賣點：接進 ASR</h2>
+
+      <p>Sortformer 可以當獨立的 diarizer 用，但論文的重點其實在多人 ASR。
+         做法是把 diarization 的輸出當成 <em>speaker supervision</em>，
+         以 sinusoidal kernel 的形式嵌進 ASR encoder 的狀態裡；
+         ASR 端輸出的語者 token 也依到達時間排序。</p>
+
+      <p>兩邊順序定義一致，於是整條 pipeline 可以只用 token-level cross-entropy 訓練——
+         不需要 frame-level 目標、不需要 PIL、不需要為多人情境寫特殊的 loss，
+         單人 ASR 那套訓練框架直接沿用。這是 ATS 最實質的好處：
+         它把「誰在說」從一個對齊問題，變成了序列裡的一個普通 token。</p>
+
+      <p>對 voice agent 的意義也在這裡。如果語者只是 token，
+         它就能跟文字一起進 LLM 的 context，不用另外維護一份時間戳去做事後合併。</p>
+
+      <h2>串流版：AOSC</h2>
+
+      <p>Streaming Sortformer（Interspeech 2025）補上了線上推論。
+         離線版一次看整段音訊，排序天然一致；串流時每個 chunk 都是新的推論，
+         要保證第 3 分鐘的 speaker 1 跟第 1 分鐘的 speaker 1 是同一個人。</p>
+
+      <p>它的解法是 <strong>Arrival-Order Speaker Cache（AOSC）</strong>：
+         快取先前偵測到的語者的 frame-level 聲學嵌入，並且<em>依到達順序索引</em>存放。
+         每一步依模型過去的預測分數挑高品質的 frame 更新快取，
+         每個語者存幾格是動態決定的。跟傳統 speaker-tracing buffer 的差別就在這個排序，
+         它讓快取的第 <em>k</em> 格天然對應輸出的第 <em>k</em> 個通道。
+         除了快取管理，其餘架構與離線版相同。</p>
+
+      <p>延遲的定義是 <strong>input buffer latency = chunk size + right context</strong>，不含計算時間。
+         NeMo 推論腳本的預設值是 <code>chunk_len: 6</code>、<code>chunk_right_context: 7</code>，
+         單位是前面算過的 80 ms 格子，所以 (6 + 7) × 80 ms = <strong>1.04 秒</strong>——
+         正好對上模型卡上標的 1.04 s 設定。想壓到 0.32 s 就是把兩者縮到共 4 格。</p>
+
+      <p>另外兩個參數是 <code>spkcache_len</code>（快取總長，預設 188 格）與
+         <code>fifo_len</code>（FIFO 佇列）。要注意 chunk 開太大不會一直變好：
+         訓練時 chunk 就是 188 格，超過會因為與訓練設定不匹配而退步。</p>
+
+      <h2>數字</h2>
+
+      <p>先說清楚量測條件，否則沒有意義。以下都<strong>含重疊語音</strong>，
+         DIHARD3 用 collar 0 秒，CALLHOME / CH109 用 0.25 秒；
+         模型卡上的數字都是<strong>套過後處理</strong>的結果。</p>
+
+      <ul>
+        <li><code>diar_sortformer_4spk-v1</code>（離線）：DIHARD3-eval <strong>DER 14.76%</strong>，collar 0。</li>
+        <li><code>diar_streaming_sortformer_4spk-v2</code>（串流）：
+            DIHARD3-eval <strong>DER 13.24%</strong>，input buffer 1.04 s。</li>
+        <li>NVIDIA 表示降到 0.32 s 延遲時仍有競爭力，且退化不劇烈；
+            所有評測用同一個模型，沒有針對各資料集微調。</li>
+      </ul>
+
+      <p>串流版反而比離線 v1 好，看起來不合直覺，但 v2 是晚一年的模型，
+         訓練資料與流程都動過，所以這是版本差、不是「串流比較強」。
+         把它當成「v1 與 v2 的差距大於串流帶來的損失」比較準確。</p>
+
+      <p>還有一件容易被忽略的事：這些 DER 是<strong>調過門檻</strong>的。
+         NeMo 附的後處理參數是拿 Optuna 在 DIHARD3-dev 上跑出來的，
+         例如 <code>onset 0.64 / offset 0.74 / pad_onset 0.06 / min_duration_on 0.1 / min_duration_off 0.15</code>，
+         換一個 domain 這組參數不一定適用。自己的資料要重調。</p>
+
+      <p>跨系統比較我只放一個參考點：2025 年 9 月的第三方 benchmark（arXiv 2509.26177）
+         在 196.6 小時多語料上測，pyannoteAI 11.2% DER 最好，開源的 DiariZen 13.3%。
+         資料集與設定都跟上面不同，<strong>不能直接跟 Sortformer 的數字相減</strong>，
+         只能說明目前這個級距大致長什麼樣子。</p>
+
+      <h2>限制</h2>
+
+      <ul>
+        <li><strong>四人上限</strong>。這是最大的實務限制。五人以上的會議、座談、
+            有轉接與旁聽的客服錄音都會踩到，而且沒有調參數就能繞過的辦法。
+            需要不限人數就得看 pyannote 那條線。</li>
+        <li><strong>訓練 session 只有 90 秒</strong>。長音訊靠串流的快取機制撐，
+            而不是模型真的看得到長程脈絡。</li>
+        <li><strong>domain 敏感</strong>。NVIDIA 後來另外放了 v2.1，
+            說明是改善會議語音的穩健性——反過來說 v2 在會議場景是有弱點的。</li>
+        <li><strong>diarization 不等於 identification</strong>。輸出只是「這段是第幾個開口的人」，
+            跨 session 沒有身分。要記住是誰，還是得另外接聲紋。</li>
+      </ul>
+
+      <h2>我的判斷</h2>
+
+      <p>如果情境是兩到四人、要串流、而且下游是 ASR 或 LLM，
+         Sortformer 是目前最省事的選擇：一個模型、一套 NeMo 推論、延遲可調到一秒出頭，
+         而且語者資訊能以 token 形式往下傳，不用自己寫時間戳對齊的膠水。
+         典型的 voice agent 對話多半只有兩個人，四人上限在這裡不太痛。</p>
+
+      <p>但如果是開放式會議或媒體內容，四人上限會直接把它排除，
+         這不是「準不準」的問題，是「能不能用」的問題。</p>
+
+      <p>比較有意思的是 ATS 這個想法本身。它沒有讓 diarization 變得多準，
+         它做的是把一個需要搜尋的組合問題，換成一個有唯一定義的順序，
+         於是整條訓練管線塌縮成標準的序列建模。
+         這類「用約定消除搜尋」的手法，在其他有排列問題的任務上大概也還有空間。</p>
+
+      <h3>還沒查清楚的</h3>
+      <ul>
+        <li>ATS 在「兩人幾乎同時開口」時怎麼定義先後，以及這種邊界情況的錯誤率。</li>
+        <li>speaker kernel 注入 ASR encoder 的具體形式，論文的 PDF 這邊拿不到全文。</li>
+        <li>與 turn detection / semantic VAD 合用時，語者切換能不能當成回合邊界的訊號。</li>
+      </ul>
+
+      <h2>參考</h2>
+      <ul>
+        <li>Park et al., <em>Sortformer</em>, arXiv:2409.06656（2024-09，後續版本改題為
+            “A Novel Approach for Permutation-Resolved Speaker Supervision in Speech-to-Text Systems”）</li>
+        <li>Medennikov et al., <em>Streaming Sortformer: Speaker Cache-Based Online Speaker Diarization
+            with Arrival-Time Ordering</em>, Interspeech 2025 / arXiv:2507.18446</li>
+        <li>NeMo Speech：<code>docs/source/asr/speaker_diarization/models.rst</code>、
+            <code>examples/speaker_tasks/diarization/</code> 底下的 config 與推論腳本</li>
+        <li>模型：<code>nvidia/diar_sortformer_4spk-v1</code>、
+            <code>nvidia/diar_streaming_sortformer_4spk-v2</code>、
+            <code>nvidia/diar_streaming_sortformer_4spk-v2.1</code></li>
+        <li>Lanzendörfer et al., <em>Benchmarking Diarization Models</em>, arXiv:2509.26177</li>
+      </ul>
+
+      <nav class="article-nav">
+        <a href="index.html">← 回 Voice Agent</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js"></script>
+</body>
+</html>

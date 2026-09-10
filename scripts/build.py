@@ -52,6 +52,7 @@ SKIP_DIRS = {'assets', 'templates', 'scripts', 'docs', '.git'}
 # 分類的顯示名稱
 CAT_LABEL = {
     'research':         'Research',
+    'research/voice-agent': 'Voice Agent',
     'weekly/tech':      'Tech Weekly',
     'weekly/japanese':  'Japanese',
     'travel':           'Travel',
