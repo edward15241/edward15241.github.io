@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W38 · Personal Archive</title>
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../../../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="../../../index.html">Home</a></li>
+      <li><a href="../../../research/index.html">Research</a></li>
+      <li><a href="../../../weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="../../../weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="../../../travel/index.html">Travel</a></li>
+      <li><a href="../../../journal/index.html">Journal</a></li>
+      <li><a href="../../../writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
+    </ul>
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  title: 語音技術週報 W38
+  date: 2026-09-14
+  category: weekly/tech
+  visibility: public
+  tags: 
+  summary: 2026-09-08 – 2026-09-14 的科技新聞、論文與 AI 發展整理。
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-09-14">2026-09-08 – 09-14</time>
+      <h1 class="article__title">語音技術週報 W38</h1>
+
+      <title>語音技術週報 W38</title>
+      <meta charset="UTF-8">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+      <style>
+      :root {
+      --bg: #f6f5f2;
+      --bg-surface: #ffffff;
+      --bg-surface-alt: #edecea;
+      --text-primary: #1a1a1a;
+      --text-secondary: #555550;
+      --text-tertiary: #888882;
+      --accent: #2d6a4f;
+      --accent-light: #d8f3dc;
+      --accent-muted: #40916c;
+      --border: #d6d5d0;
+      --border-light: #e8e7e3;
+      --tag-model: #2d6a4f;
+      --tag-model-bg: #d8f3dc;
+      --tag-paper: #1d4e89;
+      --tag-paper-bg: #d0e4f5;
+      --tag-news: #b45309;
+      --tag-news-bg: #fef3c7;
+      --tag-dataset: #7b2d8b;
+      --tag-dataset-bg: #f0ddf5;
+      --highlight-bg: #fffbeb;
+      --highlight-border: #f59e0b;
+      --code-bg: #f0efeb;
+      }
+      @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+      --bg: #141413;
+      --bg-surface: #1e1e1c;
+      --bg-surface-alt: #282826;
+      --text-primary: #e8e7e3;
+      --text-secondary: #a8a8a2;
+      --text-tertiary: #6e6e68;
+      --accent: #52b788;
+      --accent-light: #1b3a2a;
+      --accent-muted: #74c69d;
+      --border: #3a3a36;
+      --border-light: #2e2e2a;
+      --tag-model: #74c69d;
+      --tag-model-bg: #1b3a2a;
+      --tag-paper: #6da8d8;
+      --tag-paper-bg: #1a2e42;
+      --tag-news: #f0b752;
+      --tag-news-bg: #3a2b0a;
+      --tag-dataset: #c77ddb;
+      --tag-dataset-bg: #2e1538;
+      --highlight-bg: #2a2510;
+      --highlight-border: #d4890a;
+      --code-bg: #242422;
+      }
+      }
+      :root[data-theme="dark"] {
+      --bg: #141413;
+      --bg-surface: #1e1e1c;
+      --bg-surface-alt: #282826;
+      --text-primary: #e8e7e3;
+      --text-secondary: #a8a8a2;
+      --text-tertiary: #6e6e68;
+      --accent: #52b788;
+      --accent-light: #1b3a2a;
+      --accent-muted: #74c69d;
+      --border: #3a3a36;
+      --border-light: #2e2e2a;
+      --tag-model: #74c69d;
+      --tag-model-bg: #1b3a2a;
+      --tag-paper: #6da8d8;
+      --tag-paper-bg: #1a2e42;
+      --tag-news: #f0b752;
+      --tag-news-bg: #3a2b0a;
+      --tag-dataset: #c77ddb;
+      --tag-dataset-bg: #2e1538;
+      --highlight-bg: #2a2510;
+      --highlight-border: #d4890a;
+      --code-bg: #242422;
+      }
+      body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'IBM Plex Sans', 'Noto Sans TC', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+      }
+      .header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--accent);
+      }
+      .header-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+      }
+      .header h1 {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin: 0;
+      text-wrap: balance;
+      }
+      .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.6rem;
+      font-size: 0.82rem;
+      color: var(--text-tertiary);
+      font-family: 'IBM Plex Mono', monospace;
+      }
+      .highlights {
+      background: var(--highlight-bg);
+      border-left: 3px solid var(--highlight-border);
+      padding: 1rem 1.25rem;
+      margin-bottom: 2.5rem;
+      border-radius: 0 6px 6px 0;
+      }
+      .highlights-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+      }
+      .highlights ol {
+      margin: 0;
+      padding-left: 1.3rem;
+      }
+      .highlights li {
+      margin-bottom: 0.35rem;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      }
+      .highlights li strong {
+      color: var(--text-primary);
+      font-weight: 500;
+      }
+      .section {
+      margin-bottom: 2.5rem;
+      }
+      .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      }
+      .section-header h2 {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0;
+      text-wrap: balance;
+      }
+      .section-icon {
+      font-size: 1.15rem;
+      flex-shrink: 0;
+      }
+      .subsection {
+      margin-bottom: 1.25rem;
+      }
+      .subsection-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      }
+      .item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.6rem;
+      }
+      .item-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.25rem;
+      }
+      .item-title {
+      font-weight: 600;
+      font-size: 0.92rem;
+      line-height: 1.4;
+      flex: 1 1 auto;
+      min-width: 200px;
+      }
+      .item-title a {
+      color: var(--text-primary);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: border-color 0.15s;
+      }
+      .item-title a:hover {
+      border-color: var(--accent);
+      }
+      .tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      }
+      .tag-model { color: var(--tag-model); background: var(--tag-model-bg); }
+      .tag-paper { color: var(--tag-paper); background: var(--tag-paper-bg); }
+      .tag-news { color: var(--tag-news); background: var(--tag-news-bg); }
+      .tag-dataset { color: var(--tag-dataset); background: var(--tag-dataset-bg); }
+      .item-source {
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      margin-bottom: 0.2rem;
+      font-family: 'IBM Plex Mono', monospace;
+      }
+      .item-desc {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      }
+      .no-update {
+      color: var(--text-tertiary);
+      font-style: italic;
+      font-size: 0.88rem;
+      padding: 0.5rem 0;
+      }
+      .footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      }
+      .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 0.75rem;
+      margin-bottom: 2rem;
+      }
+      .toc a {
+      font-size: 0.8rem;
+      color: var(--accent-muted);
+      text-decoration: none;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      background: var(--bg-surface-alt);
+      font-family: 'IBM Plex Mono', monospace;
+      transition: background 0.15s;
+      }
+      .toc a:hover {
+      background: var(--accent-light);
+      }
+      @media (max-width: 600px) {
+      body { padding: 1.5rem 1rem 3rem; font-size: 14px; }
+      .header h1 { font-size: 1.4rem; }
+      .item { padding: 0.7rem 0.8rem; }
+      }
+      </style>
+      <div class="header">
+      <div class="header-eyebrow">Speech Tech Weekly</div>
+      <div class="header-meta">
+      <span>📅 2026/09/08 – 09/14</span>
+      <span>⏱ 閱讀時間 ~8 min</span>
+      </div>
+      </div>
+      <nav class="toc">
+      <a href="#asr">ASR 語音辨識</a>
+      <a href="#audio-llm">Audio LLM</a>
+      <a href="#s2s">Speech-to-Speech</a>
+      <a href="#turn-detection">Turn Detection</a>
+      <a href="#datasets">公開資料集</a>
+      </nav>
+      <div class="highlights">
+      <div class="highlights-title">⭐ 本週重點摘要</div>
+      <ol>
+      <li><strong>OpenAI 發布 GPT-Live-1 全雙工語音 API</strong> — 首款可商用的全雙工 S2S 模型，Full Duplex Bench 得分 80.1%（vs. GPT-Realtime-2.1 的 45.4%），turn-taking 延遲降至 0.8 秒，定價 $0.05/分鐘。</li>
+      <li><strong>Qwen-Audio-3.0-ASR 技術報告發布</strong> — 阿里巴巴 MoE 架構 ASR 系統，支援 30 語言 + 16 種中文方言，千萬小時級訓練資料，效能媲美 GPT-4o Transcribe 與 Gemini 3.1 Pro。</li>
+      <li><strong>BuzzASR：102 語言 Whisper 微調模型集合</strong> — 在 77/102 語言上超越 Whisper-large-v3，CER 平均降低 2.8 倍；27 語言達開源 SOTA。</li>
+      <li><strong>Apple iOS 27 發布，Siri AI 全面重建</strong> — 更自然的語音互動、語速語氣可客製、對話式追問、螢幕感知能力，進入獨立 App 時代。</li>
+      <li><strong>S4VAD：首個 SSM 架構 VAD 模型</strong> — 使用狀態空間模型控制聲學衰減實現快速 onset detection，onset bias 僅 39ms，優於所有 CNN/RNN/Transformer 基線。</li>
+      </ol>
+      </div>
+      <!-- ==================== ASR ==================== -->
+      <div class="section" id="asr">
+      <div class="section-header">
+      <span class="section-icon">🎙</span>
+      <h2>1. 語音辨識 ASR / Speech Recognition</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://www.globenewswire.com/news-release/2026/09/09/3358769/0/en/the-future-of-ai-is-nameless-tresic-selects-speechmatics-to-power-the-speech-layer-of-its-conversation-intelligence-platform.html">Tresic 選擇 Speechmatics 驅動對話智慧平台</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">Tresic / Speechmatics · 2026-09-09</div>
+      <div class="item-desc">Tresic 在 Google 與 Deepgram 之外選定 Speechmatics 為其基於 vCon 標準的對話智慧平台提供語音轉文字引擎。Speechmatics 可在 Tresic 自有基礎設施內運行，音訊與轉錄文字完全不離開客戶環境，主打資料主權與隱私合規。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://finance.yahoo.com/technology/ai/articles/soundhound-ai-completes-acquisition-liveperson-132600164.html">SoundHound AI 完成收購 LivePerson</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">SoundHound AI · 2026-09-08 (正式完成)</div>
+      <div class="item-desc">SoundHound 以約 $42.8M 完成對 LivePerson 的收購，結合自有語音 ASR / Agentic AI 與 LivePerson 企業級數位訊息平台，形成全通路對話 AI 公司，服務 Fortune 100 中 25 家企業，持有 750+ 專利。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">模型發布</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.07549">Qwen-Audio-3.0-ASR — MoE 架構大規模多語言 ASR</a></span>
+      <span class="tag tag-model">模型發布</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Alibaba Qwen Team · arXiv 2609.07549 · 2026-09-09</div>
+      <div class="item-desc">阿里巴巴通義團隊發布技術報告。基於 Qwen 骨幹的 Mixture-of-Experts ASR 系統，以千萬小時級語音訓練。支援 30 語言及 16 種中文方言（八大方言區），具備產業級實體辨識、階層式 hotword 客製、原生單次轉錄潤飾、長音訊上下文建模。串流版 Qwen-Audio-3.0-ASR-Streaming 適用低延遲場景。效能與 GPT-4o Transcribe 和 Gemini 3.1 Pro 相當或更優。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.09554">BuzzASR — 102 語言 Whisper 微調模型集合</a></span>
+      <span class="tag tag-model">模型發布</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.09554 · 2026-09-12</div>
+      <div class="item-desc">針對 102 種語言各自微調的 Whisper 模型集合。採用單語言 tokenizer 替換與純文字微調資料擴增策略。在 77/102 語言上超越 Whisper-large-v3，CER 平均降低 2.8 倍；在 27 種語言達開源系統 SOTA。對低資源語言 ASR 有重要參考價值。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.10265">Pushing the Boundaries of Streaming Multi-Speaker ASR: A Systematic Study</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.10265 · Accepted Interspeech 2026</div>
+      <div class="item-desc">提出統一框架，將串流多說話者 ASR 分為四種架構策略（依 diarization 與 ASR 的整合方式），系統性評估多說話者準確率、單說話者退化、記憶體使用與訓練複雜度之間的 trade-off。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.02901">Dual-Form ASR: Semantics-Aware Inverse Text Normalization for Chinese</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.02901 · 2026-09</div>
+      <div class="item-desc">提出語義感知的雙形態 ASR 框架，透過 LLM 驅動的生成-評審流程與新的 ITN-MWER 序列級目標，將口語形式 ASR 擴展為書面形式逆文字正規化（ITN）。直接針對中文 ASR 產品品質提升。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.01287">Soft Posterior Speaker Injection for Multi-Talker ASR</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.01287 · Submitted to ICASSP 2027</div>
+      <div class="item-desc">提出 SPSI 輕量模組，透過 frame-level speaker posterior 預測搭配 multi-layer FiLM 與 decoder speaker-memory prompt 注入 Whisper。在雙說話者 LibriSpeech 重疊場景中，cpWER 從 50.7% 降至 49.6%。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== Audio LLM ==================== -->
+      <div class="section" id="audio-llm">
+      <div class="section-header">
+      <span class="section-icon">🧠</span>
+      <h2>2. Audio LLM</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://elevenlabs.io/docs/changelog/2026/9/7">ElevenLabs API 更新：對話功能強化</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">ElevenLabs · 2026-09-07</div>
+      <div class="item-desc">新增 workspace 級對話 ticket、動態變數對話過濾器、Twilio 答錄機偵測（outbound telephony）以及資料收集值限制等功能，持續完善語音 Agent 開發基礎設施。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.09719">StreamAlign: Streaming Text-Aligned Speech Tokenization</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Kang-wook Kim et al. · arXiv 2609.09719 · Accepted EMNLP 2026 Findings</div>
+      <div class="item-desc">提出線上語音-文字對齊方法，結合 character-level RNN-Transducer 與 word-level ASR 引導。Tokenization 延遲從 560ms 降至 270ms。StreamAlign-SLM 在 SALMon 與 spoken StoryCloze 基準上超越其他端到端語音語言模型。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.05592">What Did I Just Say? Self-Listening for Full-Duplex Speech Models</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Zhou, Ao, Liu, Ko, Wang, Li · arXiv 2609.05592 · IMPACT-SPEECH @ EMNLP 2026</div>
+      <div class="item-desc">提出 Self-Listening 機制，將模型已輸出的語音回饋為輸入流，讓模型基於使用者實際聽到的內容進行中斷恢復。同時發布 AnchorSpeech 基準測試。對全雙工語音模型的中斷處理有重要意義。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://pith.science/paper/2609.05871">Where Does the Sound Go? Tracing Acoustic Information Loss in Audio-Conditioned LLMs</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Jo, Lee, Kim, Choi, Choi · arXiv 2609.05871 · Accepted EMNLP 2026 Findings</div>
+      <div class="item-desc">發現 Audio LLM 對副語言與非語音線索利用不足的瓶頸並非 audio encoder 丟失資訊，而是 LM output head 未能有效利用。為改善 Audio LLM 的聲學理解能力指明了具體方向。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.04250">Motion-Omni: End-to-End Joint Speech and Full-Body Motion for Spoken Dialogue</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">PKU &amp; CUHK Shenzhen · arXiv 2609.04250 · 2026-09-08</div>
+      <div class="item-desc">端到端框架，從產生語音的 hidden states 同時輸出表情與肢體動作。基於 Qwen2.5-7B-Instruct，推論速度較 cascade 方案快 5.4 倍，WER 2.62%。釋出 SwDA-500 資料集。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== S2S ==================== -->
+      <div class="section" id="s2s">
+      <div class="section-header">
+      <span class="section-icon">🔄</span>
+      <h2>3. Speech-to-Speech (S2S)</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://openai.com/index/introducing-gpt-live-1-in-the-api/">OpenAI 發布 GPT-Live-1 全雙工語音 API</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">OpenAI · 2026-09-10</div>
+      <div class="item-desc">首款可商用的全雙工 S2S 模型 API，原生音訊輸入/輸出，無需級聯管線。Full Duplex Bench 得分 80.1%（GPT-Realtime-2.1 為 45.4%），turn-taking 延遲從 1.4 秒降至 0.8 秒。提供 full 與 mini 兩個版本、12 種跨口音方言語音，定價 $0.05/分鐘。支援電話整合。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://www.macworld.com/article/2986799/ios-27-new-iphone-features-release-date-beta-compatiblity-apple-intelligence-siri.html">Apple iOS 27 發布，Siri AI 全面重建</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">Apple · 2026-09-14</div>
+      <div class="item-desc">iOS 27 正式釋出，重建後的 Siri AI 具備更自然語音、可客製語速與表現力、對話式追問、螢幕感知、網頁搜尋答案能力。Siri 進入獨立 App 並保留對話歷史。語音客製需 iPhone 17 Pro/Air 以上機型。英語先行，10 月擴展法語/日語/韓語/葡語/西語。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/">Meta 發布 Muse 個人 AI Agent</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">Meta · 2026-09-08</div>
+      <div class="item-desc">Muse 可自主執行訂機票、議價帳單、採購雜貨等任務，整合語音能力於 Meta AI for Mac 及 Muse Code。據報 Meta 正為 Muse 打造自有語音生成系統（泄露指出模型延遲 80ms）。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://www.prnewswire.com/news-releases/timekettle-unveils-w4-plus-ai-interpreter-earbuds-at-ifa-2026-bringing-ai-powered-translation-to-conversations-calls-and-digital-content-302868977.html">Timekettle W4 Plus AI 翻譯耳機發售</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">Timekettle · IFA 2026 · 2026-09-08 起</div>
+      <div class="item-desc">整合面對面即時翻譯、電話/視訊通話口譯、多媒體翻譯於一體的 AI 翻譯耳機。線上支援 52 語言 106 口音，離線 13 語言對。定價 $299（訂閱制）/ $379（買斷）。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://www.howtogeek.com/google-assistant-shuts-down-on-android-in-september/">Google Assistant 在 Android 正式停止服務</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">Google · 2026-09 滾動式關閉</div>
+      <div class="item-desc">Google Assistant 在 Android 與 Wear OS 上正式關閉，由 Gemini 接替成為預設語音助理。涵蓋手機、平板、手錶與 Android Auto，過渡期持續至九月中旬。語音 AI 助理從傳統 NLU 全面轉向 LLM 原生架構。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2606.30944">PRIME-Speech: Preserving Speech-to-Text LLM Capabilities in S2S Generation</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Hu, Lu, Fan et al. (Microsoft) · arXiv 2606.30944</div>
+      <div class="item-desc">提出凍結骨幹的 S2S 框架，僅訓練語音生成模組。因果 audio post-decoder 與中間 hidden states 同步，從模型推論軌跡直接生成 codec token。Multi-token prediction 降低有效 codec 預測率並改善首音延遲。在語音翻譯、口說 QA 與多輪對話中保持 S2T 能力。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://aclanthology.org/events/iwslt-2026/">IWSLT 2026 同步語音翻譯系統論文</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">ACL Anthology · IWSLT 2026 · San Diego</div>
+      <div class="item-desc">第 23 屆 IWSLT 多篇系統描述論文，包括基於 Qwen3-Omni-30B-A3B 的 CUHKSZ 方案、MLLP-VRAIN UPV、CUNI 離線模型、AlignAtt4LLM 等。涵蓋英-中/英-德/英-義同步翻譯及 Mapudungun-西語等低資源語對。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== Turn Detection ==================== -->
+      <div class="section" id="turn-detection">
+      <div class="section-header">
+      <span class="section-icon">🔀</span>
+      <h2>4. Turn Detection &amp; Semantic VAD</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://github.com/vllm-project/vllm-omni/issues/7478">vLLM-Omni 提案：Realtime Sessions 加入 Semantic VAD</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">vllm-project/vllm-omni · GitHub RFC · 2026-09-13</div>
+      <div class="item-desc">RFC 提案在 vLLM-Omni 的 /v1/realtime 端點加入語義 VAD（結合 Silero VAD + Smart Turn v3.2）。當 Silero 偵測到暫停後，Smart Turn 利用最近 8 秒音訊判斷語句是否完整。適用於 Qwen3-Omni 等 turn-based omni 模型。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://github.com/sgl-project/sglang-omni/issues/968">SGLang-Omni 合併 Semantic VAD 實作</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">sgl-project/sglang-omni · GitHub · ~2026-09-08</div>
+      <div class="item-desc">SGLang-Omni 的 /v1/realtime 端點完成語義 VAD 整合，使用 Smart Turn v3.2 GPU ONNX 模型 + Silero VAD。FP32 GPU 模型端到端驗證通過，所有 realtime/semantic VAD 單元測試通過。開源推論框架正快速跟進語義 VAD 支援。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://webrtc.ventures/2026/09/voice-ai-interruption-handling-state-machines-vs-streaming/">Voice AI 中斷處理：State Machine vs Streaming 架構比較</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">WebRTC.ventures · 2026-09</div>
+      <div class="item-desc">來自 CETA Global、LiveKit/Pipecat、AI 銷售 Agent 平台的工程師比較狀態機與串流架構在即時中斷處理上的實戰經驗，涵蓋臨床訓練模擬器、專業培訓平台、銷售 Agent 管線中的真實問題與修復方案。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.11066">Less can be More: What Aspects of Speech Drive End-of-Turn Detection</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Sharon, Manickavela, Hacioglu, Stolcke · arXiv 2609.11066 · 2026-09-10</div>
+      <div class="item-desc">對聲學、韻律、語義訊號進行控制消融實驗。關鍵發現：韻律特徵（語調 + 停頓模式）具有最強的類別區分能力；加入文字反而增加提前偵測。僅用聲學+韻律即達 F1=0.93、中位延遲 400ms、假警報率 7.8%。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.11110">S4VAD: Low-Latency State Space Voice Activity Detection</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Cohen, Netzer, Habi · arXiv 2609.11110 · 2026-09-10</div>
+      <div class="item-desc">首個基於 SSM（State Space Model）的 VAD 架構，可控制過去聲學證據的衰減速度以實現快速 onset detection。同時提出噪音標籤下的概率性 onset time 評估框架。LibriSpeech 混合音上 onset bias 僅 39ms，全面優於 CNN/RNN/Transformer 基線。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://aclanthology.org/2026.acl-long.2094/">SpeculativeETD: Efficient End-Turn Detection for Speech Chatbot</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Ok, Yoo, Lee · ACL 2026 Long Paper</div>
+      <div class="item-desc">提出 SpeculativeETD 框架：裝置端輕量 GRU 即時偵測非語音狀態 + 伺服器端 Wav2vec 區分 turn-end 與 pause。同時發布 OpenETD Dataset——首個公開的 end-turn detection 資料集。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.03321">Decoupling Turn-Taking from Semantics</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Li &amp; Chu · arXiv 2609.03321 · Accepted EMNLP 2026</div>
+      <div class="item-desc">提出從真實人-人口說對話學習 turn-taking 行為，同時用可配置的人-機文字對話塑造語義行為，克服 Neural FSM 框架中合成資料的限制。將輪替控制與語義生成解耦，各自以最合適的資料源訓練。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== Datasets ==================== -->
+      <div class="section" id="datasets">
+      <div class="section-header">
+      <span class="section-icon">📦</span>
+      <h2>5. 語音相關公開資料集</h2>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.10394">Candor-LR — 雙人對話視聽語音辨識資料集</a></span>
+      <span class="tag tag-dataset">新資料集</span>
+      </div>
+      <div class="item-source">arXiv 2609.10394 · Accepted IEEE SLT 2026 · 2026-09-09</div>
+      <div class="item-desc">從 CANDOR 語料庫（1,656 場自然雙人視訊會議）衍生，含 713.5 小時訓練 + 10.1 小時驗證 + 60.1 小時測試。語言：英語。授權：未明確標示。適用於視聽語音辨識（AVSR）研究。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.10366">AVSRBench — 多條件視聽語音辨識基準</a></span>
+      <span class="tag tag-dataset">新資料集</span>
+      </div>
+      <div class="item-source">arXiv 2609.10366 · Accepted IEEE SLT 2026 · 2026-09-09</div>
+      <div class="item-desc">評估 3 種 AVSR 架構在 6 種條件（廣播、固定文法、Lombard、讀唇員、非專業朗讀、自發多人對話）下的表現。語言：英語。為 AVSR 模型的跨場景泛化能力提供系統化測試。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.10765">French Full-Duplex Benchmark (FDB)</a></span>
+      <span class="tag tag-dataset">新資料集</span>
+      </div>
+      <div class="item-source">arXiv 2609.10765 · 2026-09-09</div>
+      <div class="item-desc">兩個子集：CALLFC-FDB（加拿大法語）與 MEDIA-FDB（歐洲法語），從真實口說資源構建。評估對話能力：暫停處理、輪替、反饋語、中斷等。語言：法語。首個法語全雙工對話能力評測基準。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://aclanthology.org/2026.acl-long.2094/">OpenETD Dataset — 首個公開 End-Turn Detection 資料集</a></span>
+      <span class="tag tag-dataset">新資料集</span>
+      </div>
+      <div class="item-source">Ok, Yoo, Lee · ACL 2026</div>
+      <div class="item-desc">隨 SpeculativeETD 論文釋出的首個公開 end-turn detection 資料集，用於評估語音聊天機器人的輪替結束偵測能力。語言：英語。具體規模與授權詳見論文。</div>
+      </div>
+      </div>
+      <!-- ==================== Footer ==================== -->
+      <div class="footer">
+      語音技術週報 · 自動產生於 2026-09-15 · 涵蓋 2026/09/08 – 09/14
+      </div>
+
+      <nav class="article-nav">
+        <a href="../index.html">← 回Tech Weekly</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js"></script>
+</body>
+</html>
