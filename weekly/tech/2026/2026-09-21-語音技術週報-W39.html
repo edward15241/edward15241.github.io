@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W39 · Personal Archive</title>
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../../../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="../../../index.html">Home</a></li>
+      <li><a href="../../../research/index.html">Research</a></li>
+      <li><a href="../../../weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="../../../weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="../../../travel/index.html">Travel</a></li>
+      <li><a href="../../../journal/index.html">Journal</a></li>
+      <li><a href="../../../writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
+    </ul>
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  title: 語音技術週報 W39
+  date: 2026-09-21
+  category: weekly/tech
+  visibility: public
+  tags: 
+  summary: 2026-09-15 – 2026-09-21 的科技新聞、論文與 AI 發展整理。
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-09-21">2026-09-15 – 09-21</time>
+      <h1 class="article__title">語音技術週報 W39</h1>
+
+      <div class="header">
+      <div class="header-eyebrow">Speech Tech Weekly</div>
+      <div class="header-meta">
+      <span>📅 2026/09/15 – 09/21</span>
+      <span>⏱ 閱讀時間 ~8 min</span>
+      </div>
+      </div>
+      <nav class="toc">
+      <a href="#asr">ASR 語音辨識</a>
+      <a href="#audio-llm">Audio LLM</a>
+      <a href="#s2s">Speech-to-Speech</a>
+      <a href="#turn-detection">Turn Detection</a>
+      <a href="#datasets">公開資料集</a>
+      </nav>
+      <div class="highlights">
+      <div class="highlights-title">⭐ 本週重點摘要</div>
+      <ol>
+      <li><strong>Google 發布 Gemini 3.8 Live + Extended Thinking</strong> — 語音對話模型頂尖之作，Extended Thinking 在 Artificial Analysis S2S Quality Index 以 82.6 分奪冠，支援 97 語言，可邊說話邊推理。</li>
+      <li><strong>Google 同步推出 Gemini 3.5 Transcribe</strong> — 專用 ASR 模型，串流 WER 4.0%、非串流 2.6%，支援 85+ 語言、Smart Transcription 自動去除語氣詞與口吃。</li>
+      <li><strong>StepFun 發布 StepAudio 3 系列</strong> — StepAudio 3 Gen（統一音訊生成模型，涵蓋 TTS/音效/音樂）+ StepAudio 3 Realtime（全雙工語音，Full-Duplex Bench 98.9%，Think-While-Speaking 架構）。</li>
+      <li><strong>Samsung 開源 Samsone 小型 Audio LLM</strong> — 99M–356M 參數可裝置端推論的音訊語言模型家族，附 Android demo app，Interspeech 2026 接收。</li>
+      <li><strong>Realtime-Venus：全雙工視聽互動系統</strong> — 螞蟻集團/清華發布 9B 雙模型架構，支援非同步委派推理，在 StreamingBench/OVO-Bench 等 6 項影像基準奪冠。</li>
+      </ol>
+      </div>
+      <!-- ==================== ASR ==================== -->
+      <div class="section" id="asr">
+      <div class="section-header">
+      <span class="section-icon">🎙</span>
+      <h2>1. 語音辨識 ASR / Speech Recognition</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://ai.google.dev/gemini-api/docs/models/gemini-3.5-transcribe">Google 發布 Gemini 3.5 Transcribe — 專用 ASR 模型</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">Google DeepMind · 2026-09-15（隨 3.8 Live 同步推出）</div>
+      <div class="item-desc">Google 發布首款專用語音轉文字模型 Gemini 3.5 Transcribe（非串流）與 Gemini 3.5 Transcribe Live（串流 WebSocket）。支援 85+ 語言，非串流 WER 2.6%、串流 WER 4.0%。Smart Transcription 模式自動去除語氣詞、口吃與重複，產生結構化可讀文本。支援自動語碼轉換、自訂詞彙偏置、說話者分離與字級時間戳。目前 Public Preview。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">模型發布</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://huggingface.co/microsoft/VibeVoice-ASR-Streaming-7B">Microsoft VibeVoice-ASR-Streaming — 串流說話者歸屬 ASR</a></span>
+      <span class="tag tag-model">模型發布</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Microsoft · arXiv 2609.02812 · 2026-09-15（arXiv 公開）</div>
+      <div class="item-desc">基於 LLM 的端到端串流說話者歸屬 ASR 模型，邊接收音訊邊即時輸出「誰說了什麼」。支援中英日韓等 10 語言與自訂 hotword。提供 7B 與 1.5B 兩個版本（MIT 授權），7B 在 13 項說話者歸屬評測中 12 項最佳或並列最佳。首個 LLM-based 端到端串流多說話者 ASR。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.20121">Alignment-Path Distillation from Non-streaming ASR-LLMs for Streaming Speech Recognition</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Yan Jia et al. · arXiv 2609.20121 · 2026-09-17</div>
+      <div class="item-desc">提出從非串流 ASR-LLM 教師模型蒸餾對齊路徑至串流學生模型的框架。從教師模型的 soft text-audio attention 提取單調對齊路徑，搭配 logit 與 hidden-state 蒸餾，解決傳統 CTC 強制對齊與 LLM-based ASR 對齊不一致的問題。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.19765">Multimodal Conversational Context for LLM-Based ASR</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Longhao Li et al. (Alibaba Token Foundry) · arXiv 2609.19765 · 2026-09-17</div>
+      <div class="item-desc">提出多模態對話上下文 ASR 框架，整合歷史語音與文字回應作為上下文。發布 MM-ContextASR Bench 基準，涵蓋 5 類場景。實驗發現 Qwen3-Omni 與 Step-Audio-2-mini 對不相關與錯誤歷史處理不佳，多模態上下文在實體召回率上優於純文字。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.21084">The Hidden Cost of Digits: Number Normalization and WER in ASR Systems</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Kacprzak, Fraś · arXiv 2609.21084 · 2026-09</div>
+      <div class="item-desc">揭示 ASR 評測中數字正規化對 WER 計算的系統性影響。不同正規化策略可導致顯著差異，對跨系統比較的公平性提出警示。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.14991">Typhoon ASR Streaming: Steerable Low-Latency Thai ASR with Real-Time Shallow Fusion</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Sirichotedumrong et al. · arXiv 2609.14991 · Accepted SLT 2026 (Demo)</div>
+      <div class="item-desc">針對泰語的可控低延遲串流 ASR 系統，採用即時 shallow fusion 結合外部語言模型，可在推論時調整領域偏好。SLT 2026 Demo Track 接收。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.14455">Grounded in Sound: RL with a Frozen Acoustic Judge to Curb ASR Insertion Hallucinations</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Xiong et al. · arXiv 2609.14455 · Accepted SLT 2026</div>
+      <div class="item-desc">利用凍結的聲學判別器作為 RL 獎勵信號，抑制 ASR 系統的幻覺插入（hallucination insertion）問題。SLT 2026 接收。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.15218">Word Timestamps and Speaker Attribution with a Non-Autoregressive LLM</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Kons et al. · arXiv 2609.15218 · Submitted to ICASSP 2027</div>
+      <div class="item-desc">以非自回歸 LLM 同時產生字級時間戳與說話者歸屬，實現單一模型內的精確對齊與多說話者分離。投稿 ICASSP 2027。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== Audio LLM ==================== -->
+      <div class="section" id="audio-llm">
+      <div class="section-header">
+      <span class="section-icon">🧠</span>
+      <h2>2. Audio LLM</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">模型發布</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://github.com/SamsungLabs/samsone">Samsone — 開源小型 Audio Language Model 家族</a></span>
+      <span class="tag tag-model">模型發布</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Samsung Labs · arXiv 2609.21666 · Accepted Interspeech 2026</div>
+      <div class="item-desc">Samsung 開源 Samsone 系列小型音訊語言模型（99M / 134M / 356M），專為裝置端推論設計。提供 PyTorch 與 ExecuTorch（行動端最佳化）checkpoint，附開源 Android 即時推論 demo app。Interspeech 2026 接收。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.12945">StepAudio 3 Gen — 統一音訊生成模型</a></span>
+      <span class="tag tag-model">模型發布</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">StepFun · arXiv 2609.12945 · 2026-09-15</div>
+      <div class="item-desc">StepFun 發布通用音訊生成模型，統一 TTS、聲音設計、人聲、音效與音樂生成。核心為離散自回歸架構搭配 RVQ Adaptor（12.5 Hz，16×2048 殘差碼本），跳脫主流 diffusion Transformer 路線。干擾感知漸進式預訓練保留 LLM 文字能力。在 TTS 與聲音設計均達 SOTA。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.11864">RetroThinker: Enabling Retrospective Thinking in Speech LLMs</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Shih et al. · arXiv 2609.11864 · Accepted SLT 2026</div>
+      <div class="item-desc">提出多階段後訓練框架，讓語音 LLM（Moshi）在推論時自我驗證並修正 CoT 步驟。結合回顧性思維 SFT 資料與長度感知 DPO。GSM8K 上在相當延遲下準確度絕對提升 11%，有效改善語音模型推理的 accuracy-latency 取捨。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.13076">MP-Bench: Evaluating Voice Agents as a Multiparty Conversation Participant</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Shih et al. · arXiv 2609.13076 · Accepted EMNLP 2026 Findings</div>
+      <div class="item-desc">首個評估語音 Agent 多人對話參與能力的基準。測試模型在多方會話中的聽解、回應時機與內容品質。EMNLP 2026 Findings 接收。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.11252">AudioICL-Bench: Benchmark for Large Audio Language Model In-Context Learning</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Chen et al. · arXiv 2609.11252 · Accepted SLT 2026</div>
+      <div class="item-desc">大型音訊語言模型 in-context learning 能力的系統性評測基準，測試模型從少量示範中學習音訊任務的能力。SLT 2026 接收。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.20081">Reading Emotions in the Token Space: Discriminative Adaptation of SpeechLLMs for Emotion Recognition</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Watawana et al. · arXiv 2609.20081 · 2026-09</div>
+      <div class="item-desc">提出在 token 空間進行判別式適應的方法，將 Speech LLM 高效轉化為語音情緒辨識模型，無需大規模標註資料。展示 SpeechLLM 表徵的情緒區分能力。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.17981">Encoder Awakening via Adapters: Domain-Adaptive Fine-tuning of Speech-LLMs</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Shi et al. · arXiv 2609.17981 · Accepted SLT 2026</div>
+      <div class="item-desc">透過 adapter 「喚醒」凍結的語音編碼器，實現 Speech-LLM 的高效領域適應微調。在保持通用能力的同時提升特定領域效能。SLT 2026 接收。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.13195">Machine Unlearning for Speech Question Answering in Large Audio-Language Models</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Zhe Liu · arXiv 2609.13195 · 2026-09</div>
+      <div class="item-desc">探討大型音訊語言模型的機器遺忘（machine unlearning）問題，讓模型能選擇性遺忘特定語音 QA 知識，解決隱私合規需求。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== S2S ==================== -->
+      <div class="section" id="s2s">
+      <div class="section-header">
+      <span class="section-icon">🔄</span>
+      <h2>3. Speech-to-Speech (S2S)</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://blog.google/innovation-and-ai/technology/developers-tools/build-real-time-voice-applications-gemini-audio/">Google 發布 Gemini 3.8 Live + Extended Thinking 即時語音對話模型</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">Google DeepMind · 2026-09-15</div>
+      <div class="item-desc">Google 發布最先進即時語音對話模型。標準版 3.8 Live 針對規模與成本最佳化，支援流暢對話與視覺接地；Extended Thinking 版加入多步推理，可邊說話邊思考（以「讓我查查看…」等語句開場並即時敘述進度）。Extended Thinking 以 82.6 分奪得 Artificial Analysis S2S Quality Index 榜首，超越 GPT-Live-1-Astra 與 Grok Voice Think Fast 2.0。支援 97 語言，同時整合視覺輸入。開發者可透過 Gemini API 與 AI Studio 取用。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://elevenlabs.io/v3">ElevenLabs Eleven v3 Conversational 即時語音模型</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">ElevenLabs · 本週持續推廣中</div>
+      <div class="item-desc">ElevenLabs 的 Eleven v3 Conversational（3 月 GA）持續在本週 Interspeech 2026 前夕活躍推廣。特色包括 Audio Tags 情感控制、複雜文本錯誤減少 68%、Text-to-Dialogue WebSocket 支援多角色即時對話、70+ 語言。適用語音 Agent 與互動角色。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">模型發布</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.14005">StepAudio 3 Realtime — 全雙工語音，Think-While-Speaking</a></span>
+      <span class="tag tag-model">模型發布</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">StepFun · arXiv 2609.14005 · 2026-09-15</div>
+      <div class="item-desc">StepFun 全雙工語音互動模型，核心為 Think-While-Speaking 架構，在說話同時並行執行內部推理。在 Artificial Analysis Full-Duplex Bench 取得 98.9%（對話動態維度排名第一），語音推理 99.7%，ASR WER 1.7%。MMSU 得分 90.6。與 StepAudio 3 Gen 形成語音生態系完整佈局。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.13814">Realtime-Venus — 全雙工視聽互動系統</a></span>
+      <span class="tag tag-model">模型發布</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">螞蟻集團 &amp; 清華大學 · arXiv 2609.13814 · 2026-09-15</div>
+      <div class="item-desc">包含 Realtime-Venus-Omni（音視覺）與 Realtime-Venus-Audio（語音）兩個 9B 模型。雙迴路運行時架構：前景持續對話，背景由 Realtime-Venus-Harness 非同步執行工具與推理，結果整合回對話。Omni 在 StreamingBench (70.2%)、OVO-Bench (64.7%)、Daily-Omni (81.3%) 等 6/8 影像基準奪冠。Audio 版在 MMAU (78.0%) 等 4/8 語音基準領先。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.20995">Voice-Light: Full-Duplex Cascaded Voice Agent with Causal Turn-Taking</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Bertil Braun · arXiv 2609.20995 · 2026-09</div>
+      <div class="item-desc">完整的全雙工級聯語音 Agent 研究專案，涵蓋合成對話資料產生、因果式輪替偵測 adapter 訓練、混合輪替策略、推測性生成、部署架構。使用 Nemotron 串流 ASR 搭配小型因果 turn-taking adapter。開源程式碼與 demo。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.13909">DiTAR+: Dual Optimization for Robust Autoregressive Diffusion Speech Synthesis</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Zhang et al. · arXiv 2609.13909 · 2026-09</div>
+      <div class="item-desc">提出雙重最佳化的自回歸擴散語音合成架構，提升合成穩健性。結合自回歸序列建模與擴散精細化，改善長句生成品質。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.12855">AlignDPO: Preference-Gated Alignment for Reducing Hallucination in Decoder-Only TTS</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Zhou et al. · arXiv 2609.12855 · Accepted SLT 2026</div>
+      <div class="item-desc">針對 decoder-only TTS 的偏好對齊方法，透過 DPO 減少語音合成中的幻覺現象。SLT 2026 接收。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== Turn Detection ==================== -->
+      <div class="section" id="turn-detection">
+      <div class="section-header">
+      <span class="section-icon">🔀</span>
+      <h2>4. Turn Detection &amp; Semantic VAD</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://blog.google/innovation-and-ai/technology/developers-tools/build-real-time-voice-applications-gemini-audio/">Gemini 3.5 Transcribe Live 內建多種 VAD 策略</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">Google DeepMind · 2026-09-15</div>
+      <div class="item-desc">Gemini 3.5 Transcribe Live 的串流 WebSocket 端點支援多種 VAD 策略，可根據應用場景選擇不同的語音活動偵測模式。結合 Smart Transcription 的語意去噪能力，為生產級語音 Agent 提供更精準的輪替控制。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.19856">Foreground Voice Activity Detection: Learning Speaker Selectivity from Supervision</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Yang et al. · arXiv 2609.19856 · 2026-09-17</div>
+      <div class="item-desc">提出「前景 VAD」概念，模型學習從監督信號中區分目標說話者與背景語音，只偵測前景（目標）說話者的語音活動。解決傳統 VAD 無法區分說話者的問題。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.13445">Causal Analysis and Mitigation of Spurious Onsets in Full-Duplex Speech LLMs</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.13445 · 2026-09</div>
+      <div class="item-desc">因果分析全雙工語音 LLM 中虛假起始（spurious onset）的成因與緩解方法。揭示模型在全雙工場景下的不當觸發機制，並提出系統性修正。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.20995">Voice-Light: Hybrid Turn-Taking Policy（見 S2S 段）</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Bertil Braun · arXiv 2609.20995</div>
+      <div class="item-desc">Voice-Light 專案同時貢獻了混合輪替策略研究：結合因果 turn-taking adapter（在 Nemotron encoder features 上訓練）與推測性生成，在三場景延遲研究中驗證效果。含合成與真實雙說話者資料的因果 20 秒窗口 + 80ms 密集標註方法。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== Datasets ==================== -->
+      <div class="section" id="datasets">
+      <div class="section-header">
+      <span class="section-icon">📊</span>
+      <h2>5. 語音相關公開資料集</h2>
+      </div>
+      <div class="subsection">
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.13413">CVSS-X — 28 語言多語言語音翻譯語料庫</a></span>
+      <span class="tag tag-dataset">資料集</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Gris et al. · arXiv 2609.13413 · SALMA Workshop @ EMNLP 2026</div>
+      <div class="item-desc">將原 CVSS 語料庫從英語輸入擴展至 28 目標語言（涵蓋日耳曼、羅曼、斯拉夫、CJK 等 12 語系），每語言約 24 萬平行語音對，總計超過 16,000 小時（原版 8 倍）。提供 Canonical（固定參考語音）與 Transferred（跨語言語音複製）兩版本。CC-BY-NC 4.0 授權。<br>📥 <a href="https://huggingface.co/datasets/lgris/XVSS-X">HuggingFace</a></div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.14542">Neyshekar — 開放波斯語朗讀語音語料庫</a></span>
+      <span class="tag tag-dataset">資料集</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Amirivojdan et al. · arXiv 2609.14542 · 2026-09</div>
+      <div class="item-desc">開放波斯語朗讀語音語料庫，附程式碼與標註，填補波斯語 ASR 訓練資料不足。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.15666">OpenEnded — 開放式回答語音評測語料庫</a></span>
+      <span class="tag tag-dataset">資料集</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Chen et al. · arXiv 2609.15666 · SLT 2026</div>
+      <div class="item-desc">用於口語能力評估的開放式回答語音語料庫，結合人工標註與音訊語言模型監督標註。SLT 2026 發表。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.12432">VoxTubeS — 說話者匿名化合成語音語料庫</a></span>
+      <span class="tag tag-dataset">資料集</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Zhang et al. · arXiv 2609.12432 · 2026-09</div>
+      <div class="item-desc">可自由分發的說話者匿名化合成語音語料庫，解決語音資料集因隱私限制難以分享的問題。含合成品質分析。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.18521">VoiceTrace — Who-Said-What 語音檢索基準</a></span>
+      <span class="tag tag-dataset">資料集</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Yee et al. · arXiv 2609.18521 · 2026-09</div>
+      <div class="item-desc">「誰說了什麼」語音檢索基準與框架，結合說話者辨識與內容搜尋的複合任務。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.14145">Mandarin Kinship Speech Dataset — 普通話親屬語音資料集</a></span>
+      <span class="tag tag-dataset">資料集</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Sun et al. · arXiv 2609.14145 · Accepted SLT 2026</div>
+      <div class="item-desc">非控制環境普通話親屬語音資料集，搭配基於 Transformer 的音訊親屬驗證方法。SLT 2026 接收。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.13792">VoiceMOS Challenge 2026 — 語音品質評估挑戰賽</a></span>
+      <span class="tag tag-dataset">資料集</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Huang et al. · arXiv 2609.13792 · 2026-09</div>
+      <div class="item-desc">VoiceMOS Challenge 2026 評估計畫，涵蓋語音增強、情感 TTS 與口音 TTS 系統的主觀品質評測。提供標準化評測資料與流程。</div>
+      </div>
+      </div>
+      </div>
+      <div class="footer">
+      <p>語音技術週報 W39 · 2026/09/15 – 09/21 · 資料來源：arXiv, Google, StepFun, Microsoft, Samsung, HuggingFace</p>
+      <p>Interspeech 2026（09/28–10/01, Sydney）倒數一週，多篇 accepted paper 本週集中釋出</p>
+      </div>
+
+      <nav class="article-nav">
+        <a href="../index.html">← 回Tech Weekly</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js"></script>
+</body>
+</html>
