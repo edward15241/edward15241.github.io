@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W40 · Personal Archive</title>
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../../../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="../../../index.html">Home</a></li>
+      <li><a href="../../../research/index.html">Research</a></li>
+      <li><a href="../../../weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="../../../weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="../../../travel/index.html">Travel</a></li>
+      <li><a href="../../../journal/index.html">Journal</a></li>
+      <li><a href="../../../writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
+    </ul>
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  title: 語音技術週報 W40
+  date: 2026-09-28
+  category: weekly/tech
+  visibility: public
+  tags: 
+  summary: 2026-09-22 – 2026-09-28 的科技新聞、論文與 AI 發展整理。
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-09-28">2026-09-22 – 09-28</time>
+      <h1 class="article__title">語音技術週報 W40</h1>
+
+      <div class="header">
+      <div class="header-eyebrow">Speech Tech Weekly</div>
+      <div class="header-meta">
+      <span>📅 2026/09/22 – 09/28</span>
+      <span>⏱ 閱讀時間 ~10 min</span>
+      </div>
+      </div>
+      <nav class="toc">
+      <a href="#asr">ASR 語音辨識</a>
+      <a href="#audio-llm">Audio LLM</a>
+      <a href="#s2s">Speech-to-Speech</a>
+      <a href="#turn-detection">Turn Detection</a>
+      <a href="#datasets">公開資料集</a>
+      </nav>
+      <div class="highlights">
+      <div class="highlights-title">⭐ 本週重點摘要</div>
+      <ol>
+      <li><strong>阿里巴巴 Apsara 大會發布 Qwen-Audio-3.1 五模型套件</strong> — 包含升級版 ASR、TTS、Realtime，加上全新 ASR-Next（多說話者+情緒偵測）與 TTS-Next（統一語音/音效/背景音生成），語音 API 價格最高降 95%。</li>
+      <li><strong>Meta 開源 Omnilingual ASR，支援 1,600+ 語言</strong> — 史上覆蓋語言最多的 ASR 系統，含 500 種此前從未有 AI 轉錄能力的低資源語言，Apache 2.0 授權。</li>
+      <li><strong>NVIDIA 開源 Nemotron 3 Diarization</strong> — 100M 參數端到端說話者分離模型，單一模型替代傳統分段+嵌入管線，可辨識最多 8 位說話者，商用友善授權。</li>
+      <li><strong>科大訊飛 Spark ASR 2.0</strong> — 新一代中文語音辨識大模型，支援 12 語言 / 38 種方言，帶噪音場景準確率大幅提升，推進「從聽清到聽懂」的流暢轉寫。</li>
+      <li><strong>YODAS v3 — 史上最大開放語音資料集</strong> — 超過 110 萬小時、48kHz 多聲道音訊，涵蓋 147 種語言，CC BY 3.0 授權。</li>
+      </ol>
+      </div>
+      <!-- ==================== ASR ==================== -->
+      <div class="section" id="asr">
+      <div class="section-header">
+      <span class="section-icon">🎙</span>
+      <h2>1. 語音辨識 ASR / Speech Recognition</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://pandaily.com/iflytek-spark-asr-2-0-noise-dialect-code-switch">科大訊飛發布 Spark ASR 2.0 — 新一代語音辨識大模型</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">科大訊飛 · 2026-09-23（9/24 起訊飛輸入法灰度上線）</div>
+      <div class="item-desc">科大訊飛發布 Spark ASR 2.0，目標從「聽清」邁向「聽懂」——自動移除語氣詞，優化標點、數字與單位輸出，產生流暢可讀文本。支援 12 語言、38 種中文方言/少數民族語言變體，帶口音普通話準確率 98.7%（較 v1.0 提升 4.2 百分點）。噪音、低音量、快語速及兒童語音場景均有顯著改善。推論成本約增加 10%。計劃整合至 AI 眼鏡、智慧辦公本與訊飛聽見系列產品。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://the-decoder.com/alibaba-launches-qwen-audio-3-1-with-five-new-models-and-slashes-ai-audio-prices-by-up-to-95-percent/">阿里巴巴 Apsara 大會發布 Qwen-Audio-3.1 ASR 升級</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">阿里巴巴 · 2026-09-22（Apsara Conference）</div>
+      <div class="item-desc">Qwen-Audio-3.1 ASR 系列包含兩個模型：升級版 ASR 自動清除語氣詞與重複，改善多語言/方言辨識；全新 ASR-Next 可同時標記說話者身份與時間戳，偵測語音情緒、環境音與機械噪音。ASR-Flash-Filetrans 支援長篇語音辨識/翻譯，含熱詞、分離與方言控制。ASR API 價格最高降 95%。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://ai.meta.com/blog/omnilingual-asr-advancing-automatic-speech-recognition/">Meta 開源 Omnilingual ASR — 支援 1,600+ 語言</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">Meta AI Research · 2026-09-24</div>
+      <div class="item-desc">Meta 發布並開源首個大規模 ASR 系統，支援超過 1,600 種語言，其中 500 種為此前從未有 AI 轉錄能力的低資源語言。核心為 7B 參數的 Omnilingual wav2vec 2.0 自監督預訓練模型，搭配 encoder-decoder 架構實現零樣本跨語言泛化。同步釋出涵蓋 350 種弱勢語言的 Omnilingual ASR Corpus。Apache 2.0 授權。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://www.marktechpost.com/2026/09/23/nvidia-releases-nemotron-3-diarization/">NVIDIA 開源 Nemotron 3 Diarization — 端到端說話者分離</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">NVIDIA · 2026-09-23</div>
+      <div class="item-desc">NVIDIA 發布 Nemotron 3 Diarization，100M 參數開源說話者分離模型，以單一端到端模型替代傳統分段+嵌入管線。可辨識最多 8 位說話者，最低 320ms 間隔產生標籤。訓練資料含約 10,000 小時真實對話與 82,611 小時模擬多說話者音訊，涵蓋 21 種語言。搭配 Parakeet V2（600M 參數 ASR）可實現串流分離轉寫。OpenMDW License 1.1（允許商用）。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://www.sarvam.ai/blogs/introducing-saaras-v4">Sarvam AI 發布 Saaras V4 — 22 種印度語言 STT</a></span>
+      <span class="tag tag-news">產業新聯</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">Sarvam AI · 2026-09-25</div>
+      <div class="item-desc">Saaras V4 為 3B+ 參數混合狀態空間解碼器架構，支援全部 22 種印度官方語言及全球英語（其中 10 種語言無其他商用 STT 方案）。提供五種輸出模式（逐字、正規化、混語、拉丁化、翻譯），支援關鍵字提示，串流 TTFT 低於 150ms。語言辨識錯誤率 5.22%，前 10 大語言 2.9%。已整合 LiveKit Agents、Pipecat Agents 與 Vercel AI SDK。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://www.engadget.com/2267230/everything-announced-at-meta-connect-2026/">Meta Connect 2026 — AI 眼鏡與語音辨識</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">Meta · 2026-09-23~24（Meta Connect 2026）</div>
+      <div class="item-desc">Meta Connect 2026 發布多款 AI 硬體：Ray-Ban Meta Audio（無相機 AI 眼鏡，$349，內建即時語音翻譯與 Muse AI 助理）、Ray-Ban Meta Gen 3（12MP 相機、六麥克風陣列、9 小時續航）。Wearables Device Access Toolkit 1.0 正式推出，開發者可透過 "Hey Meta" 語音指令延伸 App 至 AI 眼鏡。ASR 持續向邊緣裝置遷移。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.29428">Agentic-GER: Terminology Recovery in Long-Form Speech Using Global Context</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Yanqiao Zhu et al. · arXiv 2609.29428 · 2026-09-24</div>
+      <div class="item-desc">以 LLM-based Agent 進行長篇語音的術語修正。利用完整轉寫的全局上下文識別可疑術語，並策略性地重新轉錄相關音訊片段以驗證修正。在中文音訊上相較 Whisper 基線達 36.8% 相對 B-CER 降幅，跨多個 ASR 系統均有一致改善。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.28727">PTC-Bias: Phoneme-Level Temporal Competition for Post-Decoding Correction in Speech LLMs</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Zhiqi Ai et al. · arXiv 2609.28727 · 2026-09-23</div>
+      <div class="item-desc">提出兩階段後解碼修正框架：PTC Retrieval 執行幀同步音素解碼與候選發音的時域競爭，local competition 修正同音字與分段錯誤。重用現有音素後驗機率，無需額外前向計算，實現 23.4% 與 23.9% 的相對 biased-WER 降幅。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.27289">Ruby-ASR: Joint Orthographic and Lexical-Reading Recognition for Japanese</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Hao Shi et al. · arXiv 2609.27289 · 2026-09-23</div>
+      <div class="item-desc">針對日語 ASR 中同字異音問題，引入 ruby 式標記將每個書寫區段與其實際發音綁定。以 Qwen3-ASR 為骨幹，搭配 mora 層級 CTC 輔助目標，同時輸出正字法與讀音。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.27980">Six Layers Less: Encoder Pruning for Whisper with Label-Free Recovery</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Rasmus Aagaard et al. · arXiv 2609.27980 · 2026-09-23</div>
+      <div class="item-desc">基於 WER 影響分析，移除 Whisper 編碼器 6 層（佔 18.5%），再透過無標籤語音資料蒸餾恢復效能。剪枝模型與程式碼公開釋出。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.29800">Adaptive Fisher-Whitened Cross-Covariance for Low-Resource Speech Recognition</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Asmee Mishra et al. · arXiv 2609.29800 · 2026-09-24</div>
+      <div class="item-desc">應用 Fisher-Whitened Cross-Covariance Analysis（FCCA）對 Whisper 與 Qwen3-ASR 進行低資源語言的參數高效微調。提出 Asymmetric-Coupled 與 Adaptive-Rank 變體，在相同參數預算下優於 LoRA。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.28877">Learning New Words from Unlabeled Test Data in ASR</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Mengqi Wang et al. · arXiv 2609.28877 · 2026-09-24</div>
+      <div class="item-desc">提出測試時適應方法，讓 ASR 系統從未標註資料中學習 OOV 詞彙。使用凍結 CTC 聲學模型與帶適應模組的語言模型，在 LibriSpeech 上達 14.97% 相對 OOV CER 降幅。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.30160">Token-Level Tolerance to Transcription Ambiguity for ASR</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Saurabh Kumar et al. · arXiv 2609.30160 · 2026-09-24 · Submitted to ICASSP 2027</div>
+      <div class="item-desc">提出 token 層級 Omni-temporal Classification（OTC），在 CTC 對齊圖中加入通配路徑以處理轉寫歧義。跨 19 種語言與 3 個語料庫平均達 9.45% 相對 WER 降幅。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.28739">Temporal Taxation Compounds Under Post-Training Compression of Whisper</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Srishti Ginjala et al. · arXiv 2609.28739 · 2026-09-23</div>
+      <div class="item-desc">分析 Whisper-large-v3 後訓練壓縮（剪枝、量化、蒸餾）對不同人口群體 WER 差異的影響。50% Wanda 剪枝使 Black/AA 與 Asian 說話者間的 WER 差距翻倍；量化在西非口音上導致嚴重轉寫退化；蒸餾反而縮小了差距。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.29798">Benchmarking ASR for Adolescent Health Communication in Ghanaian Languages</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Stephen E. Moore et al. · arXiv 2609.29798 · 2026-09-24</div>
+      <div class="item-desc">在 Twi、Dagbani 與 Ewe 三種迦納語言上基準測試 5 個 ASR 系統，以 Qwen3-ASR-0.6B 進行監督式領域適應取得顯著錯誤降低。透過 KasaHealth 語音優先健康應用程式進行實地驗證。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.26488">Spoken Language Models that Think Aloud</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Junyi Ao et al. · arXiv 2609.26488 · 2026-09-22</div>
+      <div class="item-desc">提出非同步雙流框架，讓語音語言模型在 Chain-of-Thought 推理暫停時以上下文語音提示填充，大幅減少推理期間的可感知靜默，同時保持回答品質。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== Audio LLM ==================== -->
+      <div class="section" id="audio-llm">
+      <div class="section-header">
+      <span class="section-icon">🧠</span>
+      <h2>2. Audio LLM</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://pandaily.com/alibaba-qwen-livetranslate-audio-3-1-asr-tts-realtime">阿里巴巴 Qwen-Audio-3.1 五模型套件 — 語音 AI 全棧升級</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">阿里巴巴 · 2026-09-22~23（Apsara Conference 2026）</div>
+      <div class="item-desc">Qwen-Audio-3.1 包含五個模型：升級版 ASR（多語言/方言、自動去語氣詞）、ASR-Next（多說話者+情緒+環境音）、TTS（跨語言聲音轉移、情緒/語速控制）、TTS-Next（統一 LM+diffusion 框架，單次生成語音+音效+背景音）、Realtime（全雙工對話、感知用戶情緒的共情回應）。API 價格 TTS 降 70%、Realtime 降 85%、ASR 降最高 95%。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/">Google 發布 Gemini 3.8 Flash TTS 與 Flash-Lite TTS</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">Google · 2026-09-23</div>
+      <div class="item-desc">Google 推出兩款語音生成模型：Flash TTS 支援 130 語言，可從自然語言提示創建客製聲音（角色、口音、特質），支援 10-30 秒錄音聲音克隆，可擴展至 2,000+ 生產用聲音。Flash-Lite TTS 支援 101 語言，針對大量配音與語音 Agent 場景的成本優化版本，具備精細語調/節奏控制。兩款均在 Voice Arena 基準奪冠。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://community.openai.com/t/new-realtime-models-on-the-api-gpt-realtime-2-1-and-gpt-realtime-2-1-mini/1385896">OpenAI 發布 GPT-Realtime-2.1 與 2.1-mini</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">OpenAI · 2026-09-26（定價頁更新）</div>
+      <div class="item-desc">OpenAI 推出 GPT-Realtime-2 的增量更新版本，改善英數辨識、靜音/噪音處理與中斷行為，p95 延遲至少降低 25%。mini 變體為成本敏感的語音應用提供更便宜選項。128K token 上下文，支援可調推理強度。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.23589">Listen Then Reason: Perception-Grounded Test-Time RL for Large Audio-Language Models</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Jiaheng Dong et al. · arXiv 2609.23589 · 2026-09-24</div>
+      <div class="item-desc">分析大型音訊語言模型如何整合聲學證據進行推理，量化各層感知依賴度，發現更強的聲學依賴與更高準確度相關。提出 test-time RL 方法，無需標註資料即可改善音訊推理能力。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.24812">MSI-Bench: Evaluating Multi-Speaker Voice Interaction for Collaborative AI Agents</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.24812 · 2026-09-24</div>
+      <div class="item-desc">首個多說話者語音互動基準，測試 AI Agent 的說話者範圍記憶、資訊揭露/權限約束與交織群組推理。含 1,152 測試案例（英/中）。最佳模型僅 66.8%（英）/ 54.5%（中）通過所有評分標準，開源模型主要在感知「誰說了什麼」上失敗。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.25176">Qwen-Audio-3.1-Realtime: Towards Reliable Agentic Voice Interaction</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Qwen Team · arXiv 2609.25176 · 2026-09-22</div>
+      <div class="item-desc">Qwen-Audio-3.1-Realtime 模型的技術論文，描述其可靠的 agentic 語音互動架構，包含全雙工對話、smart turn 偵測、函數呼叫、網路搜尋與聲音克隆等能力。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.30167">Do Audio Language Models Hear and Read Distinctive Features Alike?</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Yuanhao Chen et al. · arXiv 2609.30167 · 2026-09-24</div>
+      <div class="item-desc">分析音訊語言模型是否在語音與文字輸入間一致表徵語音區別特徵，跨 6 個模型、7 種特徵、15 種語言檢驗最小對立音素對。發現模型家族架構比模型大小更決定特徵表徵方式。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== S2S ==================== -->
+      <div class="section" id="s2s">
+      <div class="section-header">
+      <span class="section-icon">🔄</span>
+      <h2>3. Speech-to-Speech (S2S)</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://pandaily.com/alibaba-qwen-livetranslate-audio-3-1-asr-tts-realtime">阿里巴巴 Qwen3.8-LiveTranslate 即時語音翻譯</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">阿里巴巴 · 2026-09-22（Apsara Conference）</div>
+      <div class="item-desc">阿里巴巴在 Apsara 大會展示 Qwen3.8-LiveTranslate，將即時語音翻譯的 LAAL（長度自適應平均延遲）從約 2.8 秒降至約 2.3 秒，朝更自然的同步口譯推進。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://www.deepl.com/en/blog/deepl-voice-preserves-your-voice-across-languages">DeepL Voice 語音保留即時翻譯更新</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">DeepL · 2026-09 持續推廣中</div>
+      <div class="item-desc">DeepL Voice AI 新模型在 30+ 語言的即時翻譯中保留說話者的音色、語調與情感。在 Salesforce Dreamforce 2026 為 50 個舞台、1,000+ 場次提供即時翻譯。語音保留在翻譯中的產品化持續加速。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">模型發布</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/html/2609.21967">NemotronLabs VoiceChat — 開源全雙工 S2S + 工具呼叫</a></span>
+      <span class="tag tag-model">模型發布</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">NemotronLabs · arXiv 2609.21967 · 2026-09-22</div>
+      <div class="item-desc">開源全雙工 speech-to-speech 模型，首批結合全雙工語音互動與工具呼叫（tool calling）能力的開源方案之一。可在對話進行中同時調用外部工具。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.08956">TASTE2: Text-Aligned Incremental Dialogue Stack for Full-Duplex</a></span>
+      <span class="tag tag-model">模型發布</span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">MediaTek Research / NTU / NVIDIA · arXiv 2609.08956 · 2026-09</div>
+      <div class="item-desc">將 utterance-level 的 TASTE 擴展為增量式對話堆疊，實現全雙工語音互動。TASTE2 VoiceBot 逐步處理用戶語音、串流合成音訊，並在用戶插話時停止。保留 98.2% 的純文字準確度。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.28806">A Harness for Synthesizing Diverse Naturalistic Full-Duplex Conversations</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.28806 · 2026-09-23 · Submitted to ICASSP 2027</div>
+      <div class="item-desc">全雙工自然對話合成管線，涵蓋英語與中文的 42 種現象（8 大類）：包括打斷、回饋語、暫停辨別等，附帶幀級系統動作標籤。直接解決全雙工對話系統的訓練資料稀缺問題。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.19596">Full-Duplex Speech Models Take the Floor When Asked, Not When Needed</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.19596 · 2026-09-22</div>
+      <div class="item-desc">研究全雙工模型能否主動發言以糾正錯誤資訊或警告危險。跨五個模型家族，被直接詢問與沉默比事實錯誤或危險更能觸發模型發言。錯誤挑戰率僅 0.14-0.15；危險警告率僅 0.04-0.07。揭示當前全雙工模型在自主介入方面的根本不足。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/pdf/2609.19334">A Frontend-Backend Architecture for Tool Calls in Full-Duplex Speech Models</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.19334 · 2026-09-22</div>
+      <div class="item-desc">提出全雙工語音模型的前後端分離工具呼叫架構，將語音處理（前端）與工具執行（後端）解耦，實現對話進行中的並行工具使用。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.17360">ECHO: Matched-Contrast Benchmark for Chinese Full-Duplex Turn-Taking</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.17360 · 2026-09-22</div>
+      <div class="item-desc">針對中文全雙工輪替的配對診斷基準。每對案例具有相同重疊轉寫但不同對話上下文，用以區分「打斷」與「回饋語」。大多數系統表現出明顯的讓步（Yield）偏見。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== Turn Detection ==================== -->
+      <div class="section" id="turn-detection">
+      <div class="section-header">
+      <span class="section-icon">🔀</span>
+      <h2>4. Turn Detection &amp; Semantic VAD</h2>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">產業新聞</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://www.datastudios.org/post/alibaba-launches-qwen-audio-3-1-realtime-plus-262k-context-real-time-voice-agents">Qwen-Audio-3.1-Realtime-Plus smart_turn 語義輪替偵測</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      <span class="tag tag-model">模型發布</span>
+      </div>
+      <div class="item-source">阿里巴巴 Qwen · 2026-09-23</div>
+      <div class="item-desc">Qwen-Audio-3.1-Realtime-Plus 具備 262K token 上下文，引入 smart_turn 模式——結合聲學 VAD 與語義理解進行輪替偵測，搭配傳統 server_vad 與 push-to-talk 三種互動模式。支援全雙工語音互動與插話（barge-in）。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://www.assemblyai.com/blog/turn-detection-endpointing-voice-agent">AssemblyAI 語義斷點偵測技術文章</a></span>
+      <span class="tag tag-news">產業新聞</span>
+      </div>
+      <div class="item-source">AssemblyAI · 2026-09-23</div>
+      <div class="item-desc">AssemblyAI 發表語義斷點偵測（semantic endpointing）技術文章，介紹其 Universal-Streaming 方案如何以上下文語義理解取代傳統靜音偵測，判斷用戶是否已說完。</div>
+      </div>
+      </div>
+      <div class="subsection">
+      <div class="subsection-title">論文</div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.11066">Less can be More: What Aspects of Speech Drive End-of-Turn Detection</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Rini Sharon et al. · arXiv 2609.11066 · 2026-09</div>
+      <div class="item-desc">對聲學、韻律與語義信號進行控制消融實驗。關鍵發現：聲學-韻律特徵單獨即可在 400ms 延遲下達到 0.93 utterance F1；加入文字反而增加誤報。輪替主要透過語調與靜音模式傳達，而非語義完整性——挑戰「語義 VAD」敘事。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.11110">Low-Latency State Space Voice Activity Detection with Robust Onset Time Evaluation</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Elad Cohen et al.（Arm Holdings）· arXiv 2609.11110 · 2026-09</div>
+      <div class="item-desc">引入帶噪時序標籤的概率框架評估 VAD 起始時間，提出狀態空間架構實現低延遲 VAD 與穩健的起始時間偵測。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.12623">SteerDuplex: Steerable Duplex Speech Dialogue Models</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.12623 · 2026-09</div>
+      <div class="item-desc">提出可控式全雙工語音對話模型的方法，分析各次模型運行間的暫停/插話行為差異，實現對輪替策略的精細控制。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.13445">Causal Analysis and Mitigation of Spurious Onsets in Full-Duplex Speech LLMs</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.13445 · 2026-09</div>
+      <div class="item-desc">分析全雙工語音 LLM 中的偽發話（spurious onset）問題——模型不應說話時卻開始說話——並提出因果分析與緩解技術。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.29371">BanglaTurn: Whisper-Based End-of-Turn Detection in Bangla Speech</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">Mizbaul Haque Maruf · arXiv 2609.29371 · 2026-09-24</div>
+      <div class="item-desc">引入 35,374 樣本的孟加拉語語音輪替偵測資料集，以 Whisper 編碼器為基礎的模型達 84.33% 準確率（基線 69.28%），假陰性從 51.57% 降至 7.55%，端到端 CPU 延遲 165-191ms。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.12872">DuplexDrama: Synthesized Dialogue Dataset with Full-Duplex Behaviors</a></span>
+      <span class="tag tag-paper">論文</span>
+      </div>
+      <div class="item-source">arXiv 2609.12872 · 2026-09</div>
+      <div class="item-desc">大規模合成對話資料集，涵蓋全雙工行為：重疊語音、插話、回饋語與猶豫等，專為全雙工對話系統的訓練與評估設計。</div>
+      </div>
+      </div>
+      </div>
+      <!-- ==================== Datasets ==================== -->
+      <div class="section" id="datasets">
+      <div class="section-header">
+      <span class="section-icon">📦</span>
+      <h2>5. 語音相關公開資料集</h2>
+      </div>
+      <div class="ds-table">
+      <table>
+      <thead>
+      <tr><th>資料集</th><th>規模</th><th>語言</th><th>任務</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><a href="https://arxiv.org/abs/2609.29448"><strong>YODAS v3</strong></a></td>
+      <td>1.1M+ 小時，48kHz 多聲道</td>
+      <td>147 語言</td>
+      <td>ASR / 神經編解碼</td>
+      <td>CC BY 3.0</td>
+      </tr>
+      <tr>
+      <td><a href="https://arxiv.org/abs/2609.14542"><strong>Neyshekar</strong></a></td>
+      <td>62,279 錄音 / 99 小時</td>
+      <td>波斯語</td>
+      <td>ASR</td>
+      <td>CC0</td>
+      </tr>
+      <tr>
+      <td><a href="https://arxiv.org/abs/2609.09554"><strong>BuzzASR</strong></a></td>
+      <td>102 語言專用 Whisper-large-v3 微調模型</td>
+      <td>102 語言</td>
+      <td>ASR</td>
+      <td>開源</td>
+      </tr>
+      <tr>
+      <td><a href="https://arxiv.org/abs/2609.28806"><strong>Full-Duplex Conversation Harness 合成資料</strong></a></td>
+      <td>42 種現象、8 大類標注</td>
+      <td>英語 / 中文</td>
+      <td>全雙工對話</td>
+      <td>見論文</td>
+      </tr>
+      <tr>
+      <td><a href="https://arxiv.org/abs/2609.29371"><strong>BanglaTurn</strong></a></td>
+      <td>35,374 樣本</td>
+      <td>孟加拉語</td>
+      <td>輪替偵測</td>
+      <td>見論文</td>
+      </tr>
+      <tr>
+      <td><a href="https://ai.meta.com/research/publications/omnilingual-asr-open-source-multilingual-speech-recognition-for-1600-languages/"><strong>Omnilingual ASR Corpus</strong></a></td>
+      <td>350 種弱勢語言語料</td>
+      <td>350+ 語言</td>
+      <td>ASR</td>
+      <td>Apache 2.0</td>
+      </tr>
+      </tbody>
+      </table>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.29448">YODAS v3 — 史上最大開放語音資料集</a></span>
+      <span class="tag tag-model">資料集</span>
+      </div>
+      <div class="item-source">William Chen et al. · arXiv 2609.29448 · 2026-09-24</div>
+      <div class="item-desc">迄今最大的開放語音資料集——超過 110 萬小時 48kHz 多聲道音訊，涵蓋 147 種語言，CC BY 3.0 授權。論文同時訓練了基線 ASR 與神經編解碼模型以展示資料集效用。已於 Hugging Face 釋出。</div>
+      </div>
+      <div class="item">
+      <div class="item-header">
+      <span class="item-title"><a href="https://arxiv.org/abs/2609.14542">Neyshekar — 波斯語朗讀語音語料庫</a></span>
+      <span class="tag tag-model">資料集</span>
+      </div>
+      <div class="item-source">arXiv 2609.14542 · 2026-09-23</div>
+      <div class="item-desc">190 位貢獻者錄製的 62,279 段已驗證波斯語朗讀語音（99 小時），涵蓋正式與非正式用語、命名實體與較長語句。與等時 Common Voice 訓練相比，Whisper WER 降 9.5 個百分點、XLS-R 降 11.6 個百分點。CC0 授權，資料於 Zenodo 釋出。</div>
+      </div>
+      </div>
+
+      <nav class="article-nav">
+        <a href="../index.html">← 回Tech Weekly</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js"></script>
+</body>
+</html>
