@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W41 · Personal Archive</title>
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../../../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="../../../index.html">Home</a></li>
+      <li><a href="../../../research/index.html">Research</a></li>
+      <li><a href="../../../weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="../../../weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="../../../travel/index.html">Travel</a></li>
+      <li><a href="../../../journal/index.html">Journal</a></li>
+      <li><a href="../../../writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
+    </ul>
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  title: 語音技術週報 W41
+  date: 2026-10-05
+  category: weekly/tech
+  visibility: public
+  tags: 
+  summary: 2026-09-29 – 2026-10-05 的科技新聞、論文與 AI 發展整理。
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-10-05">2026-09-29 – 10-05</time>
+      <h1 class="article__title">語音技術週報 W41</h1>
+
+      <div class="wr">
+      <!DOCTYPE html>
+      <html lang="zh-Hant">
+      <head>
+      <meta charset="UTF-8">
+      </head>
+      <body>
+      <h1>語音技術週報 W41 — 2026/09/29–10/05</h1>
+      <div class="wr-summary">
+      <h2>本週重點摘要</h2>
+      <ol>
+      <li><strong>Microsoft 一口氣發布三款語音模型</strong>：MAI-Transcribe-2-Streaming（串流 ASR，60 語言，Artificial Analysis 排名第一）、MAI-Voice-2.1 與 MAI-Voice-2.1-Flash（TTS，23 語言，支援語音複製），全部 10/1 上線。</li>
+      <li><strong>Suno Speech beta 公開</strong>：首款能同時生成語音與背景音樂的模型，10/1 對所有用戶開放。</li>
+      <li><strong>Apple 發表輕量 ASR 糾錯模型</strong>：參數量僅 LLM 的 1/15，在 LibriSpeech 上達到 1.5%/3.3% WER，跨架構泛化能力強（2026 年 7 月論文，本週持續獲媒體討論）。</li>
+      <li><strong>VibeVoice-ASR-Streaming 持續受關注</strong>：Microsoft 開源的串流說話人歸屬 ASR 模型（1.5B/7B，MIT 授權），9 月初發布後本週在社群持續熱議。</li>
+      <li><strong>Semantic VAD 成為語音助理標配</strong>：OpenAI、Gradium、Inworld 等平台的語義 VAD 實作在本週各有更新文件或技術部落格。</li>
+      </ol>
+      </div>
+      <hr>
+      <div class="wr-topic">
+      <h2>1. 語音辨識 (ASR / Speech Recognition)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>Microsoft 發布 MAI-Transcribe-2-Streaming — 串流語音轉文字模型</h4>
+      <p><strong>來源：</strong>Microsoft AI｜<strong>日期：</strong>2026-10-01</p>
+      <p>Microsoft 首款串流轉錄模型，支援 60 種語言與連續語言偵測。官方宣稱 2.5% WER，語音結束後 0.13 秒即出最終轉錄結果。Artificial Analysis 在 38 個模型中將其排名第一。定價 $0.54/小時（2026 年底前促銷價），透過 Microsoft Foundry、OpenRouter、Vercel AI Gateway 及 Azure Voice Live 提供。</p>
+      <p><a href="https://www.marktechpost.com/2026/10/02/microsoft-ai-releases-mai-transcribe-2-streaming-1-real-time-speech-to-text-model-on-artificial-analysis/">MarkTechPost 報導</a> ｜ <a href="https://siliconangle.com/2026/10/01/microsoft-targets-ultra-realistic-voice-agents-with-its-first-streaming-transcription-model/">SiliconAngle 報導</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Microsoft 同步發布 MAI-Voice-2.1 / MAI-Voice-2.1-Flash TTS 模型</h4>
+      <p><strong>來源：</strong>Microsoft AI｜<strong>日期：</strong>2026-10-01</p>
+      <p>MAI-Voice-2.1 支援 23 語言、26 地區口音，內建 97 種聲音，同一聲音可跨語言保持一致性。支援語音複製（幾秒參考音檔即可），內建同意機制防止濫用。在 4,000 人圖靈測試中，50.3% 聽眾認為 MAI-Voice 等同或優於真人錄音。Flash 版本推理速度快 55%，端到端延遲 150ms，適合高流量低延遲場景。定價分別為 $22 / $15 per 1M 字元。</p>
+      <p><a href="https://www.unite.ai/microsoft-launches-mai-transcribe-2-streaming-and-two-mai-voice-models/">Unite.AI 報導</a></p>
+      </div>
+      <h3>模型更新</h3>
+      <div class="wr-item">
+      <h4>VibeVoice-ASR-Streaming（持續受關注）</h4>
+      <p><strong>來源：</strong>Microsoft Research（開源）｜<strong>發布日期：</strong>2026-09-02｜<strong>授權：</strong>MIT</p>
+      <p>統一串流 ASR 框架，邊聽邊輸出「誰說了什麼」，不需額外說話人分離階段。支援 10 種語言與自訂熱詞。提供 1.5B 與 7B 兩個版本。這是首批基於 LLM 的端到端串流說話人歸屬 ASR 方案之一，本週在開發者社群持續討論。</p>
+      <p><a href="https://github.com/microsoft/VibeVoice">GitHub</a> ｜ <a href="https://arxiv.org/abs/2609.02812">arXiv 2609.02812</a></p>
+      </div>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>Revisiting ASR Error Correction with Specialized Models</h4>
+      <p><strong>來源：</strong>Apple Machine Learning Research｜<strong>日期：</strong>2026-07（本週持續獲媒體討論）</p>
+      <p>提出 correction-first decoding，用 ASR 聲學分數對糾錯模型的候選結果重新排序。模型參數量僅 LLM 的 1/15，在 LibriSpeech test-clean/other 上達到 1.5%/3.3% WER，且跨 CTC、Seq2seq、Transducer 三種架構泛化。解決了 LLM 用於 ASR 糾錯時的延遲與幻覺問題。</p>
+      <p><a href="https://machinelearning.apple.com/research/asr-error-correction">Apple ML Research</a> ｜ <a href="https://arxiv.org/abs/2405.15216">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>NLE: Non-autoregressive LLM-based ASR by Transcript Editing</h4>
+      <p><strong>來源：</strong>arXiv 2603.08397｜<strong>日期：</strong>2026-03</p>
+      <p>利用交錯填充策略（interleaved padding）與 Transformer 的 identity mapping bias，讓模型聚焦於修正而非重建。NLE++ 在 Open ASR Leaderboard 達到 5.67% 平均 WER，RTFx 高達 1630。</p>
+      <p><a href="https://arxiv.org/abs/2603.08397">arXiv</a></p>
+      </div>
+      </div>
+      <hr>
+      <div class="wr-topic">
+      <h2>2. Audio LLM</h2>
+      <h3>新聞 / 產業動態</h3>
+      <p>本週無重大新產品發布。</p>
+      <h3>模型</h3>
+      <p>本週無新模型發布。</p>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>AudioMarathon: A Comprehensive Benchmark for Long-Context Audio Understanding and Efficiency in Audio LLMs</h4>
+      <p><strong>來源：</strong>arXiv 2510.07293</p>
+      <p>針對長音訊（90–300 秒）的 Audio LLM 評測基準，涵蓋語音內容提取、音訊分類、說話人資訊建模三大維度共 10 項子任務。模擬會議、播客等實際應用場景，包含多跳推理任務。經六階段資料管線建構，確保多樣性與標注品質。</p>
+      <p><a href="https://arxiv.org/abs/2510.07293">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>UALM: Unified Audio Language Model（ICLR 2026 接收）</h4>
+      <p><strong>來源：</strong>ICLR 2026</p>
+      <p>統一音訊語言模型，探索跨音訊理解任務的統一建模方法。發表於 ICLR 2026 主會議。</p>
+      <p><a href="https://proceedings.iclr.cc/paper_files/paper/2026/file/2a10ddb2917aa396d050cf63bb3e1b36-Paper-Conference.pdf">ICLR 2026 論文</a></p>
+      </div>
+      </div>
+      <hr>
+      <div class="wr-topic">
+      <h2>3. Speech-to-Speech (S2S)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>Suno 推出 Speech beta — 首款語音＋音樂一體生成模型</h4>
+      <p><strong>來源：</strong>Suno｜<strong>日期：</strong>2026-10-01</p>
+      <p>Suno 公開其 Speech beta，號稱首款能將語音與背景音樂作為一體音軌生成的模型。用戶輸入文字內容並描述聲音風格與音樂風格，即可生成配樂語音，如「鋼琴配樂的睡前故事」。經一個月小規模測試後，10/1 對所有行動及網頁用戶開放。已知限制：口音偶爾漂移、停頓可能過長。</p>
+      <p><a href="https://www.unite.ai/suno-launches-speech-beta-pairing-voice-and-music-in-one-model/">Unite.AI 報導</a></p>
+      </div>
+      <h3>模型</h3>
+      <p>本週無新 S2S 模型發布。</p>
+      <h3>論文（近期重要參考）</h3>
+      <div class="wr-item">
+      <h4>RelayS2S: A Dual-Path Speculative Generation for Real-Time Dialogue</h4>
+      <p><strong>來源：</strong>arXiv 2603.23346｜<strong>日期：</strong>2026-03</p>
+      <p>提出雙路徑投機生成架構：快路徑（端到端 S2S）在偵測到輪替時立即投機生成短前綴並送入 TTS，慢路徑（ASR → LLM 級聯管線）以此前綴為條件生成更高品質的後續內容。兩路徑的交接在文字域完成，共用同一 TTS session 確保聲音一致性。實驗顯示 P90 啟動延遲可媲美純 S2S 模型，同時保留 99% 級聯管線的回答品質。</p>
+      <p><a href="https://arxiv.org/abs/2603.23346">arXiv</a> ｜ <a href="https://github.com/mailong25/relays2s">GitHub</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>PRIME-Speech: Preserving Speech-to-Text LLM Capabilities in Speech-to-Speech Generation</h4>
+      <p><strong>來源：</strong>arXiv 2606.30944｜<strong>日期：</strong>2026-06</p>
+      <p>提出凍結骨幹的 S2S 轉換框架，僅訓練語音生成模組。將因果音訊後解碼器與凍結骨幹的中間隱藏狀態同步，使 codec token 從模型的推理軌跡生成，而非等待完整文字區塊。避免微調骨幹時 S2T 能力退化的問題。</p>
+      <p><a href="https://arxiv.org/abs/2606.30944">arXiv</a></p>
+      </div>
+      </div>
+      <hr>
+      <div class="wr-topic">
+      <h2>4. Turn Detection & Semantic VAD</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>Semantic VAD 成為語音代理標配技術</h4>
+      <p><strong>來源：</strong>多家平台｜<strong>日期：</strong>2026 Q3-Q4</p>
+      <p>本週多家平台更新了 Semantic VAD 相關技術文件：OpenAI 的 semantic_vad 根據語意判斷用戶是否說完；Gradium 將語義 VAD 內建於其 STT 中，無需額外元件；Inworld AI 的 Realtime API 結合 Silero VAD 與 Smart Turn 偵測器。與傳統靜音偵測相比，語義 VAD 顯著減少「用戶思考暫停時被打斷」的問題。</p>
+      <p><a href="https://gradium.ai/content/semantic-vad-voice-agents-turn-detection-2026">Gradium 技術文章</a> ｜ <a href="https://developers.openai.com/api/docs/guides/realtime-vad">OpenAI VAD 文件</a></p>
+      </div>
+      <h3>模型</h3>
+      <p>本週無新 turn-detection 模型發布。</p>
+      <h3>論文（近期重要參考）</h3>
+      <div class="wr-item">
+      <h4>Less can be More: What Aspects of Speech Drive End-of-Turn Detection</h4>
+      <p><strong>來源：</strong>ACL 2026（arXiv 2609.11066）</p>
+      <p>對串流 EOT 偵測的聲學、韻律、語義訊號進行系統性消融實驗。結論：聲學＋韻律組合達到最佳準確度-延遲平衡（F1 0.93，400ms 中位延遲，7.8% 誤警報率）。加入文字反而增加過早偵測，韻律特徵具最強類別區分力，文字表徵則重疊嚴重。</p>
+      <p><a href="https://aclanthology.org/2026.acl-long.2094/">ACL 2026</a> ｜ <a href="https://arxiv.org/abs/2609.11066">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Next-Turn: Duration-Aware Streaming Endpoint Detection via Time-to-Next-Speech-Onset Prediction</h4>
+      <p><strong>來源：</strong>Huawei / CUHK / NTU｜arXiv 2606.18094｜<strong>日期：</strong>2026-06</p>
+      <p>以 time-to-next-speech-onset 為訓練目標，目標值直接從語音時間戳導出，無需額外標注。在 320ms 內的端點準確度比最強基線提升 25.9%，且與增加停頓數量呈正相關的改善趨勢。</p>
+      <p><a href="https://arxiv.org/abs/2606.18094">arXiv</a></p>
+      </div>
+      </div>
+      <hr>
+      <div class="wr-topic">
+      <h2>5. 語音相關公開資料集</h2>
+      <p>本週無重大新資料集發布。以下為近期值得關注的資料集動態：</p>
+      <div class="wr-table">
+      <table>
+      <thead>
+      <tr><th>資料集</th><th>規模</th><th>語言</th><th>授權</th><th>說明</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><a href="https://ai.meta.com/blog/omnilingual-asr-advancing-automatic-speech-recognition/">Omnilingual ASR Data</a></td>
+      <td>1,600+ 語言轉錄資料</td>
+      <td>1,600+ 語言</td>
+      <td>Apache 2.0</td>
+      <td>Meta FAIR 發布，含 500 種從未被 AI 系統覆蓋的語言，支援零樣本擴展至 5,400+ 語言</td>
+      </tr>
+      <tr>
+      <td><a href="https://blogs.nvidia.com/blog/speech-ai-dataset-models/">NVIDIA Granary</a></td>
+      <td>~100 萬小時</td>
+      <td>25 歐洲語言</td>
+      <td>開源</td>
+      <td>含 65 萬小時 ASR + 35 萬小時語音翻譯，涵蓋克羅埃西亞語、愛沙尼亞語等低資源語言</td>
+      </tr>
+      <tr>
+      <td><a href="https://github.com/Deep-Learning-101/Speech-Processing-Paper">BuzzASR</a></td>
+      <td>100+ 單語 ASR 模型群</td>
+      <td>多語言</td>
+      <td>—</td>
+      <td>arXiv 2609.09554，大規模單語 ASR 模型集合</td>
+      </tr>
+      </tbody>
+      </table>
+      </div>
+      </div>
+      </body>
+      </html>
+      </div>
+
+      <nav class="article-nav">
+        <a href="../index.html">← 回Tech Weekly</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js"></script>
+</body>
+</html>
