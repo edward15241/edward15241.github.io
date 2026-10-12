@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W42 · Personal Archive</title>
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../../../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="../../../index.html">Home</a></li>
+      <li><a href="../../../research/index.html">Research</a></li>
+      <li><a href="../../../weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="../../../weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="../../../travel/index.html">Travel</a></li>
+      <li><a href="../../../journal/index.html">Journal</a></li>
+      <li><a href="../../../writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
+    </ul>
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  title: 語音技術週報 W42
+  date: 2026-10-12
+  category: weekly/tech
+  visibility: public
+  tags: 
+  summary: 2026-10-06 – 2026-10-12 的科技新聞、論文與 AI 發展整理。
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-10-12">2026-10-06 – 10-12</time>
+      <h1 class="article__title">語音技術週報 W42</h1>
+
+      <div class="wr-summary">
+      <h2>本週重點摘要</h2>
+      <ol>
+      <li><strong>Audio LLM 論文密集產出</strong>：本週 arXiv 出現多篇 Audio LLM 相關論文，涵蓋以人類聽眾偏好進行強化學習的語音美學建模、多音軌推理（STEMMA）、以及語言學與副語言資訊的分離方法。</li>
+      <li><strong>Full-Duplex S2S 研究持續活躍</strong>：SteerablePlex 探索全雙工模型的可控性；SmoothConv/DuplexConv 2,100 小時中文全雙工對話語料的技術論文上線 arXiv。</li>
+      <li><strong>ASR 大型綜述論文發表</strong>：「Automatic Speech Recognition in the Modern Era」系統梳理現代 ASR 從架構、訓練到評估的全貌。</li>
+      <li><strong>音素引導初始化策略</strong>：Phoneme-Guided Initialization 論文提出 LLM-based ASR 的新初始化方法，獲 IEEE SLT 2026 接收。</li>
+      </ol>
+      </div>
+      <div class="wr-topic">
+      <h2>1. 語音辨識 (ASR / Speech Recognition)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <p>本週無重大產業動態。</p>
+      <h3>模型</h3>
+      <p>本週無新模型發布。</p>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>Phoneme-Guided Initialization for LLM-based Speech Recognition（IEEE SLT 2026 接收）</h4>
+      <p><strong>來源：</strong>arXiv 2610.08994｜<strong>作者：</strong>Ryo Magoshi, Shinsuke Sakai, Tatsuya Kawahara</p>
+      <p>針對基於 LLM 的語音辨識提出音素引導初始化策略，在語音基礎模型與 LLM 之間建立更有效的初始對齊，提升 ASR 解碼品質。論文已獲 IEEE SLT 2026 接收，同時列入 cs.CL 與 cs.SD。</p>
+      <p><a href="https://arxiv.org/abs/2610.08994">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Automatic Speech Recognition in the Modern Era: Architectures, Training, and Evaluation</h4>
+      <p><strong>來源：</strong>arXiv 2610.12827</p>
+      <p>大型綜述論文，系統性梳理現代 ASR 技術全貌，涵蓋主流架構（CTC、Transducer、Attention-based Seq2Seq、LLM-based）、訓練方法、以及評估基準與指標。對理解當前 ASR 技術生態具重要參考價值。</p>
+      <p><a href="https://arxiv.org/abs/2610.12827">arXiv</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>2. Audio LLM</h2>
+      <h3>新聞 / 產業動態</h3>
+      <p>本週無重大產品發布。</p>
+      <h3>模型</h3>
+      <p>本週無新模型發布。</p>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>Conversational Voice Aesthetic Model via Reinforcement Learning from Human Listeners</h4>
+      <p><strong>來源：</strong>arXiv 2610.10868｜<strong>作者：</strong>Xilin Jiang, Shun Zhang, Tejas Jayashankar, Yinghao Aaron Li, Osama Hanna</p>
+      <p>以人類聽眾的偏好回饋進行強化學習，訓練對話語音美學模型。該模型可評估語音在對話場景中的自然度與美感品質，為語音合成與語音代理的品質優化提供新的訓練信號來源。</p>
+      <p><a href="https://arxiv.org/abs/2610.10868">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>STEMMA: Song-to-Stem Multi-Audio Reasoning for Large Audio Language Models</h4>
+      <p><strong>來源：</strong>arXiv 2610.11884｜<strong>作者：</strong>Hoyeol Sohn et al.</p>
+      <p>提出 STEMMA 框架，研究大型音訊語言模型的多音軌推理能力。以歌曲到分軌（song-to-stem）的關係為切入點，探索模型在多音訊輸入條件下的理解與推理表現，揭示現有模型在多音軌場景下的局限性。</p>
+      <p><a href="https://arxiv.org/abs/2610.11884">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Disentangling Linguistic and Paralinguistic Information with Routed Sparse Autoencoders</h4>
+      <p><strong>來源：</strong>arXiv 2610.10865｜<strong>作者：</strong>Beimnet Bekele Guta, Xiaoyu Yang, Guangzhi Sun, Philip C. Woodland</p>
+      <p>使用路由稀疏自編碼器（Routed Sparse Autoencoders）將語音表徵中的語言學資訊與副語言資訊（如情緒、語者特徵）進行分離。此方法有助於提升下游任務的針對性與可解釋性。論文目前投稿中。</p>
+      <p><a href="https://arxiv.org/abs/2610.10865">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>SAVU-BENCH: A Real-World Benchmark for Spatial Audio-Visual Understanding</h4>
+      <p><strong>來源：</strong>arXiv 2610.10624</p>
+      <p>面向空間音訊視覺理解的真實場景評測基準，測試多模態模型對音訊與視覺訊號在空間維度上的整合推理能力。可作為評估 Audio LLM 空間理解能力的參考。</p>
+      <p><a href="https://arxiv.org/abs/2610.10624">arXiv</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>3. Speech-to-Speech (S2S)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <p>本週無重大產品發布。</p>
+      <h3>模型</h3>
+      <p>本週無新 S2S 模型發布。</p>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>SteerablePlex: Can We Steer Full-Duplex Models?</h4>
+      <p><strong>來源：</strong>arXiv 2610.12201</p>
+      <p>探索全雙工語音對話模型的可控性問題：在模型維持即時雙向語音互動的同時，如何引導其行為與回應方向。這是 Full-Duplex S2S 從「能不能做」到「能不能控制」的重要研究方向。</p>
+      <p><a href="https://arxiv.org/abs/2610.12201">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>SmoothConv & DuplexConv：中文全雙工對話語料與技術論文</h4>
+      <p><strong>來源：</strong>arXiv 2610.11150｜<strong>機構：</strong>ASLP@NPU / QualiaLabs</p>
+      <p>發布兩套互補的中文全雙工對話語料集技術論文：SmoothConv（100 小時，專家人工標注，適合監督訓練與基準測試）與 DuplexConv（2,000 小時，LLM 輔助標注，適合 Speech LLM 預訓練）。涵蓋教學與社交聊天場景，標注了重疊語音、插嘴、反饋信號（backchannels）、停頓與輪替轉換等全雙工對話現象。同時提供 FastTurn 測試集用於輪替狀態預測評估。資料於 2026 年 6 月開源，本週論文上線 arXiv。</p>
+      <p><a href="https://arxiv.org/abs/2610.11150">arXiv</a> ｜ <a href="https://github.com/qualialabsai/smoothconv">GitHub</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>4. Turn Detection & Semantic VAD</h2>
+      <h3>新聞 / 產業動態</h3>
+      <p>本週無重大更新。</p>
+      <h3>模型</h3>
+      <p>本週無新模型發布。</p>
+      <h3>論文</h3>
+      <p>本週無新論文。上週提及的 ACL 2026 論文「Less can be More」（arXiv 2609.11066）及 Huawei/CUHK/NTU 的「Next-Turn」（arXiv 2606.18094）仍為近期最值得追蹤的研究。</p>
+      </div>
+      <div class="wr-topic">
+      <h2>5. 語音相關公開資料集</h2>
+      <div class="wr-table">
+      <table>
+      <thead>
+      <tr><th>資料集</th><th>規模</th><th>語言</th><th>授權</th><th>說明</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td><a href="https://github.com/qualialabsai/smoothconv">SmoothConv / DuplexConv</a></td>
+      <td>2,100 小時</td>
+      <td>中文普通話</td>
+      <td>見 GitHub</td>
+      <td>全雙工對話語料，含重疊語音、插嘴、輪替標注。SmoothConv 100h 專家標注 + DuplexConv 2,000h LLM 輔助標注。2026 年 6 月開源，本週論文上線（arXiv 2610.11150）</td>
+      </tr>
+      </tbody>
+      </table>
+      </div>
+      <p>本週除上述語料外，無其他重大新資料集發布。</p>
+      </div>
+
+      <nav class="article-nav">
+        <a href="../index.html">← 回Tech Weekly</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js"></script>
+</body>
+</html>
