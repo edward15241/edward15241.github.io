@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W43 · Personal Archive</title>
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../../../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="../../../index.html">Home</a></li>
+      <li><a href="../../../research/index.html">Research</a></li>
+      <li><a href="../../../weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="../../../weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="../../../travel/index.html">Travel</a></li>
+      <li><a href="../../../journal/index.html">Journal</a></li>
+      <li><a href="../../../writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
+    </ul>
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  title: 語音技術週報 W43
+  date: 2026-10-19
+  category: weekly/tech
+  visibility: public
+  tags: 
+  summary: 2026-10-13 – 2026-10-19 的科技新聞、論文與 AI 發展整理。
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-10-19">2026-10-13 – 10-19</time>
+      <h1 class="article__title">語音技術週報 W43</h1>
+
+      <div class="wr">
+      <!DOCTYPE html>
+      <html lang="zh-Hant">
+      <head>
+      <meta charset="UTF-8">
+      </head>
+      <body>
+      <h1>語音技術週報 W43</h1>
+      <div class="wr-summary">
+      <h2>本週重點摘要</h2>
+      <ol>
+      <li><strong>Speechmatics 發布醫療語音辨識模型 Oak 1</strong>：支援 55+ 語言即時切換，醫療術語召回率達 91%，專為臨床對話場景設計，10/14 正式上線。</li>
+      <li><strong>Jais Speech 開源阿拉伯語 ASR</strong>：MBZUAI 隨 Jais 3 系列發布 Jais-ASR，涵蓋 19 個阿拉伯國家方言與多語碼轉換，Apache 2.0 授權，10/15 發布。</li>
+      <li><strong>Grok Voice 3.0 登頂 S2S 排行榜</strong>：xAI 於 10/14 發布新一代語音對話模型，在 Artificial Analysis Speech-to-Speech Index 取得 86.9 分，延遲低於 1 秒。</li>
+      <li><strong>Fish Audio Drama 3 開源 TTS</strong>：35B MoE 架構（3B 活躍參數），支援最多 16 角色多說話者合成與自然語言控制，10/13 發布。</li>
+      <li><strong>ASR Post-Editing 新研究</strong>：「Select or Rewrite」論文提出 oracle-guided 的 N-best 後編輯方法，讓 LLM 在選取與改寫之間自動判斷。</li>
+      </ol>
+      </div>
+      <div class="wr-topic">
+      <h2>1. 語音辨識 (ASR / Speech Recognition)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>Speechmatics 發布醫療語音辨識模型 Oak 1</h4>
+      <p><strong>來源：</strong>Speechmatics 官方公告（2026-10-14）｜<strong>報導：</strong>GlobeNewsWire, RuntimeWire</p>
+      <p>Speechmatics 於 10/14 正式發布 Oak 1，專為臨床對話場景設計的醫療語音辨識模型。Oak 支援 55+ 語言，能在說話者中途切換語言時持續準確辨識，無需預設語言。在 Speechmatics 自行進行的 11 語言基準測試中，醫療術語召回率達 91%，對比其他八家供應商平均 74.3%。支援雲端、自建部署與邊緣裝置，符合 ISO 27001、GDPR、HIPAA 及 SOC 2 Type II 合規要求。目前為批次處理模式，覆蓋歐美區域。</p>
+      <p><a href="https://www.speechmatics.com/company/articles-and-news/meet-oak-multilingual-medical-speech-to-text">Speechmatics 公告</a> ｜ <a href="https://www.globenewswire.com/news-release/2026/10/14/3380824/0/en/voice-ai-model-built-to-accurately-capture-real-multilingual-medical-conversations.html">GlobeNewsWire</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>MBZUAI 發布 Jais Speech 阿拉伯語 ASR 模型</h4>
+      <p><strong>來源：</strong>MBZUAI Institute of Foundation Models（2026-10-15）｜<strong>報導：</strong>HPCwire/AIwire</p>
+      <p>隨 Jais 3 系列語言模型同步發布的 Jais-ASR（Jais Speech），是首個全面覆蓋阿拉伯語方言的開源語音辨識模型。支援現代標準阿拉伯語及 19 個阿拉伯國家方言，並處理與英語、法語、西班牙語、義大利語的碼轉換。可選擇性輸出 diacritization（母音標記）及方言識別。在 Open Universal Arabic ASR Leaderboard 上報告平均 WER 22.85%、CER 8.37%。權重以 Apache 2.0 授權釋出，支援 vLLM 及量化版本。</p>
+      <p><a href="https://huggingface.co/IFM/Jais-ASR">Hugging Face</a> ｜ <a href="https://www.hpcwire.com/aiwire/2026/10/16/mbzuai-and-inception42-introduce-jais-3-and-arabic-speech-recognition-model/">HPCwire 報導</a></p>
+      </div>
+      <h3>模型</h3>
+      <table>
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Oak 1</td>
+      <td>Speechmatics</td>
+      <td>醫療臨床對話 ASR，55+ 語言即時碼轉換</td>
+      <td>商用（API）</td>
+      </tr>
+      <tr>
+      <td>Jais-ASR</td>
+      <td>MBZUAI / IFM</td>
+      <td>阿拉伯語 19 方言 + 多語碼轉換，含 diacritization</td>
+      <td>Apache 2.0</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>Towards Privacy-Preserving ASR: Speaker-Level Machine Unlearning</h4>
+      <p><strong>來源：</strong>arXiv 2610.16196｜<strong>作者：</strong>Seaone Ok et al.</p>
+      <p>針對 ASR 系統中的隱私問題，提出說話者層級的機器遺忘（machine unlearning）方法。在不重新訓練整個模型的前提下，從已訓練的 ASR 模型中移除特定說話者的資料影響，回應 GDPR 等隱私法規的「被遺忘權」需求。</p>
+      <p><a href="https://arxiv.org/abs/2610.16196">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Select or Rewrite: Oracle-Guided Fine-Tuning for Generative ASR Post-Editing from N-Best Hypotheses</h4>
+      <p><strong>來源：</strong>arXiv 2610.15056</p>
+      <p>提出一種 oracle-guided 的 LLM 微調策略，用於 ASR N-best 假設的生成式後編輯。模型學習在候選假設可復原時選取最佳項，在所有候選都不夠好時進行改寫（rewrite），自動在 listwise rescoring 與生成式修正之間切換。</p>
+      <p><a href="https://arxiv.org/abs/2610.15056">arXiv</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>2. Audio LLM</h2>
+      <h3>新聞 / 產業動態</h3>
+      <p>本週無重大產品發布或 API 更新。</p>
+      <h3>模型</h3>
+      <p>本週無新 Audio LLM 模型發布。</p>
+      <h3>論文</h3>
+      <p>本週 arXiv 在 Audio LLM 方向的新論文較上週減少。以下為本週區間內可追蹤的研究動態：</p>
+      <div class="wr-item">
+      <h4>TAG-Bench: Benchmarking Temporal Audio Grounding in Large Audio Language Models</h4>
+      <p><strong>來源：</strong>arXiv 2609.01542｜<strong>作者：</strong>多機構合作</p>
+      <p>發布 temporal audio grounding 基準測試集，包含 1,750 個人工驗證的查詢-錄音對。評測結果顯示，最佳模型僅達 31.2 mIoU，在長音訊子集上 IoU≥0.7 的召回率僅 21.5%，揭示現有 Audio LLM 在時間定位能力上仍有顯著差距。（論文 9 月提交，本週持續獲得關注）</p>
+      <p><a href="https://arxiv.org/abs/2609.01542">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>PolyAudio: Advancing Multi-Audio Reasoning in Large Audio Language Models</h4>
+      <p><strong>來源：</strong>ACL 2026 Findings｜<strong>作者：</strong>Sonal Kumar, Sreyan Ghosh et al.</p>
+      <p>針對 LALM 的多音訊推理能力，構建超過 130 萬筆 QA 訓練對（14+ 任務子集），基於 Audio Flamingo 3 架構進行指令微調。使用明確的片段索引交錯表示法（interleaved clip indexing），鼓勵模型進行忠實的多片段接地推理。在多音訊推理任務中優於現有基線，同時維持單片段性能。（ACL 2026 收錄，本週持續為社群討論焦點）</p>
+      <p><a href="https://aclanthology.org/2026.findings-acl.2101/">ACL Anthology</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>3. Speech-to-Speech (S2S)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>xAI 發布 Grok Voice 3.0，登頂 S2S 排行榜</h4>
+      <p><strong>來源：</strong>xAI / Product Hunt（2026-10-14）</p>
+      <p>xAI 於 10/14 發布 Grok Voice 3.0，在 Artificial Analysis Speech-to-Speech Index 取得 86.9 分，超越 Gemini 3.8 Live（82.6）與 GPT-Live-1（81.5）。延遲宣稱低於 1 秒，定價 $0.08/分鐘。據報已應用於 Tesla 車載語音及 Starlink 客服（每日處理約 20,000 通電話，約 70% 無需人工介入）。使用 grok-voice-latest API alias 的現有整合已自動遷移至 3.0。</p>
+      <p><a href="https://www.producthunt.com/posts/1280509">Product Hunt</a> ｜ <a href="https://techenclave.com/news/items/xai-releases-grok-voice-3-and-upgrades-the-latest-api-alias">TechEnclave</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Fish Audio 發布 Drama 3 開源 TTS 模型</h4>
+      <p><strong>來源：</strong>Fish Audio（2026-10-13）</p>
+      <p>Fish Audio 於 10/13 發布 Drama 3，35B MoE 架構（約 3B 活躍參數），支援多角色場景（最多 16 個說話者標籤）、語音複製及自然語言控制。在 Artificial Analysis Pronunciation Robustness 測試中以 93.2% 排名開源 TTS 模型第一。權重以 Fish Audio Community License v1.0 釋出於 Hugging Face。API 定價 $2.00/M UTF-8 bytes。</p>
+      <p><a href="https://huggingface.co/fishaudio/drama-3">Hugging Face</a></p>
+      </div>
+      <h3>模型</h3>
+      <table>
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>類型</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Grok Voice 3.0</td>
+      <td>xAI</td>
+      <td>S2S</td>
+      <td>S2S Index 86.9，延遲 &lt;1s，full-duplex</td>
+      <td>商用 API</td>
+      </tr>
+      <tr>
+      <td>Drama 3</td>
+      <td>Fish Audio</td>
+      <td>TTS</td>
+      <td>35B MoE，16 角色多說話者，語音複製</td>
+      <td>Fish Audio Community License v1.0</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <p>本週無新 S2S 論文發表。上週的 SteerablePlex（arXiv 2610.12201，全雙工可控性）與 SmoothConv/DuplexConv（arXiv 2610.11150，中文全雙工語料）仍為近期重要參考。</p>
+      </div>
+      <div class="wr-topic">
+      <h2>4. Turn Detection & Semantic VAD</h2>
+      <h3>新聞 / 產業動態</h3>
+      <p>本週無重大更新。</p>
+      <h3>模型</h3>
+      <p>本週無新模型發布。</p>
+      <h3>論文</h3>
+      <p>本週無新論文。近期值得持續追蹤的研究包括：</p>
+      <ul>
+      <li>「Less can be More: What Aspects of Speech Drive End-of-Turn Detection」（arXiv 2609.11066）— 三模態消融研究，分析語音 EOT 偵測的關鍵信號。</li>
+      <li>「TamilEOT」（arXiv 2609.05631）— 泰米爾語電話語音的語義 EOT 資料集與模型。</li>
+      <li>「The Trade-off Was in the Labels」（arXiv 2609.04225）— 因果監督的 turn-aware 串流 ASR。</li>
+      </ul>
+      </div>
+      <div class="wr-topic">
+      <h2>5. 語音相關公開資料集</h2>
+      <table>
+      <thead>
+      <tr><th>資料集</th><th>規模</th><th>語言</th><th>授權</th><th>說明</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td colspan="5">本週無新資料集發布。</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>近期值得關注的資料集動態：NVIDIA Granary 語料庫（約 100 萬小時多語言語音，含 65 萬小時 ASR + 35 萬小時語音翻譯）持續在 Hugging Face 上提供下載。Hugging Face 同期推出 Open TTS Leaderboard，截至 9/30 已收錄超過 8,000 個 TTS 模型的評測結果。</p>
+      </div>
+      </body>
+      </html>
+      </div>
+
+      <nav class="article-nav">
+        <a href="../index.html">← 回Tech Weekly</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js"></script>
+</body>
+</html>
