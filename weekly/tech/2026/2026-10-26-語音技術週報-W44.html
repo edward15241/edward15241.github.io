@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W44 · Personal Archive</title>
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../../../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="../../../index.html">Home</a></li>
+      <li><a href="../../../research/index.html">Research</a></li>
+      <li><a href="../../../weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="../../../weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="../../../travel/index.html">Travel</a></li>
+      <li><a href="../../../journal/index.html">Journal</a></li>
+      <li><a href="../../../writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
+    </ul>
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  title: 語音技術週報 W44
+  date: 2026-10-26
+  category: weekly/tech
+  visibility: public
+  tags: 
+  summary: 2026-10-20 – 2026-10-26 的科技新聞、論文與 AI 發展整理。
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-10-26">2026-10-20 – 10-26</time>
+      <h1 class="article__title">語音技術週報 W44</h1>
+
+      <div class="wr-summary">
+      <h2>本週重點摘要</h2>
+      <ol>
+      <li><strong>ElevenLabs 發布 Eleven Realtime v1 S2S 模型</strong>：Max 與 Mini 兩款語音對語音模型，Big Bench Audio 98.8%，Full-Duplex-Bench 95.8%（Mini），支援 90+ 語言，10/20 上線。</li>
+      <li><strong>螞蟻集團開源 Ming-3.0 語音模型家族</strong>：包含 Ming-3.0-asr-tiny（8.6B / 2B 活躍參數），MIT 授權，中英雙語為主，支援方言與熱詞偏向，10/19–20 發布。</li>
+      <li><strong>OpenAI 推出 GPT-Live-1.1 語音模型</strong>：新增 13 個語音角色，涵蓋法、德、印地、日、韓、墨西哥西語，並推出輕量版 Quip，10/15 開始滾動更新。</li>
+      <li><strong>VoxTurn 統一 turn-taking 框架</strong>：單一模型一次回答多個 turn-taking 問題，300ms 延遲預算下英語 false cut-off 僅 11.5%，附 Pipecat/LiveKit 插件，10/15 發布。</li>
+      <li><strong>ELARSpeech 大規模瀕危語言語音資料集</strong>：30,200 小時涵蓋 675 種低資源語言，來自 Endangered Languages Archive，公開釋出模型與建置管線。</li>
+      </ol>
+      </div>
+      <div class="wr-topic">
+      <h2>1. 語音辨識 (ASR / Speech Recognition)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>螞蟻集團開源 Ming-3.0 語音模型家族，含 ASR 模型</h4>
+      <p><strong>來源：</strong>TechNode / Ant Group InclusionAI（2026-10-20）</p>
+      <p>螞蟻集團於 10/20 正式發布 Ming-3.0 語音模型家族，共五款模型。其中 Ming-3.0-asr-tiny 是一個 8.6B 參數（約 2B 活躍）的中英雙語語音辨識模型，基於 Ling-tiny-v3 語言骨幹加音訊編碼器。支援中文方言、英文，並可透過熱詞列表（hotword prompting）改善領域術語辨識。權重以 MIT 授權釋出於 Hugging Face 及 ModelScope。10/19 權重上線，10/20 官方公告發布。</p>
+      <p><a href="https://technode.com/2026/10/20/ant-group-open-sources-ming-3-0-speech-models-with-voice-design-and-audio-understanding/">TechNode 報導</a> ｜ <a href="https://huggingface.co/InclusionAI/Ming-3.0-asr-tiny">Hugging Face</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Cactus Compute 發布 Whistle 超輕量端側 ASR 模型</h4>
+      <p><strong>來源：</strong>Cactus Compute（2026-10-02）｜<strong>本週仍為社群熱議</strong></p>
+      <p>Cactus Compute 於 10/2 發布 Whistle，僅 16.9 MB 的端側語音辨識模型，純 CPU 運行無需 GPU。支援英、德、法、西、義、荷、波蘭語 7 種語言，自動語言偵測、字級時間戳及語音嵌入。Apache 2.0 授權。廠商宣稱在多數測試中 WER 優於 Whisper base 且速度快 6 倍（Apple M4 Pro），但獨立測試顯示在 TED-LIUM、AMI 等資料集上 Whisper base 仍領先。本週持續在 Hacker News 等社群討論。</p>
+      <p><a href="https://huggingface.co/Cactus-Compute/whistle">Hugging Face</a></p>
+      </div>
+      <h3>模型</h3>
+      <table>
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Ming-3.0-asr-tiny</td>
+      <td>螞蟻 InclusionAI</td>
+      <td>8.6B (2B active)，中英方言 ASR，hotword prompting</td>
+      <td>MIT</td>
+      </tr>
+      <tr>
+      <td>Whistle</td>
+      <td>Cactus Compute</td>
+      <td>16.9 MB 端側 ASR，7 語言，字級時間戳</td>
+      <td>Apache 2.0</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>Text-Only LLM Correctors Break Correct Transcripts: A Repair-Damage Analysis of Audio Grounding in ASR Error Correction</h4>
+      <p><strong>來源：</strong>arXiv 2610.30385</p>
+      <p>分析純文字 LLM 修正器對 ASR 輸出的實際效果。提出「修復-損傷」分析框架，將 WER 變化拆解為修復的 token、損傷的 token 與插入項，發現文字-only 修正器往往在修復錯誤的同時損壞原本正確的轉錄。比較有無原始音訊作為 grounding 的差異，呼籲 ASR error correction 應結合音訊資訊。</p>
+      <p><a href="https://arxiv.org/abs/2610.30385">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Automatic Speech Recognition in the Modern Era: Architectures, Training, and Evaluation</h4>
+      <p><strong>來源：</strong>arXiv 2510.12827</p>
+      <p>一份全面的 ASR 綜述論文，涵蓋現代 ASR 架構（CTC、RNN-T、Attention-based Encoder-Decoder、Conformer 系列）、訓練方法（自監督、半監督、多語言）及評估方法論。適合作為 ASR 領域入門與進階的參考材料。</p>
+      <p><a href="https://arxiv.org/abs/2510.12827">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Adapting Speech Foundation Models for Unified Multimodal Speech Recognition with Large Language Models</h4>
+      <p><strong>來源：</strong>arXiv 2510.22961</p>
+      <p>探討如何將語音基礎模型適配至 LLM 架構，實現統一的多模態語音辨識。結合語音編碼器與 LLM 骨幹，在多任務設定下同時支援 ASR、語音翻譯等任務。</p>
+      <p><a href="https://arxiv.org/abs/2510.22961">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Probing and Mitigating Hallucinations in Speech-augmented Language Models for ASR via Small Language Models</h4>
+      <p><strong>來源：</strong>arXiv 2610.25351</p>
+      <p>針對語音增強語言模型在 ASR 任務中產生的幻覺問題，提出基於小型語言模型的探測與緩解方法。分析幻覺的產生機制並提出實用的緩解策略。</p>
+      <p><a href="https://arxiv.org/abs/2610.25351">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>How Far Can the Gemma 4 Speech Encoder Go Without Changing Its Weights?</h4>
+      <p><strong>來源：</strong>arXiv（2026-10 cs.SD listing）</p>
+      <p>探索 Gemma 4 語音編碼器在不修改權重（frozen）與加上 adapter 兩種設定下的表現，以沙烏地阿拉伯語和海灣阿拉伯語語音辨識為測試場景。</p>
+      </div>
+      <div class="wr-item">
+      <h4>Qwen-Audio-3.1-ASR Technical Report</h4>
+      <p><strong>來源：</strong>arXiv 2610.28711</p>
+      <p>阿里巴巴通義千問團隊發布 Qwen-Audio-3.1-ASR 技術報告。該模型為 Qwen-Audio-3.1 語音家族的 ASR 組件，作為託管 API 提供（非開源權重）。與 9/23 同步發布的系列包含 ASR、ASR-Next、TTS、TTS-Next、Realtime 五款模型。</p>
+      <p><a href="https://arxiv.org/abs/2610.28711">arXiv</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>2. Audio LLM</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>Cloudflare 發布 Clef-omni 開放權重多模態決策模型</h4>
+      <p><strong>來源：</strong>Cloudflare（2026-10-09）</p>
+      <p>Cloudflare 於 10/9 發布 Clef-omni，基於 Qwen3-Omni-30B-A3B-Instruct（30B MoE，3B 活躍參數）後訓練的多模態模型，單次 API 呼叫即可處理文字、圖片、音訊和影片。輸出為結構化決策機率而非自由文字生成。中位回應時間：文字 ~130ms、圖片 ~150ms、21 秒影片+音訊 ~1.5s。權重以 Apache 2.0 授權釋出，已上線 Workers AI，定價 $0.15/M input tokens。</p>
+      <p><a href="https://ithome.com/1/011/347.htm">IT之家報導</a> ｜ <a href="https://runtimewire.com/article/cloudflare-clef-omni-multimodal-decision-model">RuntimeWire</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Google 發布 EmbeddingGemma 2 多模態嵌入模型</h4>
+      <p><strong>來源：</strong>Google（2026-10）</p>
+      <p>Google 發布 EmbeddingGemma 2，開放多模態嵌入模型，可將文字、程式碼、圖片、影片和音訊映射到共享嵌入空間。音訊支援使其可用於跨模態語音檢索和語音-文字對齊任務。</p>
+      </div>
+      <h3>模型</h3>
+      <table>
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Clef-omni</td>
+      <td>Cloudflare</td>
+      <td>30B MoE (3B active)，音訊+影片+圖片+文字，結構化決策輸出</td>
+      <td>Apache 2.0</td>
+      </tr>
+      <tr>
+      <td>EmbeddingGemma 2</td>
+      <td>Google</td>
+      <td>多模態嵌入（文字/圖片/影片/音訊→共享空間）</td>
+      <td>待確認</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>Measuring the Verifier's Floor: How Much Apparent Rare-Word TTS Error Is ASR Error?</h4>
+      <p><strong>來源：</strong>arXiv 2610.31470</p>
+      <p>探討 TTS 評估中一個基本問題：當使用 ASR 系統驗證 TTS 輸出的罕見詞準確性時，多少「TTS 錯誤」其實是 ASR 本身的辨識錯誤？建立了 verifier's floor 的測量方法，對 Audio LLM 評測方法論有重要參考價值。</p>
+      <p><a href="https://arxiv.org/abs/2610.31470">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Qwen-Audio-3.1-TTS-Next：電影級音景合成</h4>
+      <p><strong>來源：</strong>阿里雲棲大會 2026</p>
+      <p>阿里巴巴在雲棲大會上展示 Qwen-Audio-3.1-TTS-Next，可從文字腳本生成融合對話與環境音的電影級音景。屬 Qwen-Audio-3.1 家族的音訊生成組件，目前為託管 API 形式（非開源）。</p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>3. Speech-to-Speech (S2S)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>ElevenLabs 發布 Eleven Realtime v1 語音對語音模型</h4>
+      <p><strong>來源：</strong>ElevenLabs（2026-10-20）｜<strong>報導：</strong>The Decoder, JournalDuNet, The New Stack</p>
+      <p>ElevenLabs 於 10/20 發布兩款語音對語音模型：v1 Max（面向客服等複雜任務）與 v1 Mini（面向低成本自然對話）。Max 在 Big Bench Audio 達 98.8%，工具呼叫完成率 87.1%；Mini 在 Full-Duplex-Bench 得分 95.8%。Max 首音延遲 570ms，Mini 620ms。支援 90+ 語言及 17,000+ 語音庫。透過 ElevenAgents 平台及 OpenAI 相容的 Realtime API 提供（僅 WebSocket，暫不支援 WebRTC）。Mini 為預設推薦，Max 適用頻繁/複雜工具呼叫場景。</p>
+      <p><a href="https://elevenlabs.io/blog/realtime">ElevenLabs 公告</a> ｜ <a href="https://the-decoder.com/elevenlabs-releases-two-new-speech-to-speech-models-designed-for-real-time-ai-conversations/">The Decoder</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>OpenAI 發布 GPT-Live-1.1 語音模型</h4>
+      <p><strong>來源：</strong>OpenAI（2026-10-15）</p>
+      <p>OpenAI 於 10/15 開始向所有 ChatGPT Voice 用戶滾動推出 GPT-Live-1.1，為 GPT-Live-1（7 月發布）的後繼版本。新增 13 個語音角色：法語、德語、印地語、日語、韓語、墨西哥西班牙語各 2 個，英語 1 個（Bubbie）。口音更自然，網頁搜尋時「checking...」停頓減少。同步推出輕量版 GPT-Live-1.1 Quip（接替 GPT-Live-1 mini），Go 方案提供 Quip 3 小時/24h，Plus 提供完整版 3 小時/24h，Pro 15 小時/24h。API 版本宣告「即將推出」。</p>
+      <p><a href="https://datanorth.ai/news/gpt-live-1-1-new-voices">DataNorth 報導</a></p>
+      </div>
+      <h3>模型</h3>
+      <table>
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>類型</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Eleven Realtime v1 Max</td>
+      <td>ElevenLabs</td>
+      <td>S2S</td>
+      <td>BBH Audio 98.8%，tool call 87.1%，延遲 570ms</td>
+      <td>商用 API</td>
+      </tr>
+      <tr>
+      <td>Eleven Realtime v1 Mini</td>
+      <td>ElevenLabs</td>
+      <td>S2S</td>
+      <td>Full-Duplex-Bench 95.8%，低成本對話</td>
+      <td>商用 API</td>
+      </tr>
+      <tr>
+      <td>GPT-Live-1.1</td>
+      <td>OpenAI</td>
+      <td>S2S</td>
+      <td>13 新語音，多語口音改善，+Quip 輕量版</td>
+      <td>商用 API</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>Mind-Paced Speaking: A Dual-Brain Approach to Real-Time Reasoning in Spoken Language Models</h4>
+      <p><strong>來源：</strong>arXiv 2510.09592｜<strong>作者：</strong>Donghang Wu et al. (StepFun, NTU, UNSW)</p>
+      <p>提出「雙腦」架構解決即時語音模型的推理延遲問題。「構思腦」(Formulation Brain) 負責 CoT 推理並調控「表達腦」(Articulation Brain) 的語音生成節奏，避免模式切換損失推理完整性。在 zero-latency 設定下，Spoken-MQA 數學任務達 92.8% 準確率、URO-Bench 語音對話基準達 82.5 分，優於先前的 think-while-speaking 方法。程式碼開源於 stepfun-ai/Step-MPS。</p>
+      <p><a href="https://arxiv.org/abs/2510.09592">arXiv</a> ｜ <a href="https://github.com/stepfun-ai/Step-MPS">GitHub</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>4. Turn Detection & Semantic VAD</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>Speko 基準測試：OpenAI Semantic VAD 在 backchannel 場景表現不如預期</h4>
+      <p><strong>來源：</strong>Speko Benchmarks（2026-10）</p>
+      <p>Speko 發布了針對 OpenAI gpt-realtime-2 semantic_vad 模式的基準測試結果，標題為「Semantic Was Supposed to Be the Smart One. It Lost.」。測試顯示語義 VAD 在 backchannel（回應詞如「嗯」「對」）處理上表現不佳，容易將回應詞誤判為完整語句結束，導致不必要的打斷。這反映了語義 VAD 在非英語及非標準對話模式中仍有挑戰。</p>
+      <p><a href="https://benchmarks.speko.ai/blog/the-backchannel-trap/">Speko Benchmarks</a></p>
+      </div>
+      <h3>模型</h3>
+      <p>本週無新模型發布。Pipecat Smart Turn v2 持續作為主要的開源語義 VAD 選項（<a href="https://huggingface.co/pipecat-ai/smart-turn-v2">Hugging Face</a>）。</p>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>VoxTurn: Answering Several Turn-Taking Questions in One Pass with One Model</h4>
+      <p><strong>來源：</strong>arXiv 2610.21150（2026-10-15 提交）</p>
+      <p>提出統一的 turn-taking 框架，用單一模型在一次推理中同時回答多個 turn-taking 相關問題。在 300ms 延遲預算下，英語 false cut-off rate 僅 11.5%。在 Pipecat 中截斷率 17%，在 LiveKit 中 9%。模型、程式碼及框架插件均已開源。</p>
+      <p><a href="https://arxiv.org/abs/2610.21150">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Thai Semantic End-of-Turn Detection for Real-Time Voice Agents</h4>
+      <p><strong>來源：</strong>arXiv 2510.04016</p>
+      <p>針對泰語即時語音代理的語義結束偵測研究，擴展了 semantic EOT 的語言覆蓋範圍。指出現有開源模型（含 Smart Turn v3）不支援泰語，並提出泰語專用解決方案。</p>
+      <p><a href="https://arxiv.org/abs/2510.04016">arXiv</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>5. 語音相關公開資料集</h2>
+      <table>
+      <thead>
+      <tr><th>資料集</th><th>規模</th><th>語言</th><th>授權</th><th>說明</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>ELARSpeech</td>
+      <td>~30,200 小時</td>
+      <td>675 種低資源語言</td>
+      <td>公開釋出（含模型與管線）</td>
+      <td>來自 Endangered Languages Archive，含人工標註與未標註錄音，支援 ASR/TTS 擴展至瀕危語言。含 pseudo-labeling 實驗。</td>
+      </tr>
+      <tr>
+      <td>yt2026_batch02_10kh / batch03_10kh</td>
+      <td>~11,884h / ~13,205h</td>
+      <td>越南語</td>
+      <td>僅供研究</td>
+      <td>自動爬取 YouTube 2026 年影片的越南語語音。分批釋出，Batch 02 (10/6)、Batch 03 (10/13)。</td>
+      </tr>
+      </tbody>
+      </table>
+      <p><a href="https://arxiv.org/abs/2610.19388">ELARSpeech arXiv</a> ｜ <a href="https://huggingface.co/datasets/SalmonAI123/yt2026_batch02_10kh">yt2026 batch02 HF</a> ｜ <a href="https://huggingface.co/datasets/SalmonAI123/yt2026_batch03_10kh">yt2026 batch03 HF</a></p>
+      </div>
+
+      <nav class="article-nav">
+        <a href="../index.html">← 回Tech Weekly</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js"></script>
+</body>
+</html>
