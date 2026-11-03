@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W45 · Personal Archive</title>
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../../../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="../../../index.html">Home</a></li>
+      <li><a href="../../../research/index.html">Research</a></li>
+      <li><a href="../../../weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="../../../weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="../../../travel/index.html">Travel</a></li>
+      <li><a href="../../../journal/index.html">Journal</a></li>
+      <li><a href="../../../writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
+    </ul>
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  title: 語音技術週報 W45
+  date: 2026-11-02
+  category: weekly/tech
+  visibility: public
+  tags: 
+  summary: 2026-10-27 – 2026-11-02 的科技新聞、論文與 AI 發展整理。
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-11-02">2026-10-27 – 11-02</time>
+      <h1 class="article__title">語音技術週報 W45</h1>
+
+      <div class="wr">
+      <!DOCTYPE html>
+      <html lang="zh-Hant">
+      <head>
+      <meta charset="UTF-8">
+      </head>
+      <body>
+      <h1>語音技術週報 W45</h1>
+      <p>2026 / 10 / 27 – 11 / 02</p>
+      <div class="wr-summary">
+      <h2>本週重點摘要</h2>
+      <ol>
+      <li><strong>NVIDIA 發布 Nemotron 3.5 Transcribe 與 Granary v2 資料集</strong>：開放權重語音模型，約 34B 參數（4.3B 活躍），支援 40 語言轉錄、翻譯、講者歸屬與音訊 QA。Granary v2 公開語音資料集涵蓋 463,062 小時、48 種語言。10/28 發布。</li>
+      <li><strong>Block 發布 Dessa 全雙工語音模型研究預覽版</strong>：純以人類對話音訊訓練的 speech-to-speech 模型，可邊聽邊說，不依賴文字語言模型骨幹。10/23 公告，本週各大媒體廣泛報導。</li>
+      <li><strong>AssemblyAI 推出首款 TTS 模型 TTS-1</strong>：針對語音代理（voice agent）場景，自稱中位首音延遲 47ms，$15/百萬字元，支援 6 語言與 4,000+ 語音庫。10/27–29 上線。</li>
+      <li><strong>論文：Speech Genre 對 EoT 訓練的影響</strong>（arXiv 2610.39742，10/29）：指出訓練資料的語體類型（speech genre）對 end-of-turn 偵測效果有顯著影響，是先前研究較少關注的變數。</li>
+      <li><strong>SANE 2026 語音與音訊研究會議</strong>：10/30 於 MIT 舉辦，聚集語音與音訊領域研究者。</li>
+      </ol>
+      </div>
+      <div class="wr-topic">
+      <h2>1. 語音辨識 (ASR / Speech Recognition)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>NVIDIA 發布 Nemotron 3.5 Transcribe 開放權重語音模型</h4>
+      <p><strong>來源：</strong>NVIDIA（2026-10-28）</p>
+      <p>NVIDIA 於 10/28 發布 Nemotron 3.5 Transcribe，一個開放權重的語音 AI 模型，支援轉錄、翻譯、講者歸屬（speaker diarization）與音訊問答。總參數約 34B（約 4.3B 活躍參數），架構結合 Transformer 語音編碼器、凍結的 Nemotron 3 講者分離模組（Sortformer，約 100M 參數）以及 Nemotron 3.5 Lightning 30B-A3B 語言模型。支援 40 語言，提供 BF16、FP8、NVFP4 及 GGUF 版本，以 OpenMDW-1.1 授權釋出。官方報告平均 WER 4.71%（9 個公開英語資料集），但為離線（offline）模型，不支援即時串流。</p>
+      <p><a href="https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3.5-Transcribe-Technical-Report.pdf">技術報告 (PDF)</a> ｜ <a href="https://www.unite.ai/nvidia-launches-open-weight-speech-model-and-463-062-hour-audio-dataset/">Unite.AI 報導</a> ｜ <a href="https://thenextweb.com/news/nvidia-nemotron-3-5-transcribe-granary-v2-open-speech">The Next Web</a></p>
+      </div>
+      <h3>模型</h3>
+      <table class="wr-table">
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Nemotron 3.5 Transcribe</td>
+      <td>NVIDIA</td>
+      <td>34B (4.3B active)，40 語言，轉錄+翻譯+講者歸屬+QA，離線模型</td>
+      <td>OpenMDW-1.1</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <p>本週搜尋範圍內未發現新的 ASR 專題論文發表。NVIDIA 同步發布的技術報告見上方模型區。</p>
+      </div>
+      <div class="wr-topic">
+      <h2>2. Audio LLM</h2>
+      <h3>新聞 / 產業動態</h3>
+      <p>本週無重大更新。</p>
+      <h3>模型</h3>
+      <p>本週無新模型發布。</p>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>Scalable Audio-LLM System for Speech MOS Evaluation: A Diagnostic Case Study and Adaptation Roadmap</h4>
+      <p><strong>來源：</strong>arXiv 2610.41539（2026-10-30 提交）</p>
+      <p>使用 Qwen2-Audio-7B-Instruct 進行語音品質 MOS（Mean Opinion Score）自動評估。經過 LoRA 微調後，該 Audio LLM 在 MOS 預測任務上優於基礎版本及 UTMOS 等神經基線模型。提出 Audio LLM 在語音評估領域的適配路線圖，對 TTS 與語音合成系統的自動評測方法論有參考價值。</p>
+      <p><a href="https://arxiv.org/abs/2610.41539">arXiv</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>3. Speech-to-Speech (S2S)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>Block 發布 Dessa 全雙工語音模型研究預覽版</h4>
+      <p><strong>來源：</strong>Block（2026-10-23 公告）｜<strong>本週各大媒體廣泛報導</strong></p>
+      <p>Jack Dorsey 的 Block 公司於 10/23 發布 Dessa 研究預覽版，一個全雙工 speech-to-speech 模型。最大特點是「從零開始」純以人類對話音訊訓練，不依賴文字預訓練模型或文字資料。可在 MacBook Pro M4 Max 或更高規格裝置上本地運行。目前未公開參數量、權重或標準基準結果，僅開放候補名單及少量 AI 安全研究者測試。與 Kyutai 的 Moshi（從文字語言模型起步）形成對比。</p>
+      <p><a href="https://www.voiceaispace.com/articles/block-launches-dessa-a-full-duplex-speech-model-trained-only-on-audio">Voice AI Space</a> ｜ <a href="https://techenclave.com/news/items/block-shows-dessa-a-voice-model-trained-entirely-on-human-conversation">TechEnclave</a> ｜ <a href="https://www.inside.com.tw/article/42729-block-dessa-full-duplex-speech-model-trained-only-on-human-conversation">INSIDE</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>AssemblyAI 發布首款 TTS 模型 AssemblyAI-TTS-1</h4>
+      <p><strong>來源：</strong>AssemblyAI（2026-10-27/29）</p>
+      <p>AssemblyAI 推出其首款文字轉語音模型 TTS-1，主要面向即時電話語音代理（voice agent）場景。自稱中位首音延遲（TTFB）47ms，獨立測試（Cekura）量測串流延遲約 159ms。定價 $15/百萬字元，支援英、西、法、德、義、葡 6 種語言，語音庫 4,000+ 含即時語音克隆功能（需說話者同意）。首發未支援 SSML、語速控制與自訂發音辭典，列為後續規劃。</p>
+      <p><a href="https://assemblyai.com/blog/text-to-speech-api">AssemblyAI 官方</a> ｜ <a href="https://www.marktechpost.com/2026/10/29/assemblyai-tts-1-text-to-speech-api-voice-agents/">MarkTechPost</a> ｜ <a href="https://alphasignal.ai/news/assemblyai-s-tts-1-beats-elevenlabs-on-speed-with-47ms-first-audio">Alpha Signal</a></p>
+      </div>
+      <h3>模型</h3>
+      <table class="wr-table">
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>類型</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Dessa (研究預覽)</td>
+      <td>Block</td>
+      <td>S2S</td>
+      <td>全雙工，純音訊訓練，本地運行（M4 Max+），無公開權重</td>
+      <td>未公開</td>
+      </tr>
+      <tr>
+      <td>AssemblyAI-TTS-1</td>
+      <td>AssemblyAI</td>
+      <td>TTS</td>
+      <td>TTFB 47ms（官方），6 語言，語音克隆，面向 voice agent</td>
+      <td>商用 API</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <p>本週搜尋範圍內未發現新的 S2S 專題論文發表。</p>
+      </div>
+      <div class="wr-topic">
+      <h2>4. Turn Detection & Semantic VAD</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>SANE 2026 語音與音訊研究會議於 MIT 舉辦</h4>
+      <p><strong>來源：</strong>SANE 2026（2026-10-30）</p>
+      <p>SANE 2026（Speech and Audio in the Northeast）於 10/30 在 MIT 舉辦，聚集語音與音訊領域的研究者，涵蓋語音辨識、語音合成、對話系統等主題。為東北美地區語音研究社群的年度交流活動。</p>
+      </div>
+      <h3>模型</h3>
+      <p>本週無新模型發布。</p>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>The Importance of Speech Genre for End-of-Turn Detector Training</h4>
+      <p><strong>來源：</strong>arXiv 2610.39742（2026-10-29 提交）</p>
+      <p>指出 end-of-turn (EoT) 偵測研究過去主要聚焦於特徵（features）、模型架構與模態（modalities），但訓練資料的「語體類型」（speech genre）這個變數卻很少被系統性探討。本文以語體作為主要實驗變數，發現不同語體的訓練資料對 EoT 偵測效果有顯著影響。對於語音助理與即時對話系統的 turn-taking 模型訓練資料選擇具有實務參考價值。</p>
+      <p><a href="https://arxiv.org/abs/2610.39742">arXiv</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>5. 語音相關公開資料集</h2>
+      <table class="wr-table">
+      <thead>
+      <tr><th>資料集</th><th>規模</th><th>語言</th><th>授權</th><th>說明</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Granary v2</td>
+      <td>463,062 小時（公開 manifest）</td>
+      <td>48 種語言</td>
+      <td>各來源原始授權（16 來源語料庫）</td>
+      <td>NVIDIA 於 10/28 隨 Nemotron 3.5 Transcribe 一同釋出的語音資料集與 curation pipeline。涵蓋 YODAS2、YouTube-Commons 等來源。提供多種轉錄風格、翻譯及問答對。開發者需自行從各原始來源下載音訊。較 v1 從 25 語言擴展至 48 語言。</td>
+      </tr>
+      </tbody>
+      </table>
+      <p><a href="https://research.nvidia.com/labs/nemotron/files/granary-v2.pdf">Granary v2 技術報告 (PDF)</a></p>
+      </div>
+      </body>
+      </html>
+      </div>
+
+      <nav class="article-nav">
+        <a href="../index.html">← 回Tech Weekly</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js"></script>
+</body>
+</html>
