@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>語音技術週報 W46 · Personal Archive</title>
+<link rel="stylesheet" href="../../../assets/css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗃️</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳至主要內容</a>
+
+<header class="masthead">
+  <div class="masthead__inner">
+    <p class="masthead__title"><a href="../../../index.html">Personal Archive</a></p>
+    <!-- BUILD:nav -->
+    <ul class="nav">
+      <li><a href="../../../index.html">Home</a></li>
+      <li><a href="../../../research/index.html">Research</a></li>
+      <li><a href="../../../weekly/tech/index.html">Tech Weekly</a></li>
+      <li><a href="../../../weekly/japanese/index.html">Japanese</a></li>
+      <li><a href="../../../travel/index.html">Travel</a></li>
+      <li><a href="../../../journal/index.html">Journal</a></li>
+      <li><a href="../../../writing/index.html">Writing</a></li>
+      <li class="nav__spacer"><button class="theme-toggle" id="themeToggle" type="button" aria-label="切換深色 / 淺色模式"><span aria-hidden="true">◐</span></button></li>
+    </ul>
+    <!-- /BUILD -->
+  </div>
+</header>
+
+<main id="main">
+  <!--
+  title: 語音技術週報 W46
+  date: 2026-11-09
+  category: weekly/tech
+  visibility: public
+  tags: 
+  summary: 2026-11-03 – 2026-11-09 的科技新聞、論文與 AI 發展整理。
+  -->
+
+  <article class="article">
+    <div class="prose">
+
+      <time class="article__date" datetime="2026-11-09">2026-11-03 – 11-09</time>
+      <h1 class="article__title">語音技術週報 W46</h1>
+
+      <p>2026-11-03 – 2026-11-09</p>
+      <div class="wr-summary">
+      <h2>本週重點摘要</h2>
+      <ol>
+      <li><strong>Meta Muse 新增即時語音對話功能</strong>：11/5 起美國用戶可與 Muse AI 助手進行即時語音互動，支援打斷與自然對話節奏，目前限 iOS、Web 與 Mac。</li>
+      <li><strong>AssemblyAI Universal-3.6 Pro Realtime 上線</strong>：11/3 發布，取代 Universal-3.5 Pro Realtime 成為新預設即時 ASR 模型，強化實體辨識、噪音環境與語碼轉換表現。</li>
+      <li><strong>Liquid AI LFM3 Audio 2B 生態持續擴展</strong>：10/27 發布的 LFM3 系列 2B 音訊模型，本週獲 Ollama 與 llama.cpp 支援，18 語言語音輸入輸出，僅約 1.7 GB 可本地運行。</li>
+      <li><strong>Hume EVI API 即將關閉（11/13）</strong>：Hume 確認將於 11/13 終止 TTS 與 EVI（語音情緒介面）API 服務，用戶需在此前完成遷移。</li>
+      <li><strong>turn-1-mini 端點偵測模型開源</strong>：5.3M 參數、純音訊 end-of-turn 偵測模型，TurnBench 排名第一，Apache-2.0 授權，可在 CPU 上以 1.3ms/160ms 音訊的速度推論。</li>
+      </ol>
+      </div>
+      <div class="wr-topic">
+      <h2>1. 語音辨識 (ASR / Speech Recognition)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>AssemblyAI 推出 Universal-3.6 Pro Realtime 即時語音辨識模型</h4>
+      <p><strong>來源：</strong>AssemblyAI（2026-11-03）</p>
+      <p>AssemblyAI 發布 Universal-3.6 Pro Realtime，取代 Universal-3.5 Pro Realtime 成為新部署的預設即時模型。官方報告在實體辨識（entity recognition）、噪音環境、口音適應與語碼轉換（code-switching）方面有所提升。長篇英語、講者分離（diarization）與多語言 FLEURS 則仍不及離線版本。數據為自行報告，尚待獨立驗證。</p>
+      <p><a href="https://www.assemblyai.com/blog/best-api-models-for-real-time-speech-recognition-and-transcription">AssemblyAI 即時 ASR 比較</a></p>
+      </div>
+      <h3>模型</h3>
+      <table class="wr-table">
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Universal-3.6 Pro Realtime</td>
+      <td>AssemblyAI</td>
+      <td>即時 ASR，強化實體辨識、噪音、語碼轉換；取代 3.5 為新預設</td>
+      <td>商用 API</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>C3: Speech-Guided KV Retrieval for Long-Context SpeechLLM Inference</h4>
+      <p><strong>來源：</strong>arXiv 2611.00333（2026-11 提交）｜NeurIPS 2026 AXIOM Workshop 接收</p>
+      <p>提出以語音引導的 KV 快取檢索機制，讓 SpeechLLM 在長上下文推論時更有效率。該方法在不犧牲辨識品質的前提下降低推論計算成本，對長音訊轉錄與音訊問答場景有實用價值。</p>
+      <p><a href="https://arxiv.org/abs/2611.00333">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Listen to the Latents: Self-Correcting Speech Recognition in Large Audio Language Models</h4>
+      <p><strong>來源：</strong>arXiv 2609.02940（2026-09 提交）｜EMNLP 2026 Findings 接收</p>
+      <p>利用基礎 LLM 的隱藏狀態互動來選擇性修正 ASR token，而非全域重寫。報告顯示此方法優於傳統 LM rescoring 與 late fusion 等全域修正方式。屬於 ASR self-correction 方向的新研究。</p>
+      <p><a href="https://arxiv.org/abs/2609.02940">arXiv</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>2. Audio LLM</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>Liquid AI LFM3 Audio 2B 獲 Ollama / llama.cpp 支援，可本地運行</h4>
+      <p><strong>來源：</strong>Liquid AI / 社群（2026-10-27 發布，本週整合生態持續擴展）</p>
+      <p>Liquid AI 的 LFM3 系列於 10/27 發布，其中 LFM3-Audio-2B（約 1.7 GB）支援語音輸入輸出、語音辨識、語音合成與工具呼叫，覆蓋 18 種語言。本週 Ollama 一鍵下載與 llama.cpp 支援均已就緒，降低本地部署門檻。授權為 LFM Open License v1.0（商用受限）。另有 LFM3-Omni-2B 同時支援音訊與視覺輸入。</p>
+      <p><a href="https://www.gradually.ai/en/ai-models/lfm3-audio-2b/">Gradually.AI 模型頁</a> ｜ <a href="https://www.orcarouter.ai/blog/lfm3-audio-2b-ollama-local-speech">OrcaRouter Ollama 指南</a></p>
+      </div>
+      <h3>模型</h3>
+      <table class="wr-table">
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>LFM3-Audio-2B</td>
+      <td>Liquid AI</td>
+      <td>2B 參數，語音輸入輸出，18 語言，~1.7 GB，可本地 CPU 運行</td>
+      <td>LFM Open License v1.0（商用受限）</td>
+      </tr>
+      <tr>
+      <td>LFM3-Omni-2B</td>
+      <td>Liquid AI</td>
+      <td>2B 參數，音訊+視覺+文字多模態</td>
+      <td>LFM Open License v1.0（商用受限）</td>
+      </tr>
+      <tr>
+      <td>Qwen3-TTS 12Hz 1.7B CustomVoice</td>
+      <td>Alibaba Qwen</td>
+      <td>1.7B TTS 模型，自訂語音功能，本週於 Together 平台上架</td>
+      <td>開源（Apache-2.0）</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <p>本週搜尋範圍內未發現新的 Audio LLM 專題論文發表。上期報導的 Audio LLM MOS 評估論文（arXiv 2610.41539）仍為近期最新。</p>
+      </div>
+      <div class="wr-topic">
+      <h2>3. Speech-to-Speech (S2S)</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>Meta Muse AI 助手新增即時語音對話功能</h4>
+      <p><strong>來源：</strong>Android Authority / ShiftDelete.net（2026-11-05/06）</p>
+      <p>Meta 於 11/5 為其 Muse AI 助手加入即時語音互動功能。用戶點擊電話圖示即可開始語音對話，支援自然打斷（barge-in）。目前僅限美國地區，支援 iOS、Web 與 Mac 平台。提供數百種語音選擇。</p>
+      <p><a href="https://www.androidauthority.com/meta-muse-real-time-voice-chat-mode-3732321/">Android Authority</a> ｜ <a href="https://shiftdelete.net/en/muse-voice-expressive-avatars">ShiftDelete.net</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Rime 發布 Prism 可微調企業級 S2S 模型</h4>
+      <p><strong>來源：</strong>Rime / AudioXpress（2026-10-28，本週媒體持續報導）</p>
+      <p>Rime 於 10/28 發布 Prism，定位為首款可微調的前沿 S2S 模型。特點：內部先產生文字再生成語音（text-in-the-loop），企業可在語音輸出前檢查回覆內容；支援本地部署（on-premise，目前 public beta）；報告首音延遲 0.57 秒。企業可以自有通話資料進行微調。定價約 $0.064–0.080/分鐘（第三方資料，未經官方確認）。</p>
+      <p><a href="https://audioxpress.com/news/rime-launches-fine-tunable-speech-to-speech-model-for-enterprise-voice-applications">AudioXpress</a> ｜ <a href="https://www.webwire.com/ViewPressRel.asp?aId=363450">WebWire 新聞稿</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Hume EVI API 預定 11/13 關閉</h4>
+      <p><strong>來源：</strong>Hume / 第三方報導（截止日 2026-11-13）</p>
+      <p>Hume 確認將終止其 TTS 與 EVI（Empathic Voice Interface）API 服務，截止日為 11/13。EVI 以語音情緒偵測為特色，曾是語音 AI 領域的差異化產品。官方定價頁已移除 EVI 費率。用戶需在截止前完成遷移至其他語音方案。</p>
+      <p><a href="https://dev.hume.ai/docs/empathic-voice-interface-evi/overview">Hume EVI 文件</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Convoso 無代碼語音 AI 代理正式上線</h4>
+      <p><strong>來源：</strong>Unite.AI / EIN Presswire（2026-11-02）</p>
+      <p>Convoso 將其語音 AI 代理功能從 beta 轉為正式版（GA），主要面向外撥銷售與客服自動化場景。報告回應延遲約 600ms，整合於 Convoso 自有撥號系統。無代碼設定，但目前僅限 Convoso 生態系內使用。</p>
+      <p><a href="https://www.unite.ai/convoso-makes-no-code-voice-ai-agent-generally-available/">Unite.AI</a></p>
+      </div>
+      <h3>模型</h3>
+      <table class="wr-table">
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>類型</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>Prism</td>
+      <td>Rime</td>
+      <td>S2S</td>
+      <td>Text-in-the-loop，可微調，on-premise（public beta），TTFA 0.57s</td>
+      <td>商用 API / On-premise</td>
+      </tr>
+      <tr>
+      <td>Eleven Realtime v1 Mini / Max</td>
+      <td>ElevenLabs</td>
+      <td>S2S</td>
+      <td>Mini（對話場景）/ Max（複雜推理），10/20 發布，本週持續為產業基準</td>
+      <td>商用 API</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <p>本週搜尋範圍內未發現新的 S2S 專題論文發表。</p>
+      </div>
+      <div class="wr-topic">
+      <h2>4. Turn Detection & Semantic VAD</h2>
+      <h3>新聞 / 產業動態</h3>
+      <div class="wr-item">
+      <h4>Semantic VAD 成為語音代理產業標準方向</h4>
+      <p><strong>來源：</strong>多家報導整理</p>
+      <p>本週多篇產業分析指出，語義層級的端點偵測（Semantic VAD）正從實驗性功能轉向生產部署標準。OpenAI Realtime API 已提供 semantic_vad 選項（含 eagerness 設定），Deepgram Flux 也內建 end-of-turn 偵測。但分析同時指出，semantic VAD 降低的是端點偵測錯誤率，並不減少語音管線的基礎延遲底線。多數生產系統仍以 silence-based VAD 為主，semantic 方案正在追趕中。</p>
+      <p><a href="https://gradium.ai/content/semantic-vad-voice-agents-turn-detection-2026">Gradium 分析</a> ｜ <a href="https://gradium.ai/content/turn-taking-voice-agents-vad">Turn-Taking 技術挑戰</a></p>
+      </div>
+      <h3>模型</h3>
+      <table class="wr-table">
+      <thead>
+      <tr><th>模型</th><th>開發者</th><th>特點</th><th>授權</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>turn-1-mini</td>
+      <td>（preprint, 2026-10-30 提交）</td>
+      <td>5.3M 參數，純音訊 EoT 偵測，TurnBench 排名第一（23 模型中），CPU 1.3ms/160ms，比 VAD 規則早 572ms 做出打斷判斷</td>
+      <td>Apache-2.0（權重+代碼+ONNX）</td>
+      </tr>
+      <tr>
+      <td>Smart Turn v3.2</td>
+      <td>Pipecat (Daily)</td>
+      <td>~8M 參數，8 MB int8 ONNX，CPU 推論 ~10-65ms，23 語言，2026-01 更新</td>
+      <td>開源</td>
+      </tr>
+      </tbody>
+      </table>
+      <h3>論文</h3>
+      <div class="wr-item">
+      <h4>FD-VAD: Semantic Endpoint Detection for Streaming Full-Duplex Speech</h4>
+      <p><strong>來源：</strong>arXiv 2609.35791（2026-09 提交）</p>
+      <p>將端點偵測建模為因果音訊語言推理任務（causal audio-language reasoning），直接從串流音訊推論，不需中間 ASR 或對話狀態追蹤。在 TurnBench dev set 上的零樣本評估顯示優於傳統方法，但結果為初步報告，尚待正式驗證。</p>
+      <p><a href="https://arxiv.org/abs/2609.35791">arXiv</a></p>
+      </div>
+      <div class="wr-item">
+      <h4>Less can be More: What Aspects of Speech Drive End-of-Turn Detection</h4>
+      <p><strong>來源：</strong>arXiv 2609.11066（2026-09 提交）</p>
+      <p>系統性分析語音中哪些面向（韻律、語義、時序等）對 end-of-turn 偵測最具影響力，發現某些特徵組合以更少資訊達到更好效果。對 EoT 模型的特徵工程與輕量化設計具參考價值。</p>
+      <p><a href="https://arxiv.org/abs/2609.11066">arXiv</a></p>
+      </div>
+      </div>
+      <div class="wr-topic">
+      <h2>5. 語音相關公開資料集</h2>
+      <table class="wr-table">
+      <thead>
+      <tr><th>資料集</th><th>規模</th><th>語言</th><th>授權</th><th>說明</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>ELARSpeech</td>
+      <td>30,000 小時</td>
+      <td>675 種低資源語言</td>
+      <td>公開釋出（含模型與 pipeline）</td>
+      <td>針對長尾多語言語音技術的大型資料集，10/19 提交 arXiv，公開 ASR 與 TTS 模型及完整資料建構流程。為低資源語言語音技術提供重要基礎資源。</td>
+      </tr>
+      <tr>
+      <td>Open ASR Leaderboard 更新</td>
+      <td>—</td>
+      <td>新增埃及阿拉伯語、奈及利亞英語</td>
+      <td>—</td>
+      <td>11/6 更新，擴展評測語言覆蓋範圍。為基準評測更新，非新資料集。</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>本週未發現全新大型語音資料集發布。上期報導的 NVIDIA Granary v2（463,062 小時、48 語言，10/28 發布）仍為近期最具規模的公開資料集。</p>
+      <p><a href="https://www.alphaxiv.org/abs/2610.19388">ELARSpeech 論文</a></p>
+      </div>
+
+      <nav class="article-nav">
+        <a href="../index.html">← 回Tech Weekly</a>
+      </nav>
+
+    </div>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p>Personal Archive &middot; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js"></script>
+</body>
+</html>
