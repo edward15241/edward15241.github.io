@@ -44,6 +44,8 @@
 
       <time class="article__date" datetime="2026-11-10">2026-11-10</time>
       <h1 class="article__title">先診斷 Encoder，再用 SOT 教 Qwen3-ASR-0.6B 聽懂重疊語音</h1>
+<blockquote><p><strong>2026-11-10 補充：</strong>本文把「單一模型、推論架構簡單」當成硬限制，因此只把語音分離前端當對照組。方法不設限的修訂版評估見<a href="2026-11-10-qwen3-asr-speech-separation-frontend.html">外掛語音分離器路線的評估</a>。</p></blockquote>
+
 
 <style>.article .wr-table{min-width:60rem}.article .wr-table td:first-child{white-space:normal;min-width:9rem}</style>
 <p>對「只要還原所有重疊說話者文字、推論架構要簡單」這個需求，現有文獻最支持的路線是 <strong>utterance-level SOT（Serialized Output Training）微調</strong>：它只改訓練標籤（<code>說話者1文字 &lt;分隔符&gt; 說話者2文字</code>），不加任何推論模組，Qwen3-ASR 官方微調腳本的資料格式可以直接承載。但有三件事必須先講清楚。第一，<strong>筆記中沒有任何一個數字是在 Qwen3-ASR-0.6B 的重疊語音上量到的</strong>，公開文獻也查無 Qwen3-ASR／Qwen2-Audio／Qwen-Omni 的 SOT 微調先例，以下所有「移植到 Qwen3-ASR」的說法都是待驗證的假設。第二，最關鍵的已發表消融顯示「只在 LLM 掛 LoRA」很可能不夠：未經重疊資料調適的 WavLM-Large 若凍結、只訓練 projector 與 LLM LoRA，Libri2Mix WER 是 46.7%，解凍 Encoder 後是 10.2%，而 LLM LoRA 本身只值約 1 個 WER 點（<a target="_blank" rel="noopener" href="https://arxiv.org/html/2408.17431">Shi et al. 2024</a>）；但凍結的 Whisper-large-v2 加 LoRA-LLM 卻能在 2 人 LibriSpeechMix 做到 6.6%（<a target="_blank" rel="noopener" href="https://arxiv.org/html/2409.08596">MT-LLM</a>），所以 AuT Encoder 屬於哪一種，只能自己量。第三，多語保留是真實風險：Whisper 用英文多人資料做全參數微調後，中文多人能力明顯受損，改用 adapter 才保住（<a target="_blank" rel="noopener" href="https://arxiv.org/html/2305.18747">Li et al. 2023</a>）。因此建議的順序是：先做不改動基礎權重的診斷（baseline 失效型態、凍結消融、分層 per-talker CTC read-out），回答「Encoder 是否還留著第二位說話者」；再做 SOT + LoRA（含 Encoder LoRA）的主實驗；per-speaker CTC／SOP、t-SOT、第二顆 Encoder 等都排在後面，只有在診斷結果或 3 人重疊、串流需求出現時才啟動。</p>
