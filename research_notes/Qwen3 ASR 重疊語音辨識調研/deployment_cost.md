@@ -1,48 +1,62 @@
 # Implementation and Deployment Cost of Overlapped-Speech ASR Approaches for Qwen3-ASR-0.6B
 
-> **Read this first: source access.** This session's network only allowed `github.com` and web search. `arxiv.org`, `huggingface.co`, HF mirrors and most blog hosts did not resolve. So every finding carries one of two tags:
-> - **[D]** = I opened the page directly (all GitHub pages).
-> - **[S]** = the figure comes from a search-engine extract of the cited page; I could not open the page itself. Treat as "reported, needs a direct check against the primary source before it goes in a final report".
+> **Source tags.** Every finding carries one of two tags:
+> - **[D]** = I read the primary page or PDF directly (GitHub, arXiv, Hugging Face, ISCA archive).
+> - **[S]** = the figure comes from a search-engine extract of the cited page; the page itself was not opened. Treat as "reported, not yet checked against the primary source".
 >
-> No number below is estimated. Anything not found is marked **Not Reported** or listed under Gaps.
+> A second pass (after arxiv.org, huggingface.co and isca-archive.org became reachable) verified the Qwen3-ASR tech report, the NVIDIA and MOSS model cards, and the SOP, Sidecar, t-SOT, self-speaker-adaptation, Wu et al. 2021 and Shi et al. 2026 papers. What is still [S] is listed at the end of each Gaps section. No number below is estimated; anything not found is marked **Not Reported**.
 
 ## 1. Qwen3-ASR-0.6B baseline facts (params, speed, VRAM, streaming, vLLM, CPU/quantization, max length, license)
 
 ### Takeaway
-The baseline is an Apache-2.0, 18-layer AuT encoder (reported 180M params, 12.5 Hz output) + projector + Qwen3-0.6B decoder (28 layers), with official vLLM serving and an official full-fine-tuning script but no official quantized/CPU build. Reported speed is TTFT 92 ms and RTF 0.064 at concurrency 128 on GPU; CPU-only use exists only through community ports, with reported results ranging from several times faster than real time (Apple M3 Max, C port) to slower than real time (one arXiv benchmark, chunked mode).
+The baseline is an Apache-2.0 model built from a 180M-parameter AuT encoder (12.5 Hz output), a projector and Qwen3-0.6B, with official vLLM serving and an official fine-tuning script but no official quantized or CPU build. On GPU it reports TTFT 92 ms at concurrency 1 and RTF 0.064 (2,000 audio-seconds per second) at concurrency 128; CPU-only use exists only through community ports, with results ranging from several times faster than real time to slower than real time in streaming mode.
 
 ### Cited Findings
 
 **Architecture and parameters**
-- [S] The tech report says Qwen3-ASR-0.6B is built from Qwen3-0.6B, a projector, and an AuT encoder with 180M parameters and hidden size 896; the 1.7B model uses a 300M-parameter AuT encoder with hidden size 1024. — [arXiv 2601.21337](https://arxiv.org/abs/2601.21337); same figures in [hyper.ai summary](https://hyper.ai/en/papers/Qwen3-ASR)
-- [S] AuT is an attention-encoder-decoder model that downsamples 100 Hz Fbank features 8x to a 12.5 Hz token rate. — [hyper.ai summary](https://hyper.ai/en/papers/Qwen3-ASR)
-- [D] Layer-level structure read from the weights by an independent C re-implementation: 0.6B = 18 encoder layers, encoder dim 896, 28 decoder layers, decoder dim 1024, 16/8 Q/KV heads, vocab 151,936, BF16 weights. The stem is 3 Conv2D layers (480 channels, stride 2, 8x time downsampling); the projector is Linear-GELU-Linear; roughly 13 encoder tokens per second of audio. — [antirez/qwen-asr](https://github.com/antirez/qwen-asr)
-- [D] The same page lists the 0.6B static footprint as about 1.747 GiB of mmapped safetensors (BF16). — [antirez/qwen-asr](https://github.com/antirez/qwen-asr)
-- Projector parameter count: **Not Reported** in any source found.
+- [D] "Qwen3-ASR-0.6B is built with Qwen3-0.6B, a projector and an AuT encoder with 180M parameters and a hidden size of 896." The 1.7B model uses Qwen3-1.7B, a projector and a 300M-parameter AuT encoder with hidden size 1024. — [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2)
+- [D] AuT is an attention-encoder-decoder ASR model that downsamples 128-dimensional Fbank features 8x, giving a 12.5 Hz token rate; it uses a dynamic flash-attention window from 1 s to 8 s, which is what allows both streaming and offline inference. — [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2)
+- [D] AuT pre-training used approximately 40 million hours of pseudo-labeled ASR data, mostly Chinese and English. — [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2)
+- [D] Layer-level structure from an independent C re-implementation: 0.6B has 18 encoder layers (dim 896), 28 decoder layers (dim 1024), 16/8 Q/KV heads, vocab 151,936, BF16 weights; a 3-layer Conv2D stem (480 channels, 8x time downsampling); a Linear-GELU-Linear projector. — [antirez/qwen-asr](https://github.com/antirez/qwen-asr)
+- Projector parameter count: **Not Reported** (the tech report names the projector without a size).
 
-**Speed (GPU)**
-- [S] The abstract states the 0.6B model reaches average TTFT as low as 92 ms and transcribes 2,000 seconds of speech per second at concurrency 128. — [arXiv 2601.21337](https://arxiv.org/abs/2601.21337)
-- [D] The official README repeats that the 0.6B model "reaches 2000 times throughput at a concurrency of 128". — [QwenLM/Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR)
-- [S] A summary of the report gives RTF 0.064 at concurrency 128 for 0.6B. — [arxivlens summary](https://arxivlens.com/paperview/details/qwen3-asr-technical-report-232-4fcaadd0)
-- [S] The report's 0.6B vLLM-serve table lists, at concurrency 1, average TTFT 92 ms and p95 105 ms; measurements used vLLM v0.14.0 with CUDA Graph, in offline-batch and online-serving settings. — [arXiv 2601.21337 HTML v2](https://arxiv.org/html/2601.21337v2)
-- [S] Conflict to resolve: a secondary article shows a per-concurrency table where TTFT at concurrency 128 is 3210 ms, so "92 ms" and "concurrency 128" are most likely different rows of the table, not the same operating point. That article's parameter counts are wrong, so it is low-reliability. — [besthub.dev](https://besthub.dev/articles/qwen3-asr-open-source-speech-recognition-supporting-52-languages-and-dialects-outperforming-whisper-ef37f210febf)
+**Speed (GPU), Table 2 of the tech report**
+- [D] Setup: vLLM v0.14.0, CUDA Graph enabled, bfloat16, input audio of about 2 minutes, "a single typical computing resource" (GPU model not named). Two settings: offline batch generation and online asynchronous serving through vLLM Serve. — [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2)
+- [D] Qwen3-ASR-0.6B rows (throughput = audio-seconds per second):
+
+| Conc. | Offline RTF | Offline throughput | Online TTFT avg (ms) | Online TTFT p95 (ms) | Online RTF | Online throughput |
+|---|---|---|---|---|---|---|
+| 1 | 0.00923 | 108.34 | 92 | 105 | 0.00940 | 106.38 |
+| 2 | 0.01124 | 177.94 | 103 | 168 | 0.01108 | 180.51 |
+| 4 | 0.01284 | 311.53 | 132 | 203 | 0.01224 | 326.80 |
+| 8 | 0.01600 | 500.00 | 228 | 417 | 0.01472 | 543.48 |
+| 16 | 0.02384 | 671.14 | 459 | 882 | 0.01936 | 826.45 |
+| 32 | 0.03808 | 840.34 | 820 | 1575 | 0.02912 | 1098.90 |
+| 64 | 0.06336 | 1010.10 | 1631 | 3196 | 0.04352 | 1470.59 |
+| 128 | 0.11264 | 1136.36 | 3210 | 6195 | 0.06400 | 2000.00 |
+| 256 | 0.21504 | 1190.48 | - | - | - | - |
+| 512 | 0.44544 | 1149.43 | - | - | - | - |
+
+  — [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2)
+- [D] Correction to a common misreading: the 92 ms TTFT is the concurrency-1 row. At concurrency 128, where RTF is 0.064 and throughput 2,000, average TTFT is 3,210 ms. — [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2)
+- [D] For comparison, Qwen3-ASR-1.7B at concurrency 1: TTFT 102 ms, online RTF 0.01483; at concurrency 128: TTFT 3,392 ms, online RTF 0.10496, throughput 1219.51. — [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2)
 
 **VRAM**
-- [D] The official README gives no VRAM figure. It only shows `gpu_memory_utilization` examples (0.7-0.9), recommends FlashAttention 2 to reduce GPU memory, and says a smaller `max_inference_batch_size` avoids OOM. — [QwenLM/Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR)
+- [D] The official README gives no VRAM figure. It shows `gpu_memory_utilization` examples (0.7-0.9), recommends FlashAttention 2 to reduce GPU memory, and says a smaller `max_inference_batch_size` avoids OOM. The tech report gives no memory figure either. — [QwenLM/Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR); [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2)
 - [D] vLLM 0.14.0 startup log for Qwen3-ASR-0.6B posted by a user: "Model loading took 1.53 GiB memory"; CUDA graph capture "took 0.50 GiB"; with `--gpu-memory-utilization 0.2` and `--max-model-len 10000` the KV cache got 1.74 GiB (16,272 tokens). The user asked for recommended VRAM; no maintainer answered and the issue was closed as "not planned". — [Qwen3-ASR issue #20](https://github.com/QwenLM/Qwen3-ASR/issues/20)
 - [D] A community member (not a maintainer) in the same issue claims "consistently < 2GB VRAM usage under load" with their own vLLM fork. Unverified claim. — [Qwen3-ASR issue #20](https://github.com/QwenLM/Qwen3-ASR/issues/20)
 
 **Streaming mechanics**
 - [D] One model serves both offline and streaming. Streaming is available only with the vLLM backend, and "streaming inference does not support batch inference or returning timestamps". — [QwenLM/Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR)
-- [S] The report's streaming evaluation uses a 2-second chunk, a 5-token fallback (rollback), and keeps the last four chunks unfixed. — [arXiv 2601.21337](https://arxiv.org/pdf/2601.21337)
-- [D] An independent re-implementation describes the same scheme: 2-second chunks; each step re-feeds the accumulated audio with the previous output minus a 5-token rollback suffix as decoder prefix; encoder attention uses local windows (8 s default) so finished windows can be cached. — [antirez/qwen-asr](https://github.com/antirez/qwen-asr)
+- [D] The report's streaming evaluation uses "a 2-second chunk size, a 5-token fallback, and keeping the last four chunks unfixed". — [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2)
+- [D] An independent re-implementation describes the same scheme: 2-second chunks; each step re-feeds the accumulated audio with the previous output minus a 5-token rollback suffix as decoder prefix; encoder windows (8 s default) are cached once complete; each chunk's decode is capped at 32 new tokens by default. — [antirez/qwen-asr](https://github.com/antirez/qwen-asr)
 - [D] Streaming costs accuracy: 1.7B averages 3.33 WER streaming vs 2.69 offline on the README's table. — [QwenLM/Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR)
 
 **vLLM, max length, license, languages**
 - [D] vLLM "officially provides day-0 model support"; `qwen-asr-serve` wraps `vllm serve`; OpenAI-compatible chat and transcription endpoints; official Docker image `qwenllm/qwen3-asr`. — [QwenLM/Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR)
-- [S] The report says both models support a single utterance no longer than 20 minutes. — [arXiv 2601.21337](https://arxiv.org/pdf/2601.21337)
+- [D] Both models "naturally support single speech no longer than 20 minutes". — [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2)
 - [D] License Apache-2.0; 30 languages plus 22 Chinese dialects. — [QwenLM/Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR)
-- [D] vLLM did not support LoRA adapters for `Qwen3ASRForConditionalGeneration` as of feature request #37223; a later PR (#50793) fixes audio-tower Q/K/V LoRA adapters being silently skipped. Merge status not checked. — [vLLM issue #37223](https://github.com/vllm-project/vllm/issues/37223); [vLLM PR #50793](https://github.com/vllm-project/vllm/pull/50793)
+- [S] vLLM did not support LoRA adapters for `Qwen3ASRForConditionalGeneration` as of feature request #37223; a later PR (#50793) fixes audio-tower Q/K/V LoRA adapters being silently skipped. Merge status not checked. — [vLLM issue #37223](https://github.com/vllm-project/vllm/issues/37223); [vLLM PR #50793](https://github.com/vllm-project/vllm/pull/50793)
 
 **Quantization / GGUF / ONNX / CPU (all community, none official)**
 - [D] The official README mentions no quantization, GGUF, ONNX or CPU path. — [QwenLM/Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR)
@@ -56,239 +70,271 @@ The baseline is an Apache-2.0, 18-layer AuT encoder (reported 180M params, 12.5 
 
 ### Inferences
 - Any approach that keeps the stock architecture (plain SOT fine-tune) inherits all of the above deployment paths unchanged, including the community CPU ports, because only weights change. Approaches that add modules (per-speaker CTC heads, separator, speaker kernels) would need each port to be modified.
-- The streaming scheme re-decodes from a rolled-back prefix on every 2 s chunk. The 135 s `--stream` result (0.96x) on a fast laptop CPU shows CPU streaming is the fragile case, and it is the case a longer SOT output would stress further.
+- The official table measures about 2-minute single-talker audio. Offline RTF at concurrency 1 is 0.009, so there is large headroom on GPU even if SOT doubles output length; the tight case is CPU streaming, where one port already fell to 0.96x on a 135 s file.
+- The streaming scheme re-decodes from a rolled-back prefix on every 2 s chunk, so longer outputs per chunk raise per-chunk cost directly.
 - vLLM's LoRA gap means a LoRA-trained multi-talker adapter should be merged into the base weights before serving.
 
 ### Gaps
-- Projector parameter count and an exact encoder/projector/LLM split summing to the total: not found.
-- Official VRAM guidance: none exists (issue #20 went unanswered).
-- GPU model used in the report's efficiency table: one third-party page says a single A100 with bfloat16, unverified.
-- The full per-concurrency TTFT/RTF table could not be read; arxiv.org must be allowed to confirm it.
+- Projector parameter count and an exact encoder/projector/LLM split summing to the total: Not Reported.
+- Official VRAM guidance: none exists (issue #20 went unanswered; the report has no memory column).
+- GPU model behind Table 2: the report says only "a single typical computing resource".
 - No sherpa-onnx or OpenVINO benchmark for Qwen3-ASR was found.
-- AuT pre-training data size conflicts between sources (about 40M hours in one summary of the ASR report, 20M hours in the Qwen3-Omni report); unresolved.
+- Still [S]: the vLLM LoRA issue and PR, the arXiv 2604.14493 CPU figure, the VoicePing Android figures, and all community GGUF/ONNX/MLX size and speed claims.
 
 ## 2. Fine-tuning practicalities for Qwen3-ASR and comparable Speech-LLMs (applies to approaches 1-3)
 
 ### Takeaway
-An official fine-tuning script exists and takes plain audio + text JSONL, so SOT targets can be fed without code changes, but it gives no VRAM or time guidance and appears to do full fine-tuning rather than LoRA. I found no published GPU-memory or GPU-hour figure for fine-tuning Qwen3-ASR from either the maintainers or the community.
+An official fine-tuning script exists and takes plain audio + text JSONL, so SOT targets can be fed without code changes, but it gives no VRAM or time guidance and does not say whether it is full fine-tuning or LoRA. No published GPU-memory or GPU-hour figure for fine-tuning Qwen3-ASR was found; the nearest reported training cost for a comparable add-on is 7 hours on 8 V100 GPUs (Sidecar, frozen backbone).
 
 ### Cited Findings
 - [D] Official script: `finetuning/qwen3_asr_sft.py`. Data is JSONL with `audio` (WAV path) and `text` (transcript, optionally prefixed `language English<asr_text>`; `language None<asr_text>` if unknown). — [Qwen3-ASR finetuning](https://github.com/QwenLM/Qwen3-ASR/tree/main/finetuning)
 - [D] Example command: `--batch_size 32 --grad_acc 4 --lr 2e-5 --epochs 1 --save_steps 200`; multi-GPU via `torchrun --nproc_per_node=2`; checkpoints load with `Qwen3ASRModel.from_pretrained`. — [Qwen3-ASR finetuning](https://github.com/QwenLM/Qwen3-ASR/tree/main/finetuning)
 - [D] The page states no GPU type, VRAM requirement or training time, and does not say whether training is full or LoRA. Only hardware hint: FlashAttention 2 is recommended for lower memory, and `MAX_JOBS=4` when building it on machines with under 96 GB RAM. — [Qwen3-ASR finetuning](https://github.com/QwenLM/Qwen3-ASR/tree/main/finetuning)
 - [S] Open issue #176 (May 26, 2026): the fine-tuning callback silently skips copying the preprocessor/chat template when `--model_path` is a Hub ID. — [Qwen3-ASR issues](https://github.com/QwenLM/Qwen3-ASR/issues)
-- [D] Comparable recipe (Hao Shi et al., WavLM-Large + LLaMA): LoRA r=16, alpha=32, encoder and decoder frozen, projector trainable, 30 epochs, per-device batch 8, bf16, lr 3e-5. GPU type and hours are not stated. — [hshi-speech/Multi-talker-ASR-with-LLMs](https://github.com/hshi-speech/Multi-talker-ASR-with-LLMs)
+- [D] Comparable recipe (Hao Shi et al., WavLM-Large + LLaMA): LoRA r=16, alpha=32, encoder and decoder frozen, projector trainable, 30 epochs, per-device batch 8, bf16, lr 3e-5. GPU type and hours are not stated in the repo or the paper. — [hshi-speech/Multi-talker-ASR-with-LLMs](https://github.com/hshi-speech/Multi-talker-ASR-with-LLMs); [arXiv 2509.04488](https://arxiv.org/html/2509.04488)
 - [D] Comparable recipe (MOSS-Transcribe-Diarize 0.9B, same Qwen3-0.6B-style decoder): `finetune.py` with per-device batch 1, 3 epochs, lr 1e-5, bf16, gradient checkpointing; default max sequence length 131,072 tokens. No VRAM or time stated. — [MOSS FINETUNING.md](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize/blob/main/FINETUNING.md)
+- [D] Reported training costs for related systems: Sidecar converges in "about 7 hours ... with 8 NVIDIA V100 GPUs" (at most 100k updates, backbone frozen); t-SOT used 16 GPUs for 225K iterations (GPU type not stated); the NVIDIA self-speaker-adaptation models were trained 200k steps on 8 A100 GPUs. — [arXiv 2302.09908](https://arxiv.org/pdf/2302.09908); [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf); [arXiv 2506.22646](https://arxiv.org/html/2506.22646)
+- [D] Standard training-set sizes used by these papers: Libri2Mix about 270 hours, Libri3Mix about 186 hours. — [arXiv 2509.04488](https://arxiv.org/html/2509.04488)
 
 ### Inferences
 - Because the official script consumes free-form target text, a first SOT experiment is a data-preparation task (build mixtures, write serialized targets with a separator token), not an engineering task.
 - The example batch size of 32 was written for the 1.7B model on unspecified hardware; it says nothing reliable about what fits on a given GPU for 0.6B.
 
 ### Gaps
-- Training compute (GPU type x hours) for Qwen3-ASR fine-tuning: Not Reported anywhere I could reach.
-- Community fine-tuning reports with memory/time numbers: none found. HF discussions could not be opened.
+- Training compute (GPU type x hours) for Qwen3-ASR fine-tuning: Not Reported.
+- Community fine-tuning reports with memory or time numbers: none found.
 - Whether adding a new special token (speaker-change) works with the official script without modification: not documented.
+- Still [S]: issue #176.
 
 ## 3. Approach 1 — plain SOT fine-tuning, and how SOT changes LLM decoding cost
 
 ### Takeaway
-SOT adds no modules and keeps the single-model pipeline, so its only deployment cost is longer autoregressive output. Published evidence that this cost is material comes from one LLM-based system: a LLaMA-1B decoder ran at RTF about 0.10-0.12 on LibriMix versus 0.004-0.011 for an encoder-only serialized-CTC model. I found no paper reporting single-talker vs multi-talker RTF for the same LLM decoder.
+SOT adds no modules and keeps the single-model pipeline; the t-SOT authors classify its decoder inference cost and architecture as "same with single-talker model", but mark it as not streamable. The only measured LLM-decoder figure is RTF 0.115 (Libri2Mix) and 0.098 (Libri3Mix) for a LLaMA-1B SOT system on an H100 at batch size 1. No paper reports single-talker vs multi-talker RTF for the same LLM decoder.
 
 ### Cited Findings
-- [S] An Interspeech 2026 paper (Shi et al.) reports RTF 0.1150 on Libri2Mix and 0.0981 on Libri3Mix for a LLaMA-1B decoder, versus 0.0043 and 0.0106 for its encoder-only serialized-CTC model. — [Interspeech 2026 paper page](https://interspeech-2026-wiki.vercel.app/papers/shi26_interspeech/)
-- [S] LLM-based SOT with a WavLM-Large encoder reached 9.0% WER on two-speaker LibriMix vs 9.2% for an AED baseline. — [arXiv 2408.17431](https://arxiv.org/pdf/2408.17431)
+- [D] Comparison table in the t-SOT paper, SOT column: streaming inference "Not-available"; inference cost on decoder "Same with single-talker model"; max concurrent utterances "Unlimited"; speaker counting "Available"; model architecture "Same with single-talker model"; "Restricted to AED-based ASR". — [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf)
+- [D] RTF table (Shi et al., Interspeech 2026): LLaMA-1B SOT system 0.1150 on Libri2Mix and 0.0981 on Libri3Mix; encoder-only CTC model 0.0043 and 0.0106. "RTF was computed as the ratio of total inference time to total input audio duration, measured on a single NVIDIA H100 80GB GPU with batch size 1." — [Shi et al., Interspeech 2026](https://www.isca-archive.org/interspeech_2026/shi26_interspeech.pdf)
+- [D] SOT baseline WER with WavLM-Large + LLaMA (noisy LibriMix eval, 2-mix / 3-mix): 1B 11.3 / 39.1; 3B 9.8 / 31.7; 8B 14.3 / 47.5. Clean eval for 1B: 4.6 / 21.6. A larger LLM did not help monotonically. — [arXiv 2509.04488](https://arxiv.org/html/2509.04488)
+- [D] Stage 1 of the SOP recipe is plain SOT fine-tuning: it trains the speech encoder on mixtures and adapts the LLM decoder "to serialize the mixed token sequences". — [arXiv 2509.04488](https://arxiv.org/html/2509.04488)
 - [D] In the Hao Shi et al. code, the plain SOT recipe (`attention` mode, CE only) uses the unmodified encoder-projector-LLM path plus an added `<sc>` speaker-change token. — [hshi-speech/Multi-talker-ASR-with-LLMs](https://github.com/hshi-speech/Multi-talker-ASR-with-LLMs)
-- [D] Qwen3-ASR's streaming mode caps each 2 s chunk at 32 new tokens by default in one re-implementation. — [antirez/qwen-asr](https://github.com/antirez/qwen-asr)
-- [S] A persistent-acoustic-memory LLM multi-talker paper includes an RTF column in its efficiency table; values were not retrievable. — [arXiv 2603.27205](https://arxiv.org/html/2603.27205)
+- [S] LLM-based SOT with a WavLM-Large encoder reached 9.0% WER on two-speaker LibriMix vs 9.2% for an AED baseline. — [arXiv 2408.17431](https://arxiv.org/pdf/2408.17431)
 
 ### Inferences
-- The Libri3Mix RTF being lower than the Libri2Mix RTF in the cited table shows RTF does not simply scale with speaker count across test sets (clip lengths differ), so "output tokens double, therefore RTF doubles" should not be asserted without measuring on the team's own data.
-- SOT in offline mode is compatible with every existing Qwen3-ASR serving path. SOT in the model's 2 s-chunk streaming mode is not obviously valid: utterance-level SOT emits speaker 1's full text before speaker 2's, which conflicts with a prefix-rollback scheme that assumes monotonic output. This is a structural inference, not a published result.
-- A per-chunk token cap (32 in the cited port) is a concrete place where overlapped speech could truncate output in streaming.
+- "Same decoder cost as single-talker" in the t-SOT table is per token; total decoding time still grows with the number of tokens emitted, which for an overlapped clip is the sum over speakers. No source quantifies this for an LLM decoder.
+- The Libri3Mix RTF being lower than the Libri2Mix RTF shows RTF does not scale simply with speaker count across test sets, so "tokens double, therefore RTF doubles" should not be asserted without measuring.
+- Plain SOT degrades sharply at three speakers in every LLM size (31.7-47.5% WER noisy), so a plain-SOT fine-tune is credible mainly for the two-speaker case.
+- Utterance-level SOT emits speaker 1's whole text before speaker 2's, which conflicts with Qwen3-ASR's prefix-rollback streaming that assumes monotonic output. The t-SOT paper's "streaming: not available" for SOT supports this for the general case; the Qwen3-specific conflict is my inference.
 
 ### Gaps
-- Single- vs multi-talker RTF on the same LLM-decoder model: Not Reported in sources found.
-- Training compute for LLM-based SOT (GPU type x hours): Not Reported in the repo; papers not reachable.
-- Added parameters: structurally zero apart from one token embedding, but no source states a figure.
+- Single- vs multi-talker RTF on the same LLM-decoder model: Not Reported.
+- Training compute for LLM-based SOT (GPU type x hours): Not Reported in the SOP paper or repo.
+- Still [S]: arXiv 2408.17431.
 
 ## 4. Approach 2 — t-SOT (streaming)
 
 ### Takeaway
-t-SOT is the published way to make serialized output streamable: tokens are ordered by time with a channel-change token, and the authors state the architecture and compute cost stay the same as a single-talker model. All reported results are on transducer models, not LLM decoders, and it needs token-level timestamps for training targets.
+t-SOT orders tokens by time with a channel-change token, which makes serialized output streamable while keeping decoder cost and architecture "same with single-talker model". On monaural LibriCSS it beat single-talker streaming models by a wide margin and was close to or better than offline Conformer-CSS cascades. All results are on transformer-transducers, the basic form handles up to two concurrent utterances, and it needs word-level time alignments to build targets.
 
 ### Cited Findings
-- [S] t-SOT serializes multi-speaker transcripts into one token stream sorted chronologically, inserting a special `<cc>` token when adjacent tokens belong to different virtual channels. — [arXiv 2202.00842](https://arxiv.org/pdf/2202.00842)
-- [S] The authors state t-SOT achieves better accuracy than prior multi-talker models "while keeping the model architecture and computational cost the same as conventional single-talker models", with less inference cost than multi-branch streaming models. — [arXiv 2202.00842](https://arxiv.org/pdf/2202.00842)
-- [S] A t-SOT transformer-transducer (TT-18) with 40 ms algorithmic latency outperformed all prior streaming multi-talker models on LibriSpeechMix. — [arXiv 2202.00842](https://arxiv.org/pdf/2202.00842)
-- [S] LibriCSS average WER as summarized by a secondary site: 10.1 (TT-18, 160 ms), 9.0 (TT-36, 160 ms), 7.6 (2560 ms latency). Needs checking against the paper. — [emergentmind LibriCSS summary](https://www.emergentmind.com/topics/libricss)
+- [D] t-SOT column of the comparison table: streaming "Available"; inference cost on decoder "Same with single-talker model"; max concurrent utterances "Pre-defined"; speaker counting "Not-available"; architecture "Same with single-talker model"; "No restriction" on ASR type. — [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf)
+- [D] Experiments used up to two concurrent utterances "because overlaps of more than two speakers are rare"; a generalized form for up to M concurrent utterances is described. — [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf)
+- [D] Model sizes: t-SOT TT-18 82M parameters, TT-36 139M. Minimum algorithmic latency 40 ms; 160 ms is the target configuration. — [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf)
+- [D] LibriSpeechMix test WER (1spk / 2spk): TT-18 at 40 ms 5.1 / 8.4; at 160 ms 4.9 / 6.9; at 640 ms 4.2 / 6.2; at 2560 ms 3.9 / 5.2. TT-36 at 160 ms 4.3 / 6.2; at 2560 ms 3.3 / 4.4. Offline SOT Conformer-AED (129M): 3.6 / 4.9. — [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf)
+- [D] A single-talker TT-18 scores 63.7% on the 2-speaker test set; t-SOT TT-18 trained with 33% two-speaker data scores 7.4% while single-speaker WER moves from 4.5 to 4.7. — [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf)
+- [D] Training: 225K iterations with 16 GPUs (type not stated), mini-batches of 12,000 frames each; 50K more iterations for LibriCSS. Training targets used time alignments from the Montreal Forced Aligner. — [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf)
+- LibriCSS numbers are in section 8, which holds the cascade comparison.
 
 ### Inferences
-- Since the token order is monotonic in time, t-SOT is the serialization that fits Qwen3-ASR's chunked prefix-rollback streaming; utterance-level SOT does not. No published work applies t-SOT to a Speech-LLM decoder in the sources I found.
-- Building t-SOT targets needs word-level timestamps per speaker in the training mixtures. Qwen3-ForcedAligner-0.6B (11 languages, up to 5 minutes) is an available tool for that ([QwenLM/Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR) [D]).
-- t-SOT with two virtual channels is limited to two simultaneous speakers per stream; more need more channel tokens.
+- Since token order is monotonic in time, t-SOT is the serialization that fits Qwen3-ASR's chunked prefix-rollback streaming. No published work applies t-SOT to a Speech-LLM decoder in the sources read.
+- Building t-SOT targets needs word-level timestamps per speaker. Qwen3-ForcedAligner-0.6B (11 languages, up to 300 seconds, [arXiv 2601.21337v2](https://arxiv.org/html/2601.21337v2) [D]) is an available tool for that.
+- The trade against plain SOT is explicit in the paper's table: t-SOT gains streaming but loses unlimited speaker count and speaker counting.
 
 ### Gaps
 - t-SOT on LLM-decoder ASR: no reported results found.
-- Training compute and RTF figures from the t-SOT papers: not retrievable.
-- Direct t-SOT vs CSS cascade comparison: not found.
+- RTF and VRAM for t-SOT: Not Reported in the paper.
 
 ## 5. Approach 3 — SOT + per-speaker CTC / feature separator (Hao Shi et al.; Sidecar)
 
 ### Takeaway
-These methods add a small separator (and CTC heads) between or after encoder layers. The Sidecar is reported at 8.7M parameters, 8.4% of a wav2vec 2.0-base system, trained with the backbone frozen. They break the "no new modules" property, and the public code targets WavLM + LLaMA, not Qwen3-ASR.
+These methods insert a small separator (and CTC heads) into or after the encoder. Sidecar is 8.7M parameters (8.4% of the system) and trained in 7 hours on 8 V100s with the backbone frozen. In the SOP method the separator and CTC layers are needed at inference, training takes three stages, and the gain over plain SOT is small for two speakers (11.3 to 10.5 WER) but large for three (39.1 to 28.5).
 
 ### Cited Findings
-- [S] Sidecar (Meng et al., ICASSP 2023): only the Sidecar is trained, 8.7M parameters, 8.4% of all parameters, with the single-talker model frozen; 10.36% WER on 2-speaker LibriMix and 7.56% on LibriSpeechMix "with limited training". — [arXiv 2302.09908](https://arxiv.org/pdf/2302.09908)
-- [S] The Sidecar is inserted between two encoder layers of a wav2vec 2.0-base ASR model. — [arXiv 2302.09908](https://arxiv.org/pdf/2302.09908)
-- [S] A follow-up adds diarization to the Sidecar with only 768 additional parameters. — [arXiv 2305.16263](https://arxiv.org/pdf/2305.16263)
-- [D] Hao Shi et al. repo contents: WavLM-Large encoder; LLaMA-3.2 1B/3B and LLaMA-3.1 8B decoders; an LSTM separator that splits encoder features into N per-speaker streams; per-speaker CTC heads; hybrid loss alpha*CE + (1-alpha)*CTC with alpha = 0.7; cross-attention adapter variants (`tiny`, `gatetiny`, `adapgatetiny`, `ctcaware`). — [hshi-speech/Multi-talker-ASR-with-LLMs](https://github.com/hshi-speech/Multi-talker-ASR-with-LLMs)
-- [D] Training is staged: `ctc` mode pre-trains the separator, then `hybrid` mode trains all components; a CTC-only decoding stage "uses the per-speaker CTC heads directly". — [hshi-speech/Multi-talker-ASR-with-LLMs](https://github.com/hshi-speech/Multi-talker-ASR-with-LLMs)
-- [D] The repo lists no WER numbers, no RTF, no training hardware, and no license. The papers are ASRU 2025 (Serialized Output Prompting) and SLT 2024 (overlapped encoding separation). — [hshi-speech/Multi-talker-ASR-with-LLMs](https://github.com/hshi-speech/Multi-talker-ASR-with-LLMs)
-- [S] The SOP paper trains in three stages, starting with SOT, and extracts talker-specific serialized prompts to guide the LLM, evaluated on LibriMix 2- and 3-talker. — [arXiv 2509.04488](https://arxiv.org/abs/2509.04488)
+- [D] Sidecar (Meng et al., ICASSP 2023): mounted between two encoder layers of a wav2vec 2.0-based ASR model; only the Sidecar is trained (8.7M, 8.4% of all parameters); 10.36% WER on 2-speaker LibriMix and 7.56% on LibriSpeechMix. — [arXiv 2302.09908](https://arxiv.org/abs/2302.09908)
+- [D] Sidecar training cost: at most 100k updates; "about 7 hours for models' convergence with 8 NVIDIA V100 GPUs". — [arXiv 2302.09908](https://arxiv.org/pdf/2302.09908)
+- [D] SOP architecture: "a speech encoder, several downsampling layers, a projector, a separator, multiple CTC layers, and an LLM-based decoder". The separator is an LSTM followed by LayerNorm and per-speaker Linear + ReLU. — [arXiv 2509.04488](https://arxiv.org/html/2509.04488)
+- [D] The separator and CTC layers are used at inference: the decoder input is the concatenation of the SOP embeddings, the mixture speech embedding and the text embedding. Removing the mixture embedding and keeping only the SOP prompt collapses accuracy (1B: 34.4% on noisy Libri2Mix eval). — [arXiv 2509.04488](https://arxiv.org/html/2509.04488)
+- [D] The separator takes the second CNN downsampling layer's output, not the final one, because "the final layer applies excessive downsampling". — [arXiv 2509.04488](https://arxiv.org/html/2509.04488)
+- [D] Three training stages: (1) SOT fine-tuning; (2) train encoder, CNN downsampling, separator and serialized CTC; (3) freeze those and train only a new set of LoRA modules. The authors "attempted to train all parameters directly in a single stage, but the system performance was suboptimal". — [arXiv 2509.04488](https://arxiv.org/html/2509.04488)
+- [D] WER, noisy LibriMix eval (2-mix / 3-mix): LLaMA-1B SOT 11.3 / 39.1, SOP 10.5 / 28.5; LLaMA-3B SOT 9.8 / 31.7, SOP 9.2 / 28.1. Clean eval, 1B: SOT 4.6 / 21.6, SOP 4.0 / 22.0. — [arXiv 2509.04488](https://arxiv.org/html/2509.04488)
+- [D] The paper states no GPU type, training time, RTF or parameter count for the separator and CTC layers. — [arXiv 2509.04488](https://arxiv.org/html/2509.04488)
+- [D] Repo contents: WavLM-Large encoder; LLaMA-3.2 1B/3B and LLaMA-3.1 8B decoders; `separator.py`, `ctc.py`, hybrid loss alpha*CE + (1-alpha)*CTC with alpha = 0.7; cross-attention adapter variants. No WER, RTF, hardware or license is listed. — [hshi-speech/Multi-talker-ASR-with-LLMs](https://github.com/hshi-speech/Multi-talker-ASR-with-LLMs)
+- [S] A Sidecar follow-up adds diarization with only 768 additional parameters. — [arXiv 2305.16263](https://arxiv.org/pdf/2305.16263)
 
 ### Inferences
-- In the SOP design the separator and CTC heads produce prompts consumed by the LLM, so they are needed at inference; in designs where per-speaker CTC is only an auxiliary loss they can be dropped. The repo README does not state which case applies to each recipe; the "needed at inference" reading for SOP follows from the method description, not an explicit statement.
-- The absence of a license file means the code cannot be assumed reusable in a product; it is a reference implementation to re-write.
-- The cited encoder runs at 50 Hz (WavLM) while AuT outputs 12.5 Hz; whether a feature separator works as well on 12.5 Hz features is untested in the literature I found.
+- For two speakers the SOP gain over plain SOT is under 1 point absolute, bought with two extra modules, two extra training stages and a modified inference graph. On the team's "simple, single-model" priority, this approach only pays off if three-speaker overlap matters.
+- The SOP separator needed a less-downsampled feature than the encoder's final output. AuT outputs 12.5 Hz, lower than the rates used there, so a separator on AuT's final output may face the same "excessive downsampling" problem. This is an inference; nothing in the literature tests it.
+- The absence of a license file means the Hao Shi et al. code cannot be assumed reusable in a product.
 
 ### Gaps
-- Parameter count of the LSTM separator and CTC heads in Hao Shi et al.: Not Reported in the repo.
-- RTF, VRAM, GPU hours for approach 3 on an LLM decoder: Not Reported.
-- Streaming capability: not addressed in the sources.
+- Parameter count of the SOP separator and CTC heads; RTF, VRAM and GPU hours for approach 3 on an LLM decoder: Not Reported.
+- Streaming capability: not addressed in either paper.
+- Still [S]: arXiv 2305.16263.
 
 ## 6. Approach 4 — multi-output / PIT ASR
 
 ### Takeaway
-I found no cost figures specific to PIT multi-output ASR in this session. The only relevant published statement is comparative: the t-SOT authors say multi-branch streaming models have higher inference cost and a more complex architecture than a single serialized output.
+The one sourced cost statement for multi-branch models is that their decoder inference cost is K times a single-talker model, with most parameters loaded and used twice for two branches. No cost data exists for a PIT design on an LLM decoder.
 
 ### Cited Findings
-- [S] Prior streaming multi-talker models used multiple output branches; t-SOT has "less inference cost and a simpler model architecture" by comparison. — [arXiv 2202.00842](https://arxiv.org/pdf/2202.00842)
+- [D] Multi-output streaming models (SURT, MS-RNN-T) in the t-SOT comparison table: inference cost on decoder "K-times of single-talker model"; architecture "Multiple output branches"; max concurrent utterances "Pre-defined"; accuracy on non-overlapping audio "Bad". — [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf)
+- [D] Parameter counts and LibriSpeechMix 2-speaker WER for multi-branch models: PIT LSTM-AED 161M, 11.9 (offline); LSTM-SURT 81M, 10.3; PIT-MS-RNN-T 81M, 10.2 and 8.8; Transformer-SURT 85M, 9.1. These are models "with two output branches, for which most parameters are loaded and used twice in the inference". All are worse than t-SOT TT-18 (82M, 6.9 at 160 ms). — [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf)
 
 ### Inferences
-- For an LLM decoder, a multi-output design means either several decoder passes or several output heads, which the Qwen3-ASR serving stack (vLLM, one text stream per request) does not provide. This is a structural inference.
+- For an LLM decoder, a multi-output design means several decoder passes or several output heads, which the Qwen3-ASR serving stack (vLLM, one text stream per request) does not provide. This is a structural inference.
+- On the evidence above, PIT multi-output is dominated by serialized output on both cost and accuracy for transducer and AED models.
 
 ### Gaps
-- Added parameters, RTF, VRAM, training compute for PIT-based ASR: Not Reported in sources reached. This approach is under-researched in these notes.
+- RTF, VRAM, training compute for PIT-based ASR, and any PIT result on a Speech-LLM: Not Reported.
 
 ## 7. Approach 5 — target-speaker / speaker-conditioned ASR (NVIDIA multitalker Parakeet, DiCoW)
 
 ### Takeaway
-NVIDIA's model avoids serialization by running one ASR instance per speaker, conditioned by a streaming Sortformer diarizer, so compute scales with speaker count and a second model is mandatory. It is English-only, under the NVIDIA Open Model License, and it is a transducer, not a Speech-LLM, so it is a comparison baseline rather than something to graft onto Qwen3-ASR.
+NVIDIA's model runs one 600M ASR instance per speaker, each fed the same audio plus that speaker's activity from a mandatory streaming Sortformer diarizer, so compute scales with speaker count. It is under the NVIDIA Open Model License, built on an English base model, and reports cpWER 15.81-37.44 on real conversations at 1.12 s latency. It is a transducer, so it serves as a comparison baseline, not something to graft onto Qwen3-ASR.
 
 ### Cited Findings
-- [S] The model card says the model requires deploying one model instance per speaker, with the number of instances matching the number of speakers; each instance focuses on one speaker, which avoids the permutation problem under heavy overlap. — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
-- [S] It uses speaker kernel injection at some layers of the FastConformer encoder and needs a separate Sortformer diarizer; the example loads `nvidia/diar_streaming_sortformer_4spk-v2.1`. — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
-- [S] Latency is set by `att_context_size` in 80 ms frames; the example uses `[70,13]`, and the card metadata lists a 1.04 s input buffer for one evaluation config. A community port describes the default as 1.12 s and says four latency settings are selectable. — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1); [handy-computer GGUF port](https://huggingface.co/handy-computer/multitalker-parakeet-streaming-0.6b-v1-gguf)
-- [D] A Rust runtime lists the model as English only, streaming, per-speaker output, fed in chunks of 17,920 samples (about 1.12 s at 16 kHz), and requiring a separate diarization ONNX file. — [altunenes/parakeet-rs](https://github.com/altunenes/parakeet-rs)
-- [S] License field: `other`, name `nvidia-open-model-license`. — [NVIDIA model card README](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1/blob/main/README.md)
-- [S] Training datasets listed on the card: AMI, NOTSOFAR1, Fisher, MMLPC, LibriSpeech train-clean-100. — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
-- [S] The underlying paper (Wang, Park et al., Interspeech 2025) reports a smaller research system of 238M parameters: 114M FastConformer transducer + 123M Sortformer + 1.1M speaker injection module. — [arXiv 2506.22646](https://arxiv.org/abs/2506.22646)
-- [S] A third-party GGUF port measured 19.35% cpWER on AMI-IHM test (16 meetings) in default kernel mode; this is the port's measurement, not NVIDIA's. — [handy-computer GGUF port](https://huggingface.co/handy-computer/multitalker-parakeet-streaming-0.6b-v1-gguf)
-- [D] For the related offline Multitalker TDT model, the Rust runtime reports cpWER on two overlapping speakers falling from 36.7% (plain TDT + diarization) to 4.4% on LibriSpeechMix. — [altunenes/parakeet-rs](https://github.com/altunenes/parakeet-rs)
-- [S] DiCoW conditions Whisper on diarization output through frame-level diarization-dependent transforms (FDDT): four class-specific affine transforms (silence, target, non-target, overlap) inserted in the encoder layers. A follow-up initializes from a DiCoW checkpoint based on Whisper-large-v3-turbo. — [arXiv 2501.00114](https://arxiv.org/pdf/2501.00114); [arXiv 2510.03723](https://arxiv.org/pdf/2510.03723)
+- [D] Model card badge: 600M parameters; "a streaming multitalker ASR model based on the Nemotron-Speech-Streaming model" (`nvidia/nemotron-speech-streaming-en-0.6b`). — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
+- [D] "The model architecture requires deploying one model instance per speaker, meaning the number of model instances matches the number of speakers in the conversation. While this necessitates additional computational resources, it achieves state-of-the-art performance in handling fully overlapped speech." — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
+- [D] Each instance receives the same mixed audio, injects speaker-specific kernels at the pre-encode layer, outputs only its target speaker's text, and "operates independently and can run in parallel with other instances". — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
+- [D] The paper implements the instances as a batch: "the batch size corresponds to the number of speakers in the input audio". — [arXiv 2506.22646](https://arxiv.org/html/2506.22646)
+- [D] A separate diarizer is required: the example loads `nvidia/diar_streaming_sortformer_4spk-v2.1` (v2 also listed). No speaker enrollment is needed. — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
+- [D] Latency options via `att_context_size`, in 80 ms frames: [70,0] = 0.08 s; [70,1] = 0.16 s; [70,6] = 0.56 s; [70,13] = 1.12 s. — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
+- [D] cpWER with Streaming Sortformer v2 at 1.12 s latency: AMI IHM 21.26, AMI SDM 37.44, CH109 15.81, Mixer 6 23.81. AMI sets have 3-4 speakers; CH109 and Mixer 6 have 2. — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
+- [D] Single-speaker mode keeps base accuracy: 7.44 average WER on the Open ASR Leaderboard sets vs 7.16 for the base model. — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
+- [D] License: `nvidia-open-model-license`. Input: mono 16 kHz. Real training conversations: Granary (single speaker), Fisher English, LibriSpeech, AMI, NOTSOFAR, ICSI; mixtures simulated from LibriSpeech. — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
+- [D] The card states no explicit maximum speaker count, no language field (the language badge is commented out), no training hours, and no RTF or VRAM. — [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1)
+- [D] Research system in the paper: 238M parameters = FastConformer Transducer ASR (114M) + Sortformer diarizer (123M) + speaker injection module (1.1M). Trained 200k steps on 8 A100 GPUs. — [arXiv 2506.22646](https://arxiv.org/html/2506.22646)
+- [D] On CH109 at 1120 ms latency, the paper's cascaded baseline (streaming single-speaker ASR + streaming diarizer, words matched to speakers by timestamps) scores 27.38% cpWER vs 26.21% for the proposed model; an offline 2.2B LLM-based system scores 26.31%. — [arXiv 2506.22646](https://arxiv.org/html/2506.22646)
+- [D] A Rust runtime lists the model as English only, fed in chunks of 17,920 samples (about 1.12 s), requiring a separate diarization ONNX file. — [altunenes/parakeet-rs](https://github.com/altunenes/parakeet-rs)
+- [S] DiCoW conditions Whisper on diarization output through frame-level diarization-dependent transforms (four class-specific affine transforms in the encoder layers); a follow-up initializes from a DiCoW checkpoint based on Whisper-large-v3-turbo. — [arXiv 2501.00114](https://arxiv.org/pdf/2501.00114); [arXiv 2510.03723](https://arxiv.org/pdf/2510.03723)
+- [S] A third-party GGUF port measured 19.35% cpWER on AMI-IHM test (16 meetings); this is the port's measurement, not NVIDIA's. — [handy-computer GGUF port](https://huggingface.co/handy-computer/multitalker-parakeet-streaming-0.6b-v1-gguf)
 
 ### Inferences
-- The speaker-injection module itself is tiny (1.1M in the paper), so the cost of this family is not added parameters; it is the mandatory diarizer plus N parallel ASR passes. The diarizer in the paper is larger than the ASR model (123M vs 114M).
+- The speaker-injection module is tiny (1.1M in the paper), so this family's cost is the mandatory diarizer plus N parallel ASR passes, not added parameters.
+- The effective speaker ceiling is set by the diarizer, which is a 4-speaker model; the card does not state a limit itself.
+- "English only" is supported by the base model's name and a third-party runtime, not by an explicit statement on the card.
 - DiCoW has the same shape: one decoding pass per diarized speaker plus an external diarizer. Neither keeps a single-model pipeline.
-- Community int8 ONNX, GGUF and MLX conversions exist for the NVIDIA model, which suggests CPU deployment is practical for it, but I have no measured CPU RTF.
 
 ### Gaps
-- Maximum speaker count, the four latency values, NVIDIA's own cpWER table, training hours, and reported RTF/VRAM: on the model card, which could not be opened.
-- DiCoW added parameters, per-speaker inference cost, license, training GPUs: Not Reported in sources reached.
-- Whether the 0.6B base is described as Parakeet or Nemotron-Speech-Streaming differs between cached versions of the card.
+- NVIDIA model: RTF, VRAM, training hours, explicit speaker limit and explicit language statement: Not Reported on the card.
+- DiCoW added parameters, per-speaker inference cost, license, training GPUs: not checked against the primary paper.
+- Still [S]: both DiCoW items and the third-party GGUF cpWER.
 
 ## 8. Approach 6 — separation front-end / CSS cascade
 
 ### Takeaway
-Separation front-ends range from 2.6M to 55.7M parameters, but compute varies far more than size: reported RTF runs from 0.16 (Conv-TasNet) to 12.40 (SepFormer) in one comparison, and the strongest TF-domain models are described as not real-time friendly. Published evidence consistently shows that an off-the-shelf ASR does not reliably benefit from a separator unless one side is fine-tuned on the other's output. I found no clean same-test-set cascade-vs-SOT table.
+On monaural LibriCSS, the same-test-set comparison shows a streaming single model (t-SOT, 9.0-10.1 average WER at 160 ms latency) matching or beating offline Conformer-CSS + ASR cascades (9.6-11.8), and the cascade's best figure required fine-tuning the separator against the ASR. Separation models add 10-56M parameters and a second inference stage, and the Conformer-CSS authors themselves describe them as expensive and slow on edge devices.
 
 ### Cited Findings
 
+**Cascade vs single model on the same test set (monaural LibriCSS, continuous input, WER % by overlap ratio)**
+
+| System | Latency | 0L | 0S | 10 | 20 | 30 | 40 | Avg |
+|---|---|---|---|---|---|---|---|---|
+| BLSTM-CSS + Hybrid ASR | 1.2 s + utterance length | 16.3 | 17.6 | 20.9 | 26.1 | 32.6 | 36.1 | 24.9 |
+| Conformer-CSS + Transformer-AED ASR w/ LM | 1.2 s + utterance length | 6.1 | 6.9 | 9.1 | 12.5 | 16.7 | 19.3 | 11.8 |
+| Conformer-CSS (ASR-oriented fine-tuning) + Transformer-AED ASR w/ LM | 1.2 s + utterance length | 6.4 | 7.5 | 8.4 | 9.4 | 12.4 | 13.2 | 9.6 |
+| Single-talker TT-18 (no separation) | 160 ms | 7.0 | 7.3 | 14.0 | 20.9 | 27.9 | 34.3 | 18.6 |
+| t-SOT TT-18 | 160 ms | 7.5 | 7.5 | 8.5 | 10.5 | 12.6 | 14.0 | 10.1 |
+| t-SOT TT-36 | 160 ms | 6.7 | 6.1 | 7.5 | 9.3 | 11.6 | 12.9 | 9.0 |
+
+- [D] Table above. The 1.2 s is latency incurred by CSS; the rest by VAD and ASR (average utterance 7.5 s). — [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf)
+
+**Cascade problems and the need for ASR-aware training**
+- [D] Conventional mask-based separation "introduces target speech distortion, resulting in a sub-optimum word error rate"; a potential reason for the single- vs multi-channel gap is "the mismatch between the front-end objective function and speech recognition". — [Wu et al., Interspeech 2021](https://www.isca-archive.org/interspeech_2021/wu21f_interspeech.pdf)
+- [D] Single-channel Conformer separation trails multi-channel by 5.9% and 8.2% absolute WER at 30% and 40% overlap. — [Wu et al., Interspeech 2021](https://www.isca-archive.org/interspeech_2021/wu21f_interspeech.pdf)
+- [D] Fine-tuning the separator with an ASR-oriented loss, continuous evaluation: WER at 40% overlap falls from 19.3 to 13.2 and at 30% from 16.7 to 12.4, but non-overlapped conditions get slightly worse (0S 6.9 to 7.5; 0L 6.1 to 6.4). — [Wu et al., Interspeech 2021](https://www.isca-archive.org/interspeech_2021/wu21f_interspeech.pdf)
+- [D] Without separation the matched ASR scores 38.3% at 40% overlap (utterance-wise); with a 26.03M Conformer separator, 15.1 (signal loss) or 13.9 (feature loss). In non-overlapped conditions separation gives little or no gain (0S 6.0 without vs 5.7-6.1 with). — [Wu et al., Interspeech 2021](https://www.isca-archive.org/interspeech_2021/wu21f_interspeech.pdf)
+- [D] The authors keep the ASR fixed during ASR-oriented training and note that "a jointly trained speech separation model may suffer from performance" issues when paired with a different ASR; they test a second, unmatched ASR for that reason. — [Wu et al., Interspeech 2021](https://www.isca-archive.org/interspeech_2021/wu21f_interspeech.pdf)
+- [S] A 2026 paper states that off-the-shelf ASR models not exposed to a separation front-end's output distribution often fail to benefit from it. — [arXiv 2605.19695](https://arxiv.org/pdf/2605.19695)
+- [S] In a music-mixed speech study, fine-tuning only the separation front-end was less effective than fine-tuning the ASR back-end. — [arXiv 2008.12048](https://arxiv.org/pdf/2008.12048)
+- [S] The CHiME-8 default ASR favours GSS because it was trained on GSS-enhanced signals. — [MERL TR2026-008](https://www.merl.com/publications/docs/TR2026-008.pdf)
+
 **Size and compute**
-- [S] WSJ0-2mix parameter counts and SI-SDRi from one survey: MossFormer2 55.7M / 24.1 dB; TF-GridNet 14.5M / 23.5 dB; SepFormer 26.0M / 22.3 dB; DPRNN 2.9M / 18.8 dB; Conv-TasNet 5.1M / 15.3 dB. Other papers list 14.4M for TF-GridNet and 2.6M for DPRNN. — [arXiv 2508.10830](https://arxiv.org/pdf/2508.10830)
-- [S] One paper reports MACs of 10.09G (Conv-TasNet), 86.31G (DPRNN), 74.94G (SepFormer) with RTFs of 0.16, 1.18 and 12.40 respectively. Hardware for those RTFs was not captured. — [OpenReview: Separate and Reconstruct](https://openreview.net/pdf?id=99y2EfLe3B)
-- [S] A MossFormer2 table reports RTF 0.053 on a V100 GPU. — [emergentmind MossFormer2 summary](https://www.emergentmind.com/topics/mossformer2-separated-speech)
-- [S] TF-GridNet (14M params) and SPMamba (6M) require 445 and 238 GMAC/s and are described as not real-time friendly. — [arXiv 2510.12275](https://arxiv.org/pdf/2510.12275)
-- [S] TF-Locoformer: medium model 15.0M params, 22.1 dB SI-SNRi on WSJ0-2mix; small model 5.0M params and 85.9 G MACs/s. — [arXiv 2408.03440](https://arxiv.org/pdf/2408.03440); [arXiv 2607.21128](https://arxiv.org/pdf/2607.21128)
-
-**Cascade problems**
-- [S] On single-channel LibriCSS, a separation model trained with a mask objective and then fine-tuned with ASR-oriented criteria beat the previous best numbers, i.e. ASR-aware training of the separator was needed for the best result. — [Wu et al., Interspeech 2021](https://www.isca-archive.org/interspeech_2021/wu21f_interspeech.pdf)
-- [S] The same paper reports a large single- vs multi-channel gap on LibriCSS, about 8.2% absolute WER at 40% overlap. — [Wu et al., Interspeech 2021](https://www.isca-archive.org/interspeech_2021/wu21f_interspeech.pdf)
-- [S] A 2026 paper states that off-the-shelf ASR models trained without exposure to a separation front-end's output distribution often fail to benefit from it; its ASR is fine-tuned on separated and close-talk data mixed together. — [arXiv 2605.19695](https://arxiv.org/pdf/2605.19695)
-- [S] In a music-mixed speech study, fine-tuning only the separation front-end was less effective than fine-tuning the ASR back-end, and joint fine-tuning did not improve over ASR-only fine-tuning while significantly degrading separation quality. — [arXiv 2008.12048](https://arxiv.org/pdf/2008.12048)
-- [S] The CHiME-8 default ASR favours GSS because it was trained on GSS-enhanced signals; the CHiME-7/8 review also notes that re-tuning for NOTSOFAR-1 degraded the baseline on other scenarios. — [MERL TR2026-008](https://www.merl.com/publications/docs/TR2026-008.pdf)
-
-**Cascade vs end-to-end numbers (assembled from separate papers, not like-for-like)**
-- [S] Conformer CSS baseline, single-channel LibriCSS utterance-wise with an E2E Transformer ASR: 17.1 WER at 40% overlap, 10.6 average (as quoted in the WavLM paper). — [arXiv 2110.13900](https://arxiv.org/pdf/2110.13900)
-- [S] t-SOT streaming models on LibriCSS average 7.6-10.1 WER depending on size and latency (secondary summary; evaluation mode not confirmed to match the CSS figure). — [emergentmind LibriCSS summary](https://www.emergentmind.com/topics/libricss)
-- [S] A 2025 paper argues for decoupling separation from recognition and cites an ESPnet SOT-Conformer baseline at 23.3% WER and a WavLM-feature variant at 17.1%; the test-set label was ambiguous in the extract (LibriCSS vs Libri2Mix). — [arXiv 2503.17886](https://arxiv.org/pdf/2503.17886)
+- [D] LibriCSS separation model sizes: Conformer-base 26.03M, Conformer-small 9.97M, Transformer 12.97M, CRN 20.37M, Dense-CRN 17.99M. Conformer separation "usually brings difficulties in model deployment because of expensive computation and slow inference, especially on edge devices". — [Wu et al., Interspeech 2021](https://www.isca-archive.org/interspeech_2021/wu21f_interspeech.pdf)
+- [S] WSJ0-2mix parameter counts and SI-SDRi from one survey: MossFormer2 55.7M / 24.1 dB; TF-GridNet 14.5M / 23.5 dB; SepFormer 26.0M / 22.3 dB; DPRNN 2.9M / 18.8 dB; Conv-TasNet 5.1M / 15.3 dB. — [arXiv 2508.10830](https://arxiv.org/pdf/2508.10830)
+- [S] One paper reports MACs of 10.09G (Conv-TasNet), 86.31G (DPRNN), 74.94G (SepFormer) with RTFs of 0.16, 1.18 and 12.40. Hardware not captured. — [OpenReview: Separate and Reconstruct](https://openreview.net/pdf?id=99y2EfLe3B)
+- [S] MossFormer2 RTF 0.053 on a V100 GPU. — [emergentmind MossFormer2 summary](https://www.emergentmind.com/topics/mossformer2-separated-speech)
+- [S] TF-GridNet (14M) and SPMamba (6M) require 445 and 238 GMAC/s and are described as not real-time friendly. — [arXiv 2510.12275](https://arxiv.org/pdf/2510.12275)
+- [S] TF-Locoformer: medium 15.0M params, 22.1 dB SI-SNRi on WSJ0-2mix; small 5.0M params, 85.9 G MACs/s. — [arXiv 2408.03440](https://arxiv.org/pdf/2408.03440); [arXiv 2607.21128](https://arxiv.org/pdf/2607.21128)
 
 ### Inferences
-- The cascade always adds a second model at inference and roughly doubles ASR work, because each separated stream is decoded separately. With a 0.6B LLM decoder, that is two full autoregressive passes for two speakers versus one longer pass for SOT.
-- The models with the best separation scores (TF-GridNet, MossFormer2, SepFormer) are the ones with the worst reported compute, so a CPU-deployable cascade would be pushed toward Conv-TasNet-class models, which trail by 7-9 dB SI-SDRi on WSJ0-2mix.
-- Given the mismatch evidence, a cascade realistically still requires fine-tuning Qwen3-ASR on separator output, so it does not save the fine-tuning effort that SOT needs.
-- WSJ0-2mix scores are for fully overlapped clean two-speaker mixtures; they do not show behaviour on partially overlapped conversational audio.
+- The cascade adds a second model and decodes each separated stream separately, so with a 0.6B LLM decoder it means two full autoregressive passes for two speakers versus one longer pass for SOT.
+- The LibriCSS table is the strongest published argument against the cascade for this team: a single 82M-139M streaming model equals offline cascades that carry a separator, an AED ASR and an LM.
+- Separation helps only in overlapped regions and can slightly hurt non-overlapped speech after ASR-oriented tuning, so a cascade risks a regression on the single-talker traffic that Qwen3-ASR already handles well.
+- The best cascade number depended on tuning the separator to one specific ASR, so a cascade does not avoid model-specific training work.
+- The separators with the best WSJ0-2mix scores are the ones with the worst reported compute, pushing a CPU-deployable cascade toward Conv-TasNet-class models that trail by 7-9 dB.
 
 ### Gaps
-- Same-hardware CPU RTF for the listed separators: none found; RTFs across papers use different hardware and input lengths and cannot be compared.
-- A published table comparing cascade and SOT on one test set with one ASR back-end: not found.
-- NOTSOFAR-specific single-channel cascade results: not retrieved.
-- ClearerVoice / SpeechBrain model-card runtime figures: HF not reachable.
+- Same-hardware CPU RTF for the listed separators: none found; cross-paper RTFs use different hardware and cannot be compared.
+- A cascade vs SOT comparison on an LLM-decoder ASR, or on NOTSOFAR single-channel: not found.
+- Still [S]: all WSJ0-2mix size/RTF figures for Conv-TasNet, DPRNN, SepFormer, TF-GridNet, MossFormer2 and TF-Locoformer; arXiv 2605.19695; arXiv 2008.12048; the MERL review.
+- Dropped as unverified: an earlier draft cited "17.1 WER at 40% overlap" for Conformer CSS and "7.6 average at 2560 ms" for t-SOT on LibriCSS; neither appears in the primary tables read.
 
 ## 9. Approach 7 — external baseline: MOSS-Transcribe-Diarize 0.9B
 
 ### Takeaway
-MOSS-Transcribe-Diarize is the closest architectural sibling to Qwen3-ASR-0.6B (Whisper-medium-style encoder + Qwen3-0.6B-style decoder, Apache-2.0) and ships a fine-tuning script and data format publicly. Its documentation does not claim or describe handling of simultaneous speech, and its own results show a large gap between CER and speaker-attributed cpCER on harder material.
+MOSS-Transcribe-Diarize is the closest architectural sibling to Qwen3-ASR-0.6B (Whisper-medium-style encoder + Qwen3-0.6B-style decoder, Apache-2.0, up to 90 minutes in one pass) and ships a fine-tuning script and data format publicly. Neither its model card nor its repo mentions overlapping or simultaneous speech, and neither states VRAM.
 
 ### Cited Findings
-- [D] Architecture: "Qwen3-0.6B style causal decoder"; Whisper-Medium encoder configuration; WhisperFeatureExtractor (16 kHz, 80 mel bins, 30 s chunks); 4x temporal merge + MLP adaptor; audio features replace `<|audio_pad|>` embeddings. Stated size 0.9B. License Apache-2.0. 50+ languages. — [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize)
-- [S] A conversion card gives 908,513,280 total parameters: about 312M audio side and about 596M text decoder; 24-layer encoder, 28-layer decoder. — [soniqo ONNX FP16 card](https://huggingface.co/soniqo/MOSS-Transcribe-Diarize-0.9B-ONNX-FP16)
-- [D] Output format is a single serialized stream: `[start_time][Sxx]text[end_time]` with speaker tags such as `[S01]`. — [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize)
-- [D] Overlapping speech is not addressed in the README. It says the model handles "long, messy, multi-speaker recordings" without describing overlap. The fine-tuning guide likewise does not say how overlapping segments are represented or ordered. — [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize); [FINETUNING.md](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize/blob/main/FINETUNING.md)
-- [S] A conversion page warns the source model can produce malformed or overlapping timestamps and can miss speakers. — [handy-computer GGUF card](https://huggingface.co/handy-computer/moss-transcribe-diarize-gguf)
+- [D] Architecture: "Qwen3-0.6B style causal decoder"; Whisper-Medium encoder configuration; WhisperFeatureExtractor (16 kHz, 80 mel bins, 30 s chunks); 4x temporal merge + MLP adaptor. Stated size 0.9B. — [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize)
+- [D] Model card: Apache License 2.0; released 2026-07-09; 50+ languages; "single-pass inference on audio recordings up to 90 minutes long"; hotword prompting. — [MOSS model card](https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize)
+- [D] It "jointly performs speech transcription and speaker diarization" instead of "stitching together separate ASR and diarization systems", assigning anonymous labels such as `[S01]`. Output format: `[start_time][Sxx]text[end_time]`. — [MOSS model card](https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize); [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize)
+- [D] A keyword check of the model card for "overlap", "simultaneous" and "cross-talk" returns nothing; the card describes "long or messy multi-speaker recordings" only. The fine-tuning guide does not say how overlapping segments are represented or ordered. — [MOSS model card](https://huggingface.co/OpenMOSS-Team/MOSS-Transcribe-Diarize); [FINETUNING.md](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize/blob/main/FINETUNING.md)
 - [D] Training code is public: `finetune.py` and `FINETUNING.md`. Data is JSONL, one conversation per record, with three messages: text prompt, audio path, reference transcript in the output format (example `[0.00][S01]Welcome[0.72]`). — [FINETUNING.md](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize/blob/main/FINETUNING.md)
 - [D] Speed on a single H100 with SGLang Omni: short clips, concurrency 1, mean RTF 0.0612 (29.76 audio-s/s); concurrency 16, RTF 0.0922 (81.98 audio-s/s). Long AISHELL-4 sessions: concurrency 1, RTF 0.0197 (50.64 audio-s/s); concurrency 16, RTF 0.1237 (98.83 audio-s/s). — [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize)
-- [D] VRAM is not stated. The README warns eager attention memory "grows quadratically with audio length and OOMs on long recordings". Default output cap is 5120 new tokens, to be raised to 65536 for long audio. — [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize)
+- [D] VRAM is not stated on the card or in the repo. The README warns eager attention memory "grows quadratically with audio length and OOMs on long recordings". Default output cap is 5120 new tokens, to be raised to 65536 for long audio. — [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize)
 - [D] 0.9B results (CER / cpCER): AISHELL-4 14.84 / 15.83; AliMeeting 24.86 / 22.17; Podcast 5.97 / 7.37; Movies 6.36 / 12.76. A stronger "Pro" model is available only via an online playground. — [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize)
 - [D] Serving: Transformers 5.x with `trust_remote_code=True`; vLLM needs a pinned nightly; SGLang Omni is the recommended backend and targets CUDA 13. — [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize)
-- [S] Community CoreML (INT8, FP16), ONNX FP16 and GGUF conversions exist. — [aufklarer CoreML INT8](https://huggingface.co/aufklarer/MOSS-Transcribe-Diarize-0.9B-CoreML-INT8); [handy-computer GGUF card](https://huggingface.co/handy-computer/moss-transcribe-diarize-gguf)
+- [S] A conversion card gives 908,513,280 total parameters: about 312M audio side and about 596M text decoder. — [soniqo ONNX FP16 card](https://huggingface.co/soniqo/MOSS-Transcribe-Diarize-0.9B-ONNX-FP16)
+- [S] A conversion page warns the source model can produce malformed or overlapping timestamps and can miss speakers. Community CoreML, ONNX and GGUF conversions exist. — [handy-computer GGUF card](https://huggingface.co/handy-computer/moss-transcribe-diarize-gguf)
 
 ### Inferences
 - MOSS is evidence that a sub-1B, single-model, single-output-stream Speech-LLM can emit speaker-tagged multi-speaker transcripts with ordinary fine-tuning tooling, which is the same deployment shape as SOT on Qwen3-ASR.
-- AliMeeting is the overlap-heavy set in its table and has the worst CER (24.86), which is consistent with overlap being a weak point, but the README does not attribute the error to overlap, so this stays an inference.
-- Its segment-with-timestamps format can in principle express overlapping segments (two segments with intersecting time ranges), but whether the released model does so is undocumented.
-- MOSS throughput (about 82-99 audio-s/s at concurrency 16 on an H100) and Qwen3-ASR's (2,000 audio-s/s at concurrency 128, GPU unconfirmed) were measured with different backends, concurrency and tasks, and are not comparable.
+- AliMeeting is the overlap-heavy set in its table and has the worst CER (24.86), which is consistent with overlap being a weak point, but the authors do not attribute the error to overlap.
+- Its segment-with-timestamps format can in principle express overlapping segments, but whether the released model does so is undocumented and needs a direct test on overlapped clips.
+- MOSS's RTF 0.061 at concurrency 1 (H100, SGLang, short clips, diarized output) and Qwen3-ASR-0.6B's 0.009 (unnamed GPU, vLLM, 2-minute clips, plain ASR) differ in backend, hardware and task, so they are not a like-for-like comparison.
 
 ### Gaps
-- Whether it truly transcribes simultaneous speech: not documented; would need a direct test on overlapped clips.
+- Whether it truly transcribes simultaneous speech: not documented anywhere official.
 - VRAM, training data composition, training compute: Not Reported.
 - LoRA vs full fine-tuning in `finetune.py`: not stated.
-- Maximum audio length: not stated (only the 131,072-token training sequence cap).
+- Still [S]: the 908.5M parameter split and the conversion-page warning.
 
 ## 10. Cross-approach summary of reported structural facts
 
 ### Takeaway
-Only plain SOT and t-SOT keep the stock single-model pipeline with zero added inference modules; every other approach adds either an in-model module (separator/CTC heads) or a whole second model (diarizer or separator) and, for approaches 5 and 6, one ASR pass per speaker. Reported cost numbers are sparse: most cells below are "Not Reported", which is itself a finding.
+Only plain SOT and t-SOT keep the stock single-model pipeline with zero added inference modules; every other approach adds an in-model module (separator/CTC) or a whole second model (diarizer or separator) and, for approaches 4-6, extra decoding passes per speaker. VRAM is not reported for any approach, and RTF is reported for only three.
 
 ### Cited Findings
 
 | Approach | Added parameters (reported) | Extra model at inference | Single-model pipeline kept | Streaming | Reported speed | Reported training compute |
 |---|---|---|---|---|---|---|
-| 1. SOT fine-tune | Not Reported (no new modules in recipe) | No | Yes | Not Reported for LLM decoders | LLaMA-1B SOT decoder RTF 0.1150 (Libri2Mix), 0.0981 (Libri3Mix) | Not Reported |
-| 2. t-SOT | Authors: same architecture and cost as single-talker | No | Yes | Yes (40 ms-2560 ms latency reported, transducer models) | Not Reported | Not Reported |
-| 3. SOT + separator / CTC | Sidecar 8.7M (8.4% of a wav2vec 2.0-base system); Shi et al. separator Not Reported | No separate model; in-model modules | Modified single model | Not Reported | Not Reported | Not Reported |
-| 4. PIT multi-output | Not Reported | Not Reported | Not Reported | Prior multi-branch streaming models exist | Not Reported | Not Reported |
-| 5. NVIDIA multitalker Parakeet | Speaker injection 1.1M (research system) | Yes: streaming Sortformer (123M in research system) | No; one ASR instance per speaker | Yes (about 1.12 s default chunk) | Not Reported | Not Reported |
-| 6. Separation cascade | Separator 2.6M-55.7M | Yes: separator | No; one ASR pass per stream | Model-dependent | RTF 0.16 (Conv-TasNet) to 12.40 (SepFormer); MossFormer2 0.053 on V100 | Not Reported |
-| 7. MOSS-TD 0.9B | n/a (separate 908.5M model) | No | Yes | Not Reported | RTF 0.0612 (c=1), 0.0922 (c=16) on H100 | Not Reported |
+| 1. SOT fine-tune | None in recipe (one `<sc>` token) | No | Yes | "Not-available" | LLaMA-1B SOT: RTF 0.1150 (Libri2Mix), 0.0981 (Libri3Mix), H100, batch 1 | Not Reported |
+| 2. t-SOT | None; "same with single-talker model" | No | Yes | Yes, 40-2560 ms (transducers) | Not Reported | 16 GPUs, 225K iterations (GPU type not stated) |
+| 3. SOT + separator / CTC | Sidecar 8.7M (8.4%); SOP separator Not Reported | No separate model; in-model modules used at inference | Modified single model | Not Reported | Not Reported | Sidecar: 7 h on 8 V100; SOP: Not Reported |
+| 4. PIT multi-output | Two branches; "most parameters loaded and used twice" | No | Multiple output branches | Yes (SURT, MS-RNN-T) | Decoder cost "K-times" single-talker | Not Reported |
+| 5. NVIDIA multitalker Parakeet | Speaker injection 1.1M (research system) | Yes: streaming Sortformer (123M in research system) | No; one 600M ASR instance per speaker | Yes, 0.08 / 0.16 / 0.56 / 1.12 s | Not Reported | Research system: 200k steps on 8 A100 |
+| 6. Separation cascade | Separator 10-26M (LibriCSS Conformer); 2.9-55.7M (WSJ0-2mix models, [S]) | Yes: separator | No; one ASR pass per stream | CSS adds 1.2 s latency | [S] RTF 0.16-12.40 across models, hardware unknown | Not Reported |
+| 7. MOSS-TD 0.9B | n/a (separate 0.9B model) | No | Yes | Not Reported | RTF 0.0612 (c=1), 0.0922 (c=16), H100 | Not Reported |
 
-Sources for the table rows: [Interspeech 2026 paper page](https://interspeech-2026-wiki.vercel.app/papers/shi26_interspeech/); [arXiv 2202.00842](https://arxiv.org/pdf/2202.00842); [arXiv 2302.09908](https://arxiv.org/pdf/2302.09908); [arXiv 2506.22646](https://arxiv.org/abs/2506.22646); [altunenes/parakeet-rs](https://github.com/altunenes/parakeet-rs); [arXiv 2508.10830](https://arxiv.org/pdf/2508.10830); [OpenReview: Separate and Reconstruct](https://openreview.net/pdf?id=99y2EfLe3B); [emergentmind MossFormer2 summary](https://www.emergentmind.com/topics/mossformer2-separated-speech); [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize).
+Sources for the table rows: [Kanda et al., Interspeech 2022](https://www.isca-archive.org/interspeech_2022/kanda22_interspeech.pdf); [Shi et al., Interspeech 2026](https://www.isca-archive.org/interspeech_2026/shi26_interspeech.pdf); [arXiv 2509.04488](https://arxiv.org/html/2509.04488); [arXiv 2302.09908](https://arxiv.org/pdf/2302.09908); [arXiv 2506.22646](https://arxiv.org/html/2506.22646); [NVIDIA model card](https://huggingface.co/nvidia/multitalker-parakeet-streaming-0.6b-v1); [Wu et al., Interspeech 2021](https://www.isca-archive.org/interspeech_2021/wu21f_interspeech.pdf); [arXiv 2508.10830](https://arxiv.org/pdf/2508.10830); [OpenReview: Separate and Reconstruct](https://openreview.net/pdf?id=99y2EfLe3B); [OpenMOSS/MOSS-Transcribe-Diarize](https://github.com/OpenMOSS/MOSS-Transcribe-Diarize).
 
 ### Inferences
-- On the team's stated priorities (single model, no front-end, existing CPU ports, existing fine-tuning script), plain SOT has the lowest integration cost on the evidence here, and t-SOT is the variant to consider if streaming must be kept. This ranking rests on structural facts, since measured cost data for the alternatives is largely unpublished.
-- No approach has a published VRAM figure. VRAM comparisons in a final report would have to come from the team's own measurement.
-- Training compute (GPU type x hours) was not reported in any source I could reach, for any approach.
+- On the team's stated priorities (single model, no front-end, existing CPU ports, existing fine-tuning script), plain SOT has the lowest integration cost, and t-SOT is the variant to consider if streaming must be kept. The LibriCSS table adds an accuracy argument: a serialized single model matched offline separation cascades.
+- Approach 3 is the only one whose extra cost buys something specific: three-speaker accuracy (39.1 to 28.5 WER with LLaMA-1B). For two speakers its gain is under 1 point.
+- No approach has a published VRAM figure, so any VRAM comparison in a final report has to come from the team's own measurement.
 
 ### Gaps
-- Nearly all RTF/VRAM/training-compute cells are empty because the primary papers (arXiv) and model cards (Hugging Face) were unreachable from this session. Allowing `arxiv.org` and `huggingface.co` would let a follow-up pass fill: the Qwen3-ASR efficiency table, the NVIDIA model card (latency options, speaker limit, cpWER, training hours), the SOP / Sidecar / t-SOT / DiCoW experimental-setup sections, and HF community discussions on fine-tuning.
-- PIT multi-output ASR (approach 4) has effectively no sourced cost data in these notes.
+- VRAM for every approach; RTF for approaches 2, 3 and 5; training GPU-hours for LLM-based SOT, SOP and MOSS: Not Reported in the primary sources read.
+- No source applies t-SOT, Sidecar or PIT to a Speech-LLM decoder, so all cost transfer to Qwen3-ASR is inference.
+- Hosts other than GitHub, arXiv, Hugging Face and the ISCA archive were not reachable, so blog and aggregator figures remain [S] as marked in each section.

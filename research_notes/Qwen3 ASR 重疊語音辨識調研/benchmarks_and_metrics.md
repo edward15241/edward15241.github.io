@@ -160,7 +160,7 @@ Because the team does not need speaker attribution, the right family is the spea
 - Do not use TS-WER for this team's goal: it rewards suppressing the other talkers, the opposite of "recover all speakers' words".
 - **Chinese / Hokkien / mixed-language scoring:** use character-level tokenisation for Mandarin and Han-script Hokkien and word-level for English, i.e. a mixed error rate (MER), as MLC-SLM does with tcpMER. MeetEval's README does not document a CJK mode, so tokenise before scoring (insert spaces between Han characters) and apply identical text normalisation to reference and hypothesis.
 - **Proposed "secondary-speaker deletion rate" (team-defined, no published precedent found):** on simulated mixtures with known SIR, take the optimal permutation/ORC alignment, then report deletions ÷ reference words separately for the higher-energy and lower-energy reference stream; additionally report a "stream-drop rate" = fraction of mixtures where one reference stream has ≥ X% deletions (e.g. 90%), and a speaker-count accuracy (number of separator-delimited streams vs. truth). State the definition explicitly since it is not standard.
-- Always co-report the insertion rate: fully-overlapped WER above 100% (as in the Qwen3-ASR numbers in Q5) signals hallucination/repetition, which a deletion-only view would miss.
+- Always co-report insertion, deletion and substitution rates separately, so that hallucination/repetition is not hidden by a deletion-only view. (Note: the >100% Qwen3-ASR figures in Q4/Q5 are target-speaker WER and are not evidence of hallucination — see the correction in Q5.)
 
 ### Gaps
 - DI-cpWER, tcORC-WER, tcMIMO-WER and SAgWER descriptions remain [S] (the long-form WER paper, arXiv 2508.02112, was downloaded but only keyword-checked, not read in full).
@@ -172,7 +172,7 @@ Because the team does not need speaker attribution, the right family is the spea
 ## Q4. Published results conditioned on overlap ratio, SIR, speaker count, gender, language
 
 ### Takeaway
-Overlap-ratio-conditioned results are well established on LibriCSS (WER roughly triples to quadruples from 0% to 40% overlap for a single-talker recogniser without separation) and exist as paired deltas in MS-Bench; conditioning on SIR, louder/quieter speaker, gender pairing, backchannels or same- vs. cross-language overlap was not found in the sources reachable this session.
+Overlap-ratio-conditioned results are well established: on LibriCSS a single-talker recogniser goes from about 7% to 34% WER between 0% and 40% overlap while a t-SOT model stays at 7–13%; H-SAGE gives low/mid/high overlap bins on LibriSpeechMix; MS-Bench gives paired deltas. Conditioning on SIR, louder/quieter speaker, gender pairing, backchannels or same- vs. cross-language overlap was not found in any source read.
 
 ### Cited Findings
 - **LibriCSS baseline, single-talker ASR, no separation** [D] (WER %, official repo):
@@ -185,49 +185,79 @@ Overlap-ratio-conditioned results are well established on LibriCSS (WER roughly 
   | Continuous-input, 7-ch separation | 11.9 | 9.7 | 13.4 | 15.1 | 19.7 | 22.0 |
 
   — [GitHub chenzhuo1011/libri_css](https://github.com/chenzhuo1011/libri_css)
-- **LibriCSS, ESPnet recogniser baseline** [S]: 17.6 / 16.3 / 20.9 / 26.1 / 32.6 / 36.1 (0S / 0L / OV10 / OV20 / OV30 / OV40). — [MMS-MSG paper](https://arxiv.org/pdf/2209.11494)
 - **LibriCSS, vendor separation + Whisper large-v3, cpWER via MeetEval** [S]: 5.81 (0S), 7.04 (10%), 7.18 (20%), 13.66 (30%), 10.03 (40%); vendor self-report, baseline labelling unclear in the summary. — [AudioShake benchmarks](https://audioshake.ai/multi-speaker-benchmarks)
-- **t-SOT (streaming, single-channel) on LibriCSS** [S]: reports WER per overlap ratio 0–40% and claims better WER for all conditions than prior streaming models; secondary summary gives *average* WER 10.1 (TT-18, 160 ms), 9.0 (TT-36, 160 ms), 7.6 (TT-36, 2560 ms). Per-condition cells: Not Reported in retrieved text. — [t-SOT paper](https://arxiv.org/pdf/2202.00842); [Emergent Mind LibriCSS page](https://www.emergentmind.com/topics/libricss)
-- **By speaker count, fully-overlapped vs. partially-overlapped synthetic sets** [S] (WER %, Xiaomi-CocktailASR-1 vs. off-the-shelf Qwen3-ASR-1.7B; note Xiaomi's model is a target-speaker system, so the task setup for the baseline may differ):
+- **t-SOT paper, monaural LibriCSS, continuous-input evaluation, WER % per overlap ratio** [D] (Table 4; the cleanest published single-talker-vs-multi-talker comparison on the same architecture):
 
-  | Test set | Xiaomi-CocktailASR-1 | Qwen3-ASR-1.7B |
-  |---|---|---|
-  | LibriMix 2-speaker | 4.11 | 68.75 |
-  | LibriMix 3-speaker | 12.29 | 106.04 |
-  | LibriSpeechMix 2-speaker | 2.90 | 92.17 |
-  | LibriSpeechMix 3-speaker | 4.91 | 160.82 |
-  | AMI SDM | 21.81 | 38.18 |
-  | AliMeeting Far | 20.63 | 39.64 |
-  | AMI IHM (single-speaker check) | 8.89 | 10.56 |
-  | AliMeeting Near (single-speaker check) | 6.57 | 6.39 |
+  | System | Latency | 0L | 0S | 10 | 20 | 30 | 40 | Avg. |
+  |---|---|---|---|---|---|---|---|---|
+  | BLSTM-CSS + Hybrid ASR | 1.2 s + utt. | 16.3 | 17.6 | 20.9 | 26.1 | 32.6 | 36.1 | 24.9 |
+  | Conformer-CSS + Transformer-AED w/ LM [9] | 1.2 s + utt. | 6.1 | 6.9 | 9.1 | 12.5 | 16.7 | 19.3 | 11.8 |
+  | Conformer-CSS + Transformer-AED w/ LM [43] | 1.2 s + utt. | 6.4 | 7.5 | 8.4 | 9.4 | 12.4 | 13.2 | 9.6 |
+  | SURT w/ DP-LSTM | 350 ms | 9.8 | 19.1 | 20.6 | 20.4 | 23.9 | 26.8 | 20.1 |
+  | SURT w/ DP-Transformer | 350 ms | 9.3 | 21.1 | 21.2 | 25.9 | 28.2 | 31.7 | 22.9 |
+  | **Single-talker TT-18** | 160 ms | 7.0 | 7.3 | 14.0 | 20.9 | 27.9 | 34.3 | 18.6 |
+  | **Single-talker TT-36** | 160 ms | 6.5 | 6.7 | 13.1 | 20.4 | 27.0 | 34.0 | 18.0 |
+  | t-SOT TT-18 | 160 ms | 7.5 | 7.5 | 8.5 | 10.5 | 12.6 | 14.0 | 10.1 |
+  | t-SOT TT-36 | 160 ms | 6.7 | 6.1 | 7.5 | 9.3 | 11.6 | 12.9 | 9.0 |
 
-  — [Xiaomi-CocktailASR-1 Technical Report](https://arxiv.org/html/2609.11274v1); [GitHub xiaomi-research/xiaomi-cocktailasr-1](https://github.com/xiaomi-research/xiaomi-cocktailasr-1)
-- **MS-Bench overlap deltas** [D]: Δlex +27.2 to +38.6 pp and Δattr +4.2 to +19.1 pp across seven systems (see Q1). — [GitHub ASLP-lab/MS-Bench](https://github.com/ASLP-lab/MS-Bench)
-- **H-SAGE** [S]: stratifies LibriSpeechMix into low / mid / high overlap levels, with overlap rate defined as overlapping-segment duration ÷ total mixture duration. Numbers: Not Reported in retrieved text. — [H-SAGE](https://arxiv.org/pdf/2607.01566)
+  (The first-pass "MMS-MSG ESPnet baseline 17.6 / 16.3 / …" row is the same numbers as the BLSTM-CSS + Hybrid ASR row here with 0L/0S order swapped, i.e. it is a separation-based system, not a no-separation baseline.) — [t-SOT paper](https://arxiv.org/pdf/2202.00842)
+- **H-SAGE, LibriSpeechMix test stratified by overlap rate** [D] (overlap rate = overlapping duration ÷ total mixture duration; Low (0, 0.2], Mid (0.2, 0.5], High (0.5, 1.0]; WER %; all models ~35–36 M parameters, trained on 1- and 2-speaker data, so 3mix is zero-shot):
+
+  | System | LS test | 2mix low | 2mix mid | 2mix high | 2mix OA-WER | 3mix low | 3mix mid | 3mix high | 3mix OA-WER |
+  |---|---|---|---|---|---|---|---|---|---|
+  | SOT | 4.5 | 6.2 | 8.9 | 12.8 | 9.3 | 17.1 | 23.8 | 32.3 | 24.4 |
+  | SOT + Local MoLE | 3.8 | 5.3 | 6.3 | 10.3 | 7.3 | 15.3 | 21.6 | 28.5 | 21.8 |
+  | SOT-SACTC | 3.8 | 4.8 | 7.2 | 10.8 | 7.6 | 12.8 | 20.0 | 27.2 | 20.0 |
+  | GLAD-SOT | 3.9 | 5.1 | 6.4 | 8.9 | 6.8 | 15.0 | 19.5 | 25.5 | 20.0 |
+  | H-SAGE | 3.8 | 4.7 | 5.7 | 8.2 | 6.2 | 15.5 | 18.9 | 24.9 | 19.8 |
+
+  — [H-SAGE](https://arxiv.org/html/2607.01566)
+- **Single-speaker ASR vs. SOT by number of speakers** [D] (SOT paper, LibriSpeech test-clean mixtures, min-permutation WER %): a single-speaker ASR model scores 5.7 on 1-speaker, **68.5 on 2-speaker and 92.7 on 3-speaker** mixtures; the 1024-dim SOT model scores 4.6 / 11.2 / 24.0; 2-output PIT (trained on 1,2 speakers) 6.7 / 11.9 / 52.3. — [Kanda et al., SOT, Interspeech 2020](https://www.isca-archive.org/interspeech_2020/kanda20b_interspeech.pdf)
+- **Target-speaker results on synthetic and real sets** [D, corrected] (Xiaomi report Tables 1–3). **The metric is TS-WER — each speaker in turn is the target and the reference is only that speaker's transcript.** Qwen3-ASR-1.7b and StepAudio2 cannot take the reference (enrollment) speech, so their whole-mixture output is scored against a single target's reference. The Xiaomi "LibriMix" set uses SNR 0–15 dB (not the standard recipe). Model size is 1.7b as stated; 0.6B was not tested.
+
+  | Test set (TS-WER %) | Xiaomi-CocktailASR-1 | Qwen3-ASR-1.7b | StepAudio2 | Gemini-2.5-pro (TS prompt + reference speech) |
+  |---|---|---|---|---|
+  | LibriMix 2mix | 4.11 | 68.75 | 71.23 | 48.41 |
+  | LibriMix 3mix | 12.29 | 106.04 | 121.08 | 76.10 |
+  | LibriSpeechMix 2mix | 2.90 | 92.17 | 92.72 | 30.69 |
+  | LibriSpeechMix 3mix | 4.91 | 160.82 | 164.66 | 52.34 |
+  | AMI SDM | 21.81 | 38.18 | 110.50 | 52.95 |
+  | AliMeeting Far | 20.63 | 39.64 | 76.82 | 56.75 |
+
+  Other rows in the same tables: TCP 4.84 / 12.23 (LibriMix 2/3mix); MT-LLM 6.70 / 16.2; TS-VAD(460h) 6.61 / 14.81 / 7.92 / 15.97; Whisper-SS-TTI 7.97 / 21.97; CONF-TSASR 5.40 / 7.60 and Transformer-SA-ASR 6.40 / 8.50 (LibriSpeechMix 2/3mix); Whisper Large-v2 36.40 and SQ-Whisper 22.0 on AMI SDM; MC-TS-ASR 27.50 on AliMeeting Far. Single-speaker checks: AMI-IHM 8.89 (Xiaomi) vs 10.56 (Qwen3-ASR-1.7b); AliMeeting-Near 6.57 vs 6.39; WenetSpeech meeting 5.81 vs 5.84. — [Xiaomi-CocktailASR-1 Technical Report](https://arxiv.org/html/2609.11274v1)
+- **MS-Bench overlap deltas** [D]: Δlex +27.2 to +38.6 pp and Δattr +4.2 to +19.1 pp across seven systems, for utterances ≥50% overlapped vs. 0% overlapped within the same inference unit (see Q1). — [arXiv HTML 2610.25824](https://arxiv.org/html/2610.25824)
+- **AliMeeting overlap by number of speakers** [D]: 2 speakers ≈15%, 3 speakers 27–32%, 4 speakers 50–59% (see Q2); M2MeT results by speaker count were not extracted. — [M2MeT paper](https://arxiv.org/pdf/2110.07393)
 - **Two overlapping speakers, plain single-talker TDT + diarization vs. multitalker TDT** [S] (third-party port documentation, cpWER): English LibriSpeechMix 36.7% → 4.4%; six other languages (MLS mixtures) 39.0% → 10.7%. — [GitHub altunenes/parakeet-rs](https://github.com/altunenes/parakeet-rs)
 - **SOT-family reference points on mixtures** [S]: SA-SOT cpWER 3.41% on LibriSpeechMix; SQ-Whisper (target-speaker) 14.6% WER on Libri2Mix test; separation (TIGER) + Whisper 37.96 / 37.97 on Libri2Mix dev/test; Whisper-D baseline 14.39 "OCR-WER" on Libri2Mix; a decoupled separation + ASR system claims 5.1% on Libri2Mix dev/test. — [SA-SOT](https://arxiv.org/pdf/2403.02010); [SQ-Whisper](https://arxiv.org/abs/2412.05589); [TellWhisper](https://arxiv.org/html/2601.03712v1); [Decoupling Speaker Separation and Speech Recognition](https://arxiv.org/pdf/2503.17886)
 - **Backchannel-related failure** [S]: a 2026 paper reports that an LLM-based system trained on overlapped speech repeats backchannel words such as "yes" in overlapped regions, attributed to the LLM detecting that overlap exists without reliably inferring its content. — [Balancing ASR and diarization in end-to-end LLMs for multi-talker speech recognition](https://arxiv.org/pdf/2606.13095)
 - **MT-LLM** [S]: evaluated on LibriSpeechMix 2- and 3-speaker sets; roughly on par with SOT-Conformer for 2 speakers and behind for 3; supports instructions by talker sex, order, language, keyword; no breakdown by overlap ratio, SIR or gender found. — [MT-LLM](https://arxiv.org/html/2409.08596)
 
 ### Inferences
-- The LibriCSS no-separation rows are the cleanest public dose-response curve for a *single-talker* recogniser: 11.5 → 43.2% WER from 0% to 40% overlap (utterance-wise), i.e. roughly +0.8 pp WER per +1 pp overlap. The recogniser there is the 2020 LibriCSS baseline, not a modern foundation model.
-- The gap between Qwen3-ASR-1.7B on fully/heavily-overlapped synthetic sets (69–161% WER) and on real far-field meetings (38–40%) quantifies how much real-meeting benchmarks understate the overlap problem: they are dominated by single-speaker segments (the Xiaomi report's own explanation).
+- Two independent single-talker dose-response curves on LibriCSS agree: the 2020 baseline goes 11.5 → 43.2% (utterance-wise) and the single-talker transducer TT-36 goes 6.5 → 34.0% (continuous) from 0% to 40% overlap — roughly +0.7 to +0.8 pp WER per +1 pp of overlap. A multi-talker model on the same architecture (t-SOT TT-36) flattens this to 6.7 → 12.9% while matching single-talker performance at 0% overlap. This is the most useful published template for the team's target curve.
+- H-SAGE shows the residual overlap sensitivity of trained SOT models: even the best model roughly doubles its WER from low to high overlap on 2-speaker mixtures (4.7 → 8.2) and 3-speaker WER is about 3× the 2-speaker WER.
+- The only true "all-speakers" score for an untrained single-talker model on mixtures is the SOT paper's 68.5% (2-speaker) and 92.7% (3-speaker) min-permutation WER for a 2020 LSTM model. For 2 speakers at ~0 dB, losing one speaker entirely would cost about 50% deletions, so 68.5% implies additional damage to the retained speaker as well (inference).
+- The Xiaomi numbers for Qwen3-ASR-1.7b (69–161%) are **target-speaker** scores and are NOT comparable to all-speaker WER. A model that transcribed both speakers of a 2-mix perfectly would score about 100% TS-WER (all of the other speaker's words become insertions), and a model that transcribed only the louder speaker would score about 0% when that speaker is the target and about 100% (the Levenshtein alignment turns the mismatch mostly into substitutions) when not — an average near 50%, well below the reported 69–92% for 2-mix. These numbers therefore show that Qwen3-ASR-1.7b cannot select a target; they do not tell us whether it drops, merges or garbles the second speaker.
+- Real-meeting sets understate the overlap problem because they are dominated by single-speaker segments (the Xiaomi report's own explanation for the better AMI/AliMeeting numbers).
 - A protocol for this team should report a grid: overlap ratio (0 / 10 / 20 / 40 / 100%), SIR (e.g. 0, ±5, ±10 dB), speaker count (1 / 2 / 3), gender pairing, and language pairing (same vs. cross) — because, apart from overlap ratio and speaker count, none of these axes has published reference numbers that could be found.
 
 ### Gaps
-- No retrieved paper reports WER by SIR/energy ratio, per louder/quieter speaker, same- vs. different-gender, short interjections/backchannels as a stratum, or same- vs. cross-language overlap. Searches for these returned nothing specific; the full texts of SOT, t-SOT, H-SAGE and the monaural multi-speaker ASR survey (arXiv 2505.10975) could not be opened and may contain such tables.
-- Per-condition t-SOT and H-SAGE numbers: Not Reported (full text not accessible).
+- No paper found reports WER by SIR/energy ratio, per louder/quieter speaker, same- vs. different-gender, short interjections/backchannels as a stratum, or same- vs. cross-language overlap. After the second pass this covers full-text reads of SOT, t-SOT, H-SAGE, MS-Bench and the Xiaomi report and a keyword scan of the survey (arXiv 2505.10975). Older speech-separation literature (e.g. WSJ0-2mix same/different-gender SDR breakdowns) was not searched and may contain gender/SIR splits for separation quality rather than ASR.
+- The AudioShake, parakeet-rs, SA-SOT, SQ-Whisper, TellWhisper and decoupled-separation numbers below remain [S].
 
 ---
 
 ## Q5. Behaviour of existing models on overlapped speech
 
 ### Takeaway
-The only quantitative evidence found for an off-the-shelf single-talker foundation model on fully-overlapped speech is Qwen3-ASR-1.7B at 69–161% WER on LibriMix/LibriSpeechMix (competitor-reported) — a figure above 100% implies heavy insertions, not merely a dropped second speaker. No source measured secondary-speaker deletion rates for Whisper, Parakeet, Canary, SenseVoice, Gemini or GPT-4o, and no number at all was found for Qwen3-ASR-0.6B.
+Published numbers for off-the-shelf single-talker models on overlapped mixtures are scarce and mostly not all-speaker scores: Qwen3-ASR-1.7b's 69–161% on LibriMix/LibriSpeechMix is a target-speaker WER (competitor-reported), which cannot distinguish dropping, merging or garbling; the only all-speaker figures are for older single-talker models (68.5% / 92.7% on 2/3-speaker mixtures; 34% at 40% overlap on LibriCSS). No source measured secondary-speaker deletion rates for Whisper, Parakeet, Canary, SenseVoice, Gemini or GPT-4o, and no number at all was found for Qwen3-ASR-0.6B.
 
 ### Cited Findings
 - **Qwen3-ASR** [S]: the technical report's stress tests include multi-speaker Chinese conversational speech but no overlap-specific breakdown was visible. — [Qwen3-ASR Technical Report](https://arxiv.org/html/2601.21337v1)
-- **Qwen3-ASR-1.7B on overlap** [S]: Xiaomi states that "existing top-tier ASR models such as Qwen3-ASR-1.7b and StepAudio2 lack the ability to recognize multiple speakers"; reported WERs 68.75 (LibriMix-2), 106.04 (LibriMix-3), 92.17 (LibriSpeechMix-2), 160.82 (LibriSpeechMix-3); better on real data (AMI SDM 38.18, AliMeeting Far 39.64), which the authors attribute to single-speaker segments mitigating degradation. Competitor-reported, not independent. — [Xiaomi-CocktailASR-1 Technical Report](https://arxiv.org/html/2609.11274v1)
+- **Qwen3-ASR-1.7b on overlap** [D, corrected]: exact sentence — "existing top-tier ASR models such as Qwen3-ASR-1.7b and StepAudio2 lack the ability to recognize multiple speakers. Consequently, they are unable to correctly transcribe highly overlapping synthetic datasets, resulting in WERs between 60% and 160%." Values (TS-WER, target-speaker reference only): 68.75 (LibriMix 2mix), 106.04 (LibriMix 3mix), 92.17 (LibriSpeechMix 2mix), 160.82 (LibriSpeechMix 3mix); real data AMI SDM 38.18, AliMeeting Far 39.64, attributed "partly" to "the presence of single-speaker segments that mitigate their degradation in complex overlapping conditions". Competitor-reported, not independent; the model is 1.7b, not 0.6B; the decoding prompt/configuration used for Qwen3-ASR is not described. — [Xiaomi-CocktailASR-1 Technical Report](https://arxiv.org/html/2609.11274v1)
+- **Gemini-2.5-pro as a prompted target-speaker recogniser** [D]: given a TS-ASR prompt plus reference speech, TS-WER 48.41 / 76.10 (LibriMix 2/3mix), 30.69 / 52.34 (LibriSpeechMix 2/3mix), 52.95 (AMI SDM), 56.75 (AliMeeting Far); the authors describe it as "showing some potential for target speaker ASR" but limited; it also shows "a strong bias toward rejection" (rejection rate 81.79% on LibriSpeech-Neg, 64.2% on Aishell-Neg). — [Xiaomi-CocktailASR-1 Technical Report](https://arxiv.org/html/2609.11274v1)
+- **Whisper Large-v2 on AMI SDM** [D]: 36.40% in the Xiaomi comparison table (utterance-segmented, target-speaker reference). — [Xiaomi-CocktailASR-1 Technical Report](https://arxiv.org/html/2609.11274v1)
+- **Older single-talker models, all-speaker scoring** [D]: single-speaker LSTM AED: 5.7 / 68.5 / 92.7% on 1/2/3-speaker LibriSpeech mixtures (min-permutation WER); single-talker transformer transducer TT-36 on monaural LibriCSS: 6.5 / 6.7 / 13.1 / 20.4 / 27.0 / 34.0% (0L / 0S / 10 / 20 / 30 / 40). — [Kanda et al., SOT](https://www.isca-archive.org/interspeech_2020/kanda20b_interspeech.pdf); [t-SOT paper](https://arxiv.org/pdf/2202.00842)
+- **Diarizing speech-LLM systems in overlap regions** [D]: across the seven MS-Bench systems, 71–93% of overlapped speech time is covered by at least one hypothesised speaker but only 31–63% by the correct speaker. — [arXiv HTML 2610.25824](https://arxiv.org/html/2610.25824)
 - **Qwen3-ASR adaptation** [S]: an MLC-SLM 2026 entry adapts Qwen3-ASR-1.7B with diarization guidance and LoRA for multilingual two-speaker conversations, reporting average tcpMER 17.97 on the final evaluation set and an adaptation gain 30.53 → 24.3. — [Diarization-Guided Qwen-ASR Adaptation](https://arxiv.org/pdf/2607.08208)
 - **Qwen3-ASR in a cascade** [D]: pyannote+Qwen3-ASR on MS-Bench: DER 17.35, cpWER 43.25, tcpWER 46.54, WER 34.96; largest overlap penalty of seven systems (Δlex +38.6, Δattr +19.1). — [GitHub ASLP-lab/MS-Bench](https://github.com/ASLP-lab/MS-Bench)
 - **Qwen3-ASR toolkit** [S]: an open GitHub issue requests speaker diarization and multi-speaker transcript segmentation, i.e. not a built-in capability. — [QwenLM/Qwen3-ASR-Toolkit issue #13](https://github.com/QwenLM/Qwen3-ASR-Toolkit/issues/13)
@@ -241,7 +271,8 @@ The only quantitative evidence found for an off-the-shelf single-talker foundati
 - **Scoring practice hides the problem** [S]: a practitioner guide notes overlapping speech has historically been scored out in many corpora. Low-authority source. — [Kili diarization guide](https://kili-technology.com/blog/speaker-diarization-models-guide-benchmarks-and-failure-modes-2026)
 
 ### Inferences
-- WER > 100% for Qwen3-ASR-1.7B on 3-speaker mixtures cannot be produced by deletions alone (dropping two of three speakers caps deletions near 67%); insertions/substitutions from garbled or hallucinated output must be substantial. So the failure mode is "garble + drop", not a clean "transcribe the dominant speaker only". How the Xiaomi evaluation scored the baseline (which reference it compared against, given their model is target-speaker) could change this reading — the setup was not visible.
+- **Correction of the first-pass inference.** The first pass read WER > 100% for Qwen3-ASR-1.7b as evidence of hallucination/garbling. That is not supported: the metric is target-speaker WER, so any words transcribed from non-target speakers count as insertions, and values above 100% arise naturally whenever the model transcribes speakers other than the target. The Xiaomi numbers are compatible with "transcribes mostly one (often the wrong) speaker", "transcribes a merge of both" or "garbles"; they cannot separate these. The actual failure mode of Qwen3-ASR on overlap is therefore still unmeasured in the public literature.
+- A cheap diagnostic the team can run first: score off-the-shelf Qwen3-ASR-0.6B on 2-speaker mixtures with min-permutation WER after treating the whole output as one stream, and separately against each single reference; the pattern (one reference near 0–20% and the other near 100% deletion ⇒ dominant-speaker behaviour; both high ⇒ garbling/merging) answers the "does it drop the secondary speaker" question directly.
 - Qwen3-ASR-0.6B is the smaller sibling of the 1.7B model; it is reasonable to expect it to be no better on overlap, but no measurement was found — the team should measure it as the first baseline row.
 - The "single-talker model drops the secondary speaker" claim is widely asserted qualitatively but was not found quantified (per-speaker deletion) for any model. This is a publishable gap the team's protocol can fill.
 - Systems in MS-Bench and the MOSS/Parakeet results solve *speaker-attributed turn-taking* transcription; good cpWER there does not demonstrate simultaneous-speech recovery.
@@ -251,7 +282,7 @@ The only quantitative evidence found for an off-the-shelf single-talker foundati
 - No overlap-specific results found for Canary, SenseVoice, Gemini audio, or GPT-4o(-transcribe).
 - No result of any kind for Qwen3-ASR-0.6B on overlapped speech.
 - No result for any model on Taiwanese Hokkien overlap or cross-lingual overlap.
-- Hugging Face model cards and arXiv full texts could not be opened; all model numbers above are from search summaries except MS-Bench.
+- Second pass verified MS-Bench, Xiaomi, SOT and t-SOT numbers from full text. Still [S] and unverified: Parakeet multitalker model-card and paper numbers (including the CH109 15.81 vs 26.21 conflict), MOSS-Transcribe-Diarize numbers (including the AISHELL-4 cpCER 15.83 vs 20.04 conflict), the Gemini 2.5 Pro AISHELL-4 cpCER, the MLC-SLM Qwen3-ASR adaptation numbers, the Qwen3-ASR technical report's stress-test description, and all Whisper qualitative quotes from DiCoW/TellWhisper.
 
 ---
 
